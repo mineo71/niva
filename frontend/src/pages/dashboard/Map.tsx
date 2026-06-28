@@ -338,7 +338,7 @@ export function MapPage() {
             </code>
           </div>
         ) : (
-          <div ref={mapRef} className="absolute inset-0" />
+          <div ref={mapRef} className="w-full h-full" />
         )}
       </div>
     </div>
