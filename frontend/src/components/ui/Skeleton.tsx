@@ -17,9 +17,9 @@ export function Skeleton({ className, width, height }: SkeletonProps) {
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('bg-[#0d1a14] border border-[#1e3022] rounded-xl p-5 space-y-3', className)}>
-      <Skeleton height={16} className="w-1/3" />
-      <Skeleton height={24} className="w-2/3" />
+    <div className={cn('bg-white border border-[#e5e7eb] rounded-xl p-5 space-y-3 shadow-sm', className)}>
+      <Skeleton height={14} className="w-1/3" />
+      <Skeleton height={22} className="w-2/3" />
       <Skeleton height={12} className="w-full" />
       <Skeleton height={12} className="w-4/5" />
     </div>

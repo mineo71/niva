@@ -13,21 +13,21 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-[#4ade80] text-[#040a06] font-semibold hover:bg-[#22c55e] active:bg-[#16a34a] shadow-[0_0_20px_rgba(74,222,128,0.25)] hover:shadow-[0_0_28px_rgba(74,222,128,0.4)]',
+    'bg-[#16a34a] text-white font-semibold hover:bg-[#15803d] active:bg-[#166534] shadow-sm',
   secondary:
-    'bg-[#112018] text-[#4ade80] border border-[#2d4a34] hover:bg-[#16301f] hover:border-[#4ade80]/40',
+    'bg-white text-[#16a34a] border border-[#bbf7d0] hover:bg-[#f0fdf4] hover:border-[#16a34a]/40',
   ghost:
-    'text-[#6b9e78] hover:text-[#f0f4f1] hover:bg-[#112018]',
+    'text-[#6b7280] hover:text-[#111827] hover:bg-[#f9fafb]',
   danger:
-    'bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/20 hover:bg-[#ef4444]/20',
+    'bg-[#fef2f2] text-[#dc2626] border border-[#fecaca] hover:bg-[#fee2e2]',
   outline:
-    'border border-[#2d4a34] text-[#f0f4f1] hover:bg-[#112018] hover:border-[#4ade80]/40',
+    'bg-white border border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb] hover:border-[#d1d5db]',
 }
 
 const sizeClasses: Record<Size, string> = {
   sm: 'h-8 px-3 text-sm gap-1.5',
-  md: 'h-10 px-4 text-sm gap-2',
-  lg: 'h-12 px-6 text-base gap-2.5',
+  md: 'h-9 px-4 text-sm gap-2',
+  lg: 'h-11 px-5 text-base gap-2',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -37,8 +37,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          'inline-flex items-center justify-center rounded-lg font-sans transition-all duration-200 outline-none',
-          'focus-visible:ring-2 focus-visible:ring-[#4ade80]/50 focus-visible:ring-offset-1 focus-visible:ring-offset-transparent',
+          'inline-flex items-center justify-center rounded-lg font-medium font-sans',
+          'transition-colors duration-150 outline-none cursor-pointer',
+          'focus-visible:ring-2 focus-visible:ring-[#16a34a]/40 focus-visible:ring-offset-1',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           variantClasses[variant],
           sizeClasses[size],

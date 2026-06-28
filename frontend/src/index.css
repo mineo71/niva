@@ -1,68 +1,72 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fonts */
-  --font-display: "Syne", sans-serif;
-  --font-sans: "Outfit", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  /* ── Font ── */
+  --font-sans:    "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "Cascadia Mono", monospace;
 
-  /* Brand Palette — Dark Earth Terminal */
-  --color-earth-950: #040a06;
-  --color-earth-900: #070d09;
-  --color-earth-850: #0a1410;
-  --color-earth-800: #0d1a14;
-  --color-earth-700: #112018;
-  --color-earth-600: #16301f;
-  --color-earth-500: #1e3d27;
-  --color-earth-400: #2a5438;
-  --color-earth-300: #3d7050;
-  --color-earth-200: #5a9e6e;
-  --color-earth-100: #8dcc9f;
-  --color-earth-50: #c6eece;
+  /* Backgrounds */
+  --color-bg:              #ffffff;
+  --color-surface:         #fafafa;
+  --color-surface-raised:  #f5f5f4;
+  --color-surface-hover:   #f9fafb;
 
-  --color-lime-vivid: #4ade80;
-  --color-lime-glow: #22c55e;
-  --color-lime-soft: #bbf7d0;
-  --color-lime-dim: #166534;
+  /* Borders */
+  --color-border:          #e5e7eb;
+  --color-border-subtle:   #f3f4f6;
+  --color-border-strong:   #d1d5db;
 
-  --color-amber-signal: #f59e0b;
-  --color-amber-dim: #78350f;
+  /* Text */
+  --color-text:             #111827;
+  --color-text-secondary:   #374151;
+  --color-text-muted:       #6b7280;
+  --color-text-placeholder: #9ca3af;
 
-  --color-red-alert: #ef4444;
-  --color-red-dim: #7f1d1d;
+  /* Accent — green-600 */
+  --color-accent:        #16a34a;
+  --color-accent-hover:  #15803d;
+  --color-accent-active: #166534;
+  --color-accent-light:  #f0fdf4;
+  --color-accent-border: #bbf7d0;
+  --color-accent-muted:  #dcfce7;
 
-  --color-ivory: #f0f4f1;
-  --color-muted: #6b9e78;
-  --color-border: #1e3022;
-  --color-border-bright: #2d4a34;
+  /* Danger */
+  --color-danger:        #dc2626;
+  --color-danger-light:  #fef2f2;
+  --color-danger-border: #fecaca;
 
-  /* Semantic aliases */
-  --color-bg: var(--color-earth-900);
-  --color-surface: var(--color-earth-850);
-  --color-surface-raised: var(--color-earth-800);
-  --color-accent: var(--color-lime-vivid);
-  --color-accent-glow: var(--color-lime-glow);
-  --color-text: var(--color-ivory);
-  --color-text-muted: var(--color-muted);
+  /* Warning */
+  --color-warning:        #d97706;
+  --color-warning-light:  #fffbeb;
+  --color-warning-border: #fde68a;
+
+  /* Info */
+  --color-info:        #2563eb;
+  --color-info-light:  #eff6ff;
+  --color-info-border: #bfdbfe;
+
+  /* Sidebar */
+  --color-sidebar-bg:     #f9fafb;
+  --color-sidebar-border: #e5e7eb;
 }
 
 /* ── Base ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
-  font-family: var(--font-sans);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background-color: var(--color-earth-900);
-  color: var(--color-ivory);
+  background-color: #ffffff;
+  color: #111827;
   margin: 0;
   min-height: 100vh;
+  line-height: 1.5;
 }
 
 #root {
@@ -71,97 +75,67 @@ body {
   flex-direction: column;
 }
 
-/* ── Typography helpers ── */
-.font-display { font-family: var(--font-display); }
-.font-mono { font-family: var(--font-mono); }
-
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--color-earth-900); }
-::-webkit-scrollbar-thumb { background: var(--color-earth-500); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-earth-400); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f9fafb; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
-/* ── Mapbox overrides ── */
+/* ── Mapbox ── */
 .mapboxgl-ctrl-logo { display: none !important; }
 .mapboxgl-ctrl-attrib { font-size: 10px !important; }
-.mapboxgl-ctrl-group { background: var(--color-earth-800) !important; border: 1px solid var(--color-border) !important; }
-.mapboxgl-ctrl-group button { background-color: transparent !important; }
-.mapboxgl-ctrl-group button .mapboxgl-ctrl-icon { filter: invert(0.8); }
-.mapboxgl-ctrl-group button:not(:disabled):hover { background-color: var(--color-earth-700) !important; }
-
-/* ── Draw controls ── */
-.mapbox-gl-draw_ctrl-draw-btn { filter: invert(0.8); }
-
-/* ── React Toastify overrides ── */
-.Toastify__toast {
-  background: var(--color-earth-800) !important;
-  color: var(--color-ivory) !important;
-  border: 1px solid var(--color-border) !important;
-  font-family: var(--font-sans) !important;
+.mapboxgl-ctrl-group {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08) !important;
   border-radius: 8px !important;
 }
-.Toastify__toast--success { border-color: var(--color-lime-dim) !important; }
-.Toastify__toast--error { border-color: var(--color-red-dim) !important; }
-.Toastify__toast--warning { border-color: var(--color-amber-dim) !important; }
-.Toastify__progress-bar--success { background: var(--color-lime-vivid) !important; }
-.Toastify__progress-bar--error { background: var(--color-red-alert) !important; }
-.Toastify__close-button { color: var(--color-muted) !important; }
+.mapboxgl-ctrl-group button { background-color: transparent !important; }
+.mapboxgl-ctrl-group button:not(:disabled):hover { background-color: #f9fafb !important; }
 
-/* ── Animation utilities ── */
+/* ── Toastify ── */
+.Toastify__toast {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.10) !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 14px !important;
+}
+.Toastify__toast--success { border-color: #bbf7d0 !important; }
+.Toastify__toast--error   { border-color: #fecaca !important; }
+.Toastify__toast--warning { border-color: #fde68a !important; }
+.Toastify__progress-bar--success { background: #16a34a !important; }
+.Toastify__progress-bar--error   { background: #dc2626 !important; }
+.Toastify__progress-bar--warning { background: #d97706 !important; }
+.Toastify__close-button { color: #6b7280 !important; }
+
+/* ── Animations ── */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
-  50% { box-shadow: 0 0 16px 4px rgba(74, 222, 128, 0.15); }
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%   { background-position: -800px 0; }
+  100% { background-position: 800px 0; }
 }
 
-.animate-fade-in { animation: fadeIn 0.4s ease both; }
-.animate-slide-in { animation: slideIn 0.35s ease both; }
-.animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
-.animate-spin { animation: spin 0.8s linear infinite; }
+.animate-fade-in  { animation: fadeIn 0.3s ease both; }
+.animate-slide-in { animation: slideIn 0.25s ease both; }
+.animate-spin     { animation: spin 0.7s linear infinite; }
 
+/* ── Skeleton ── */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-earth-800) 25%,
-    var(--color-earth-700) 50%,
-    var(--color-earth-800) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 6px;
 }
 
-/* ── Topographic grid pattern ── */
-.topo-grid {
-  background-image:
-    linear-gradient(rgba(74,222,128,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74,222,128,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* ── Glow accent lines ── */
-.glow-line-top {
-  position: relative;
-}
-.glow-line-top::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-lime-vivid), transparent);
-  opacity: 0.5;
-}
+.tabular-nums { font-variant-numeric: tabular-nums; }

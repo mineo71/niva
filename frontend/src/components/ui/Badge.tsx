@@ -10,28 +10,28 @@ interface BadgeProps {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default:  'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/20',
-  success:  'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/20',
-  warning:  'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/20',
-  danger:   'bg-[#ef4444]/10 text-[#ef4444] border-[#ef4444]/20',
-  info:     'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/20',
-  neutral:  'bg-[#6b9e78]/10 text-[#6b9e78] border-[#6b9e78]/20',
+  default:  'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]',
+  success:  'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]',
+  warning:  'bg-[#fffbeb] text-[#d97706] border-[#fde68a]',
+  danger:   'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]',
+  info:     'bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe]',
+  neutral:  'bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]',
 }
 
 const dotClasses: Record<BadgeVariant, string> = {
-  default:  'bg-[#4ade80]',
-  success:  'bg-[#4ade80]',
-  warning:  'bg-[#f59e0b]',
-  danger:   'bg-[#ef4444]',
-  info:     'bg-[#60a5fa]',
-  neutral:  'bg-[#6b9e78]',
+  default:  'bg-[#16a34a]',
+  success:  'bg-[#16a34a]',
+  warning:  'bg-[#d97706]',
+  danger:   'bg-[#dc2626]',
+  info:     'bg-[#2563eb]',
+  neutral:  'bg-[#9ca3af]',
 }
 
 export function Badge({ children, variant = 'default', className, dot }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-md border font-sans',
+        'inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-md border',
         variantClasses[variant],
         className
       )}

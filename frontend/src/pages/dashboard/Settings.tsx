@@ -33,7 +33,6 @@ export function SettingsPage() {
   const handleSaveProfile = async () => {
     setSavingProfile(true)
     try {
-      // Fetch fresh profile (no dedicated PATCH in this API, but we show intent)
       const me = await authApi.me()
       setUser({ ...me, full_name: fullName || me.full_name })
       toast.success(isUk ? 'Профіль оновлено' : 'Profile updated')
@@ -52,12 +51,12 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="p-6 max-w-xl mx-auto space-y-5 animate-fade-in">
       <div>
-        <h1 className="font-display font-bold text-2xl text-[#f0f4f1]">
+        <h1 className="font-semibold text-xl text-[#111827] tracking-tight">
           {isUk ? 'Налаштування' : 'Settings'}
         </h1>
-        <p className="text-sm text-[#6b9e78] mt-0.5">
+        <p className="text-sm text-[#6b7280] mt-0.5">
           {isUk ? 'Ваш профіль та параметри платформи' : 'Your profile and platform preferences'}
         </p>
       </div>
@@ -66,8 +65,8 @@ export function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Globe size={18} className="text-[#4ade80]" />
-            <h2 className="font-display font-semibold text-[#f0f4f1]">
+            <Globe size={15} className="text-[#16a34a]" />
+            <h2 className="font-semibold text-sm text-[#111827]">
               {isUk ? 'Мова інтерфейсу' : 'Interface Language'}
             </h2>
           </div>
@@ -78,10 +77,10 @@ export function SettingsPage() {
               <button
                 key={lang}
                 onClick={() => handleLanguage(lang)}
-                className={`flex-1 relative flex flex-col items-center gap-2 py-4 px-3 rounded-xl border transition-all duration-200 ${
+                className={`relative flex-1 flex flex-col items-center gap-2 py-4 px-3 rounded-xl border transition-all duration-150 ${
                   language === lang
-                    ? 'border-[#4ade80]/50 bg-[#4ade80]/10 text-[#4ade80]'
-                    : 'border-[#1e3022] bg-[#0a1410] text-[#6b9e78] hover:border-[#2d4a34] hover:text-[#f0f4f1]'
+                    ? 'border-[#16a34a] bg-[#f0fdf4] text-[#16a34a]'
+                    : 'border-[#e5e7eb] bg-white text-[#6b7280] hover:border-[#d1d5db] hover:bg-[#fafafa]'
                 }`}
               >
                 <span className="text-2xl">{lang === 'uk' ? '🇺🇦' : '🇬🇧'}</span>
@@ -89,8 +88,8 @@ export function SettingsPage() {
                   {lang === 'uk' ? 'Українська' : 'English'}
                 </span>
                 {language === lang && (
-                  <span className="absolute top-2 right-2">
-                    <Check size={14} />
+                  <span className="absolute top-2 right-2 text-[#16a34a]">
+                    <Check size={13} />
                   </span>
                 )}
               </button>
@@ -103,21 +102,21 @@ export function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <User size={18} className="text-[#4ade80]" />
-            <h2 className="font-display font-semibold text-[#f0f4f1]">
+            <User size={15} className="text-[#16a34a]" />
+            <h2 className="font-semibold text-sm text-[#111827]">
               {isUk ? 'Профіль' : 'Profile'}
             </h2>
           </div>
         </CardHeader>
         <CardBody className="space-y-4">
-          {/* Avatar */}
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl bg-[#1e3d27] border border-[#2d4a34] flex items-center justify-center text-xl font-display font-bold text-[#4ade80]">
+          {/* Avatar row */}
+          <div className="flex items-center gap-3 pb-3 border-b border-[#f3f4f6]">
+            <div className="w-12 h-12 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] flex items-center justify-center text-lg font-semibold text-[#16a34a]">
               {(user?.full_name ?? user?.email ?? '?')[0].toUpperCase()}
             </div>
             <div>
-              <p className="font-medium text-[#f0f4f1]">{user?.full_name ?? isUk ? 'Без імені' : 'No name'}</p>
-              <p className="text-sm text-[#6b9e78]">{user?.email}</p>
+              <p className="font-medium text-[#111827] text-sm">{user?.full_name ?? (isUk ? 'Без імені' : 'No name')}</p>
+              <p className="text-xs text-[#9ca3af]">{user?.email}</p>
             </div>
           </div>
 
@@ -126,18 +125,18 @@ export function SettingsPage() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder={isUk ? 'Іван Франко' : 'John Doe'}
-            leftIcon={<User size={16} />}
+            leftIcon={<User size={14} />}
           />
 
-          <div className="bg-[#0a1410] rounded-lg px-3 py-2.5 border border-[#1e3022]">
-            <p className="text-[10px] text-[#6b9e78] uppercase tracking-wider mb-1">Email</p>
-            <p className="text-sm text-[#f0f4f1] font-mono">{user?.email}</p>
+          <div className="bg-[#f9fafb] rounded-lg px-3 py-2.5 border border-[#f3f4f6]">
+            <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-1">Email</p>
+            <p className="text-sm text-[#374151] font-medium">{user?.email}</p>
           </div>
 
           <Button
             onClick={handleSaveProfile}
             loading={savingProfile}
-            icon={<Save size={16} />}
+            icon={<Save size={14} />}
           >
             {isUk ? 'Зберегти профіль' : 'Save profile'}
           </Button>
@@ -148,26 +147,23 @@ export function SettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <LogOut size={18} className="text-[#ef4444]" />
-            <h2 className="font-display font-semibold text-[#f0f4f1]">
+            <LogOut size={15} className="text-[#dc2626]" />
+            <h2 className="font-semibold text-sm text-[#111827]">
               {isUk ? 'Акаунт' : 'Account'}
             </h2>
           </div>
         </CardHeader>
         <CardBody>
-          <p className="text-sm text-[#6b9e78] mb-4">
-            {isUk
-              ? 'Вийдіть з системи на всіх пристроях.'
-              : 'Sign out from all devices.'}
+          <p className="text-sm text-[#6b7280] mb-4">
+            {isUk ? 'Вийдіть з системи на всіх пристроях.' : 'Sign out from all devices.'}
           </p>
-          <Button variant="danger" onClick={handleLogout} icon={<LogOut size={16} />}>
+          <Button variant="danger" onClick={handleLogout} icon={<LogOut size={14} />}>
             {isUk ? 'Вийти з акаунту' : 'Sign out'}
           </Button>
         </CardBody>
       </Card>
 
-      {/* Version */}
-      <p className="text-center text-xs text-[#3d7050] font-mono">
+      <p className="text-center text-xs text-[#9ca3af]">
         Нива v0.1.0 · Satellite Intelligence Platform
       </p>
     </div>

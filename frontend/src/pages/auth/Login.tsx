@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
 const schema = yup.object({
-  email: yup.string().email("Невірний формат email").required("Email обов’язковий"),
-  password: yup.string().min(6, "Мінімум 6 символів").required("Пароль обов’язковий"),
+  email: yup.string().email("Невірний формат email").required("Email обов'язковий"),
+  password: yup.string().min(6, "Мінімум 6 символів").required("Пароль обов'язковий"),
 })
 
 type FormData = yup.InferType<typeof schema>
@@ -30,7 +30,6 @@ export function Login() {
     try {
       const tokens = await authApi.login(data)
       setAuth(tokens.access_token, null)
-      // Load user profile
       try {
         const me = await authApi.me()
         setAuth(tokens.access_token, me)
@@ -43,29 +42,25 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#040a06] flex items-center justify-center px-4">
-      {/* Background */}
-      <div className="absolute inset-0 topo-grid opacity-40" />
-      <div className="absolute inset-0 bg-gradient-radial from-[#4ade80]/4 via-transparent to-transparent" />
-
-      <div className="relative w-full max-w-sm animate-fade-in">
+    <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#4ade80] flex items-center justify-center mb-4 shadow-[0_0_32px_rgba(74,222,128,0.3)]">
-            <Satellite size={24} className="text-[#040a06]" />
+          <div className="w-10 h-10 rounded-xl bg-[#16a34a] flex items-center justify-center mb-4 shadow-sm">
+            <Satellite size={20} className="text-white" />
           </div>
-          <h1 className="font-display font-bold text-2xl text-[#f0f4f1]">Нива</h1>
-          <p className="text-sm text-[#6b9e78] mt-1">Увійдіть у свій акаунт</p>
+          <h1 className="font-semibold text-xl text-[#111827] tracking-tight">Нива</h1>
+          <p className="text-sm text-[#6b7280] mt-1">Увійдіть у свій акаунт</p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#0d1a14] border border-[#1e3022] rounded-2xl p-8">
+        <div className="bg-white border border-[#e5e7eb] rounded-2xl p-7 shadow-sm">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <Input
               label="Email"
               type="email"
               placeholder="farmer@example.com"
-              leftIcon={<Mail size={16} />}
+              leftIcon={<Mail size={15} />}
               error={errors.email?.message}
               {...register('email')}
             />
@@ -73,30 +68,24 @@ export function Login() {
               label="Пароль"
               type="password"
               placeholder="••••••••"
-              leftIcon={<Lock size={16} />}
+              leftIcon={<Lock size={15} />}
               error={errors.password?.message}
               {...register('password')}
             />
-
-            <Button
-              type="submit"
-              loading={isSubmitting}
-              className="w-full mt-2"
-              size="lg"
-            >
+            <Button type="submit" loading={isSubmitting} className="w-full mt-2" size="lg">
               Увійти
             </Button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-[#6b9e78] mt-6">
+        <p className="text-center text-sm text-[#6b7280] mt-5">
           Немає акаунту?{' '}
-          <Link to="/auth/signup" className="text-[#4ade80] hover:text-[#22c55e] font-medium transition-colors">
+          <Link to="/auth/signup" className="text-[#16a34a] hover:text-[#15803d] font-medium transition-colors">
             Зареєструватись
           </Link>
         </p>
         <p className="text-center mt-3">
-          <Link to="/" className="text-xs text-[#3d7050] hover:text-[#6b9e78] transition-colors">
+          <Link to="/" className="text-xs text-[#9ca3af] hover:text-[#6b7280] transition-colors">
             ← На головну
           </Link>
         </p>

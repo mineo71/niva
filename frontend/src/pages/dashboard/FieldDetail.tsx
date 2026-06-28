@@ -18,7 +18,11 @@ import { ConfidenceBadge } from '@/components/ConfidenceBadge'
 import { NDVIChart } from '@/components/charts/NDVIChart'
 import { WeatherChart } from '@/components/charts/WeatherChart'
 import { NDVIColorScale, NDVIChip } from '@/components/NDVIColorScale'
-import { formatArea, formatDate, CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS, SOIL_LABELS_UK, SOIL_LABELS_EN } from '@/lib/utils'
+import {
+  formatArea, formatDate,
+  CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS,
+  SOIL_LABELS_UK, SOIL_LABELS_EN,
+} from '@/lib/utils'
 
 export function FieldDetail() {
   const { id } = useParams<{ id: string }>()
@@ -37,7 +41,6 @@ export function FieldDetail() {
   const [loadingWeather, setLoadingWeather] = useState(true)
   const [predictingYield, setPredictingYield] = useState(false)
   const [generatingReport, setGeneratingReport] = useState(false)
-
   const [showEvi, setShowEvi] = useState(false)
   const [showNdmi, setShowNdmi] = useState(false)
 
@@ -52,7 +55,6 @@ export function FieldDetail() {
     } finally {
       setLoadingField(false)
     }
-
     try {
       const idx = await insightsApi.indices(id)
       setIndices(idx)
@@ -72,8 +74,7 @@ export function FieldDetail() {
     if (!id) return
     setPredictingYield(true)
     try {
-      const result = await insightsApi.predict(id)
-      setPredict(result)
+      setPredict(await insightsApi.predict(id))
     } catch {
       toast.error(isUk ? 'Помилка прогнозування' : 'Prediction failed')
     } finally {
@@ -85,8 +86,7 @@ export function FieldDetail() {
     if (!id) return
     setGeneratingReport(true)
     try {
-      const result = await insightsApi.report(id)
-      setReport(result)
+      setReport(await insightsApi.report(id))
     } catch {
       toast.error(isUk ? 'Помилка генерації звіту' : 'Report generation failed')
     } finally {
@@ -97,19 +97,22 @@ export function FieldDetail() {
   const latestNdvi = indices?.series[indices.series.length - 1]
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 animate-fade-in">
+    <div className="p-6 max-w-7xl mx-auto space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link to="/dashboard/fields" className="p-2 rounded-lg text-[#6b9e78] hover:text-[#f0f4f1] hover:bg-[#112018] transition-colors">
-          <ArrowLeft size={18} />
+      <div className="flex items-center gap-3">
+        <Link
+          to="/dashboard/fields"
+          className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#374151] hover:bg-[#f3f4f6] transition-colors"
+        >
+          <ArrowLeft size={16} />
         </Link>
         <div className="flex-1 min-w-0">
           {loadingField ? (
-            <Skeleton height={28} className="w-48 mb-1" />
+            <Skeleton height={24} className="w-48 mb-1" />
           ) : (
             <>
-              <h1 className="font-display font-bold text-2xl text-[#f0f4f1] truncate">{field?.name}</h1>
-              <div className="flex items-center gap-2 mt-1">
+              <h1 className="font-semibold text-xl text-[#111827] tracking-tight truncate">{field?.name}</h1>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge variant="neutral">
                   {CROP_ICONS[field?.crop_type as keyof typeof CROP_ICONS]}{' '}
                   {isUk
@@ -121,13 +124,15 @@ export function FieldDetail() {
                     ? SOIL_LABELS_UK[field?.soil_type as keyof typeof SOIL_LABELS_UK]
                     : SOIL_LABELS_EN[field?.soil_type as keyof typeof SOIL_LABELS_EN]}
                 </Badge>
-                <span className="text-sm font-mono text-[#4ade80]">{formatArea(field?.area_ha ?? 0)}</span>
+                <span className="text-sm font-semibold text-[#16a34a] tabular-nums">
+                  {formatArea(field?.area_ha ?? 0)}
+                </span>
               </div>
             </>
           )}
         </div>
         <Link to={`/dashboard/map/${id}`}>
-          <Button size="sm" variant="secondary" icon={<Pencil size={14} />}>
+          <Button size="sm" variant="outline" icon={<Pencil size={13} />}>
             {isUk ? 'Редагувати' : 'Edit'}
           </Button>
         </Link>
@@ -138,27 +143,33 @@ export function FieldDetail() {
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-2">
-              <Satellite size={18} className="text-[#4ade80]" />
-              <h2 className="font-display font-semibold text-[#f0f4f1]">
+              <Satellite size={16} className="text-[#16a34a]" />
+              <h2 className="font-semibold text-sm text-[#111827]">
                 {isUk ? 'Вегетаційні індекси' : 'Vegetation Indices'}
               </h2>
-              {indices && (
-                <span className="text-xs text-[#6b9e78] font-mono">{indices.source}</span>
-              )}
+              {indices && <span className="text-xs text-[#9ca3af]">{indices.source}</span>}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {latestNdvi && <NDVIChip value={latestNdvi.ndvi} />}
               <button
                 onClick={() => setShowEvi(!showEvi)}
-                className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${showEvi ? 'text-[#60a5fa] bg-[#60a5fa]/10' : 'text-[#6b9e78] hover:text-[#f0f4f1]'}`}
+                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
+                  showEvi
+                    ? 'text-[#2563eb] bg-[#eff6ff] border-[#bfdbfe]'
+                    : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
+                }`}
               >
-                {showEvi ? <Eye size={12} /> : <EyeOff size={12} />} EVI
+                {showEvi ? <Eye size={11} /> : <EyeOff size={11} />} EVI
               </button>
               <button
                 onClick={() => setShowNdmi(!showNdmi)}
-                className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${showNdmi ? 'text-[#f59e0b] bg-[#f59e0b]/10' : 'text-[#6b9e78] hover:text-[#f0f4f1]'}`}
+                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
+                  showNdmi
+                    ? 'text-[#d97706] bg-[#fffbeb] border-[#fde68a]'
+                    : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
+                }`}
               >
-                {showNdmi ? <Eye size={12} /> : <EyeOff size={12} />} NDMI
+                {showNdmi ? <Eye size={11} /> : <EyeOff size={11} />} NDMI
               </button>
             </div>
           </div>
@@ -168,11 +179,7 @@ export function FieldDetail() {
             <Skeleton height={260} className="rounded-lg" />
           ) : (
             <>
-              <NDVIChart
-                data={indices?.series ?? []}
-                showEvi={showEvi}
-                showNdmi={showNdmi}
-              />
+              <NDVIChart data={indices?.series ?? []} showEvi={showEvi} showNdmi={showNdmi} />
               <div className="mt-4">
                 <NDVIColorScale showLabels />
               </div>
@@ -181,14 +188,14 @@ export function FieldDetail() {
         </CardBody>
       </Card>
 
-      {/* Weather + Actions row */}
+      {/* Weather + Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Weather */}
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <CloudRain size={18} className="text-[#60a5fa]" />
-              <h2 className="font-display font-semibold text-[#f0f4f1]">
+              <CloudRain size={16} className="text-[#2563eb]" />
+              <h2 className="font-semibold text-sm text-[#111827]">
                 {isUk ? 'Погода' : 'Weather'}
               </h2>
             </div>
@@ -196,43 +203,41 @@ export function FieldDetail() {
           <CardBody className="space-y-4">
             {loadingWeather ? (
               <>
-                <Skeleton height={64} className="rounded-lg" />
-                <Skeleton height={200} className="rounded-lg" />
+                <Skeleton height={60} className="rounded-xl" />
+                <Skeleton height={180} className="rounded-lg" />
               </>
             ) : weather ? (
               <>
-                {/* Current weather */}
-                <div className="flex items-center gap-4 bg-[#0a1410] rounded-xl px-4 py-3 border border-[#1e3022]">
+                <div className="flex items-center gap-4 bg-[#fffbeb] rounded-xl px-4 py-3 border border-[#fde68a]">
                   <div>
-                    <p className="font-display font-bold text-4xl text-[#f59e0b]">
+                    <p className="font-semibold text-3xl text-[#d97706] tabular-nums">
                       {weather.current.temp_c.toFixed(1)}°
                     </p>
-                    <p className="text-xs text-[#6b9e78] mt-0.5 capitalize">{weather.current.description}</p>
+                    <p className="text-xs text-[#6b7280] mt-0.5 capitalize">{weather.current.description}</p>
                   </div>
                   <div className="ml-auto text-right">
-                    <p className="text-xs text-[#6b9e78]">{isUk ? 'Вологість' : 'Humidity'}</p>
-                    <p className="text-sm font-mono text-[#f0f4f1]">{weather.current.humidity}%</p>
+                    <p className="text-xs text-[#9ca3af]">{isUk ? 'Вологість' : 'Humidity'}</p>
+                    <p className="text-sm font-semibold text-[#374151] tabular-nums">{weather.current.humidity}%</p>
                   </div>
                 </div>
-                {/* Forecast chart */}
                 <WeatherChart data={weather.forecast.slice(0, 7)} height={180} />
               </>
             ) : (
-              <div className="flex items-center justify-center h-32 text-[#6b9e78] text-sm">
+              <div className="flex items-center justify-center h-32 text-[#9ca3af] text-sm">
                 {isUk ? 'Дані недоступні' : 'Data unavailable'}
               </div>
             )}
           </CardBody>
         </Card>
 
-        {/* ML Actions */}
-        <div className="space-y-5">
-          {/* Yield prediction */}
+        {/* ML actions */}
+        <div className="space-y-4">
+          {/* Yield */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <TrendingUp size={18} className="text-[#f59e0b]" />
-                <h2 className="font-display font-semibold text-[#f0f4f1]">
+                <TrendingUp size={16} className="text-[#d97706]" />
+                <h2 className="font-semibold text-sm text-[#111827]">
                   {isUk ? 'Прогноз врожаю' : 'Yield Forecast'}
                 </h2>
               </div>
@@ -242,25 +247,23 @@ export function FieldDetail() {
                 <div className="space-y-3">
                   <div className="flex items-end gap-3">
                     <div>
-                      <p className="text-xs text-[#6b9e78] mb-1">{isUk ? 'Прогноз' : 'Forecast'}</p>
-                      <p className="font-display font-bold text-4xl text-[#f0f4f1]">
+                      <p className="text-xs text-[#9ca3af] mb-1">{isUk ? 'Прогноз' : 'Forecast'}</p>
+                      <p className="font-semibold text-3xl text-[#111827] tabular-nums">
                         {predict.yield_t_ha.toFixed(2)}
-                        <span className="text-lg text-[#6b9e78] ml-1">т/га</span>
+                        <span className="text-base text-[#9ca3af] ml-1">т/га</span>
                       </p>
                     </div>
                     <ConfidenceBadge confidence={predict.confidence} />
                   </div>
                   {predict.features_filled_from_baseline && (
-                    <p className="text-xs text-[#f59e0b] flex items-center gap-1">
-                      <AlertTriangle size={12} />
-                      {isUk
-                        ? 'Частина даних взята з базових значень'
-                        : 'Some data filled from baseline'}
+                    <p className="text-xs text-[#d97706] flex items-center gap-1">
+                      <AlertTriangle size={11} />
+                      {isUk ? 'Частина даних взята з базових значень' : 'Some data filled from baseline'}
                     </p>
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-[#6b9e78]">
+                <p className="text-sm text-[#6b7280]">
                   {isUk
                     ? 'Отримайте ML-прогноз врожайності на основі супутникових та погодних даних.'
                     : 'Get ML yield prediction based on satellite and weather data.'}
@@ -270,7 +273,7 @@ export function FieldDetail() {
                 variant={predict ? 'secondary' : 'primary'}
                 onClick={handlePredict}
                 loading={predictingYield}
-                icon={<TrendingUp size={16} />}
+                icon={<TrendingUp size={15} />}
                 className="w-full"
               >
                 {predict
@@ -280,13 +283,13 @@ export function FieldDetail() {
             </CardBody>
           </Card>
 
-          {/* AI Health Report */}
+          {/* AI Report */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <FileText size={18} className="text-[#a78bfa]" />
-                <h2 className="font-display font-semibold text-[#f0f4f1]">
-                  {isUk ? "AI Звіт здоров’я" : 'AI Health Report'}
+                <FileText size={16} className="text-[#7c3aed]" />
+                <h2 className="font-semibold text-sm text-[#111827]">
+                  {isUk ? "AI Звіт здоров'я" : 'AI Health Report'}
                 </h2>
               </div>
             </CardHeader>
@@ -295,20 +298,18 @@ export function FieldDetail() {
                 <SkeletonText lines={4} />
               ) : report ? (
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <HealthBadge health={report.health} size="lg" />
-                  </div>
-                  <p className="text-sm text-[#f0f4f1] leading-relaxed">{report.summary}</p>
+                  <HealthBadge health={report.health} size="lg" />
+                  <p className="text-sm text-[#374151] leading-relaxed">{report.summary}</p>
 
                   {report.risks.length > 0 && (
                     <div>
-                      <p className="text-xs text-[#ef4444] font-display font-semibold uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <AlertTriangle size={12} /> {isUk ? 'Ризики' : 'Risks'}
+                      <p className="text-xs font-semibold text-[#dc2626] uppercase tracking-wide mb-2 flex items-center gap-1">
+                        <AlertTriangle size={11} /> {isUk ? 'Ризики' : 'Risks'}
                       </p>
                       <ul className="space-y-1">
                         {report.risks.map((risk, i) => (
-                          <li key={i} className="text-xs text-[#6b9e78] flex items-start gap-2">
-                            <span className="w-1 h-1 rounded-full bg-[#ef4444] shrink-0 mt-1.5" />
+                          <li key={i} className="text-xs text-[#6b7280] flex items-start gap-2">
+                            <span className="w-1 h-1 rounded-full bg-[#dc2626] shrink-0 mt-1.5" />
                             {risk}
                           </li>
                         ))}
@@ -318,13 +319,13 @@ export function FieldDetail() {
 
                   {report.recommendations.length > 0 && (
                     <div>
-                      <p className="text-xs text-[#4ade80] font-display font-semibold uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <Lightbulb size={12} /> {isUk ? 'Рекомендації' : 'Recommendations'}
+                      <p className="text-xs font-semibold text-[#16a34a] uppercase tracking-wide mb-2 flex items-center gap-1">
+                        <Lightbulb size={11} /> {isUk ? 'Рекомендації' : 'Recommendations'}
                       </p>
                       <ul className="space-y-1">
                         {report.recommendations.map((rec, i) => (
-                          <li key={i} className="text-xs text-[#6b9e78] flex items-start gap-2">
-                            <CheckCircle size={12} className="text-[#4ade80] shrink-0 mt-0.5" />
+                          <li key={i} className="text-xs text-[#6b7280] flex items-start gap-2">
+                            <CheckCircle size={11} className="text-[#16a34a] shrink-0 mt-0.5" />
                             {rec}
                           </li>
                         ))}
@@ -333,7 +334,7 @@ export function FieldDetail() {
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-[#6b9e78]">
+                <p className="text-sm text-[#6b7280]">
                   {isUk
                     ? 'Генеруйте детальний AI-звіт про стан рослинності та рекомендації.'
                     : 'Generate a detailed AI report on crop health and recommendations.'}
@@ -343,7 +344,7 @@ export function FieldDetail() {
                 variant={report ? 'secondary' : 'primary'}
                 onClick={handleReport}
                 loading={generatingReport}
-                icon={<FileText size={16} />}
+                icon={<FileText size={15} />}
                 className="w-full"
               >
                 {report
@@ -359,23 +360,33 @@ export function FieldDetail() {
       {field && (
         <Card>
           <CardHeader>
-            <h2 className="font-display font-semibold text-[#f0f4f1]">
+            <h2 className="font-semibold text-sm text-[#111827]">
               {isUk ? 'Деталі поля' : 'Field Details'}
             </h2>
           </CardHeader>
           <CardBody>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: isUk ? 'Назва' : 'Name', value: field.name },
                 { label: isUk ? 'Площа' : 'Area', value: formatArea(field.area_ha), mono: true, accent: true },
-                { label: isUk ? 'Культура' : 'Crop', value: isUk ? CROP_LABELS_UK[field.crop_type as keyof typeof CROP_LABELS_UK] : CROP_LABELS_EN[field.crop_type as keyof typeof CROP_LABELS_EN] },
-                { label: isUk ? 'Ґрунт' : 'Soil', value: isUk ? SOIL_LABELS_UK[field.soil_type as keyof typeof SOIL_LABELS_UK] : SOIL_LABELS_EN[field.soil_type as keyof typeof SOIL_LABELS_EN] },
-                { label: isUk ? 'ID' : 'ID', value: field.id, mono: true },
+                {
+                  label: isUk ? 'Культура' : 'Crop',
+                  value: isUk
+                    ? CROP_LABELS_UK[field.crop_type as keyof typeof CROP_LABELS_UK]
+                    : CROP_LABELS_EN[field.crop_type as keyof typeof CROP_LABELS_EN],
+                },
+                {
+                  label: isUk ? 'Ґрунт' : 'Soil',
+                  value: isUk
+                    ? SOIL_LABELS_UK[field.soil_type as keyof typeof SOIL_LABELS_UK]
+                    : SOIL_LABELS_EN[field.soil_type as keyof typeof SOIL_LABELS_EN],
+                },
+                { label: 'ID', value: field.id, mono: true },
                 { label: isUk ? 'Створено' : 'Created', value: formatDate(field.created_at, i18n.language) },
               ].map(({ label, value, mono, accent }) => (
-                <div key={label} className="bg-[#0a1410] rounded-lg px-3 py-2.5 border border-[#1e3022]">
-                  <p className="text-[10px] text-[#6b9e78] uppercase tracking-wider mb-1">{label}</p>
-                  <p className={`text-sm truncate ${mono ? 'font-mono' : 'font-medium'} ${accent ? 'text-[#4ade80]' : 'text-[#f0f4f1]'}`}>
+                <div key={label} className="bg-[#f9fafb] rounded-lg px-3 py-2.5 border border-[#f3f4f6]">
+                  <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-1">{label}</p>
+                  <p className={`text-sm truncate ${mono ? 'tabular-nums font-medium' : 'font-medium'} ${accent ? 'text-[#16a34a]' : 'text-[#111827]'}`}>
                     {value}
                   </p>
                 </div>

@@ -31,32 +31,32 @@ export function Select({
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label className="text-xs font-medium text-[#6b9e78] uppercase tracking-wider font-display">
+        <label className="text-xs font-semibold text-[#374151] uppercase tracking-wide">
           {label}
         </label>
       )}
       <RadixSelect.Root value={value} onValueChange={onValueChange} disabled={disabled}>
         <RadixSelect.Trigger
           className={cn(
-            'w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm',
-            'bg-[#0a1410] border border-[#1e3022] text-[#f0f4f1] font-sans',
-            'transition-all duration-200 outline-none',
-            'hover:border-[#2d4a34]',
-            'focus:border-[#4ade80]/60 focus:shadow-[0_0_0_2px_rgba(74,222,128,0.12)]',
-            'data-[placeholder]:text-[#3d7050]',
+            'w-full flex items-center justify-between h-9 px-3 rounded-lg text-sm',
+            'bg-white border border-[#e5e7eb] text-[#111827]',
+            'transition-colors duration-150 outline-none',
+            'hover:border-[#d1d5db]',
+            'focus:border-[#16a34a] focus:ring-2 focus:ring-[#16a34a]/15',
+            'data-[placeholder]:text-[#9ca3af]',
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-[#ef4444]/50'
+            error && 'border-[#dc2626]'
           )}
         >
           <RadixSelect.Value placeholder={placeholder} />
           <RadixSelect.Icon>
-            <ChevronDown size={16} className="text-[#6b9e78]" />
+            <ChevronDown size={15} className="text-[#9ca3af]" />
           </RadixSelect.Icon>
         </RadixSelect.Trigger>
 
         <RadixSelect.Portal>
           <RadixSelect.Content
-            className="z-50 min-w-[8rem] overflow-hidden rounded-lg bg-[#0d1a14] border border-[#2d4a34] shadow-xl shadow-black/50"
+            className="z-50 min-w-[8rem] overflow-hidden rounded-xl bg-white border border-[#e5e7eb] shadow-lg shadow-black/8"
             position="popper"
             sideOffset={4}
           >
@@ -66,14 +66,14 @@ export function Select({
                   key={opt.value}
                   value={opt.value}
                   className={cn(
-                    'relative flex items-center gap-2 h-9 px-3 pr-8 rounded-md text-sm text-[#f0f4f1] font-sans',
+                    'relative flex items-center gap-2 h-8 px-3 pr-8 rounded-lg text-sm text-[#111827]',
                     'cursor-pointer select-none outline-none',
-                    'data-[highlighted]:bg-[#112018] data-[highlighted]:text-[#4ade80]',
-                    'data-[state=checked]:text-[#4ade80]'
+                    'data-[highlighted]:bg-[#f9fafb] data-[highlighted]:text-[#16a34a]',
+                    'data-[state=checked]:text-[#16a34a] data-[state=checked]:font-medium'
                   )}
                 >
                   <RadixSelect.ItemText>{opt.label}</RadixSelect.ItemText>
-                  <RadixSelect.ItemIndicator className="absolute right-2">
+                  <RadixSelect.ItemIndicator className="absolute right-2 text-[#16a34a]">
                     <Check size={14} />
                   </RadixSelect.ItemIndicator>
                 </RadixSelect.Item>
@@ -82,7 +82,7 @@ export function Select({
           </RadixSelect.Content>
         </RadixSelect.Portal>
       </RadixSelect.Root>
-      {error && <p className="text-xs text-[#ef4444]">{error}</p>}
+      {error && <p className="text-xs text-[#dc2626]">{error}</p>}
     </div>
   )
 }
