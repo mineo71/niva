@@ -8,8 +8,8 @@ from app.auth.deps import get_current_user
 from app.auth.models import User
 from app.core.db import get_db
 from app.fields.models import Field
-from app.fields.service import centroid_lonlat, wkb_to_geojson
-from app.sentinel.service import get_indices
+from app.fields.service import centroid_lonlat
+from app.sentinel.cache import get_field_indices
 from app.weather.service import get_weather
 from app.yield_pred.service import predict
 
@@ -25,11 +25,13 @@ def _owned(field_id: int, user: User, db: Session) -> Field:
 
 @router.get("/indices")
 async def field_indices(
-    field_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+    field_id: int,
+    refresh: bool = False,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     f = _owned(field_id, user, db)
-    lon, lat = centroid_lonlat(f.geometry)
-    return await get_indices(lon, lat, wkb_to_geojson(f.geometry))
+    return await get_field_indices(db, f, force=refresh)
 
 
 @router.get("/weather")
@@ -47,7 +49,7 @@ async def field_predict(
 ):
     f = _owned(field_id, user, db)
     lon, lat = centroid_lonlat(f.geometry)
-    indices = await get_indices(lon, lat, wkb_to_geojson(f.geometry))
+    indices = await get_field_indices(db, f)
     weather = await get_weather(lon, lat)
     result = predict(f.crop_type, f.soil_type, indices, weather)
     if "error" in result:
@@ -61,7 +63,7 @@ async def field_report(
 ):
     f = _owned(field_id, user, db)
     lon, lat = centroid_lonlat(f.geometry)
-    indices = await get_indices(lon, lat, wkb_to_geojson(f.geometry))
+    indices = await get_field_indices(db, f)
     weather = await get_weather(lon, lat)
     pred = predict(f.crop_type, f.soil_type, indices, weather)
     series = indices.get("series", [])

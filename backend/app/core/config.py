@@ -25,5 +25,8 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
 
+    # caching
+    ndvi_cache_days: int = 7
+
 
 settings = Settings()

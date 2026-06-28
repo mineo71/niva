@@ -9,6 +9,7 @@ from app.core.db import Base
 # import models so they register on Base.metadata
 import app.auth.models  # noqa: F401
 import app.fields.models  # noqa: F401
+import app.sentinel.models  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)
