@@ -1,0 +1,115 @@
+{
+  "nav": {
+    "overview": "Огляд",
+    "fields": "Поля",
+    "map": "Карта",
+    "settings": "Налаштування",
+    "logout": "Вийти"
+  },
+  "common": {
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "back": "Назад",
+    "search": "Пошук",
+    "noData": "Немає даних"
+  },
+  "auth": {
+    "login": "Увійти",
+    "signup": "Зареєструватись",
+    "logout": "Вийти",
+    "email": "Email",
+    "password": "Пароль",
+    "fullName": "Ім'я",
+    "confirmPassword": "Підтвердіть пароль",
+    "loginTitle": "Увійдіть у систему",
+    "signupTitle": "Створіть акаунт",
+    "noAccount": "Немає акаунту?",
+    "hasAccount": "Вже є акаунт?"
+  },
+  "fields": {
+    "title": "Мої поля",
+    "new": "Нове поле",
+    "name": "Назва поля",
+    "crop": "Культура",
+    "soil": "Тип ґрунту",
+    "area": "Площа",
+    "createdAt": "Дата створення",
+    "noFields": "Полів ще немає",
+    "addFirst": "Додати перше поле"
+  },
+  "crops": {
+    "wheat": "Пшениця",
+    "corn": "Кукурудза",
+    "sunflower": "Соняшник",
+    "soybeans": "Соя",
+    "barley": "Ячмінь",
+    "oats": "Овес",
+    "rye": "Жито",
+    "rapeseed": "Ріпак"
+  },
+  "soils": {
+    "chalk": "Крейдовий",
+    "peat": "Торфовий",
+    "sandy": "Піщаний",
+    "silt": "Мулистий"
+  },
+  "indices": {
+    "title": "Вегетаційні індекси",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Погода",
+    "current": "Зараз",
+    "forecast": "Прогноз",
+    "temp": "Температура",
+    "humidity": "Вологість",
+    "rain": "Опади"
+  },
+  "predict": {
+    "title": "Прогноз врожаю",
+    "action": "Прогнозувати врожай",
+    "result": "Прогнозована врожайність",
+    "unit": "т/га",
+    "confidence": {
+      "high": "Висока точність",
+      "medium": "Середня точність",
+      "low": "Низька точність"
+    }
+  },
+  "report": {
+    "title": "AI Звіт здоров'я",
+    "action": "Генерувати AI звіт",
+    "health": {
+      "good": "Добрий",
+      "moderate": "Помірний",
+      "poor": "Поганий"
+    },
+    "risks": "Ризики",
+    "recommendations": "Рекомендації"
+  },
+  "stats": {
+    "totalFields": "Полів",
+    "totalArea": "Загальна площа",
+    "crops": "Культур"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "language": "Мова інтерфейсу",
+    "profile": "Профіль",
+    "account": "Акаунт"
+  },
+  "map": {
+    "title": "Карта",
+    "newField": "Нове поле",
+    "editField": "Редагувати поле",
+    "drawInstructions": "Намалюйте полігон поля на карті",
+    "noToken": "Карта недоступна — відсутній токен Mapbox"
+  }
+}

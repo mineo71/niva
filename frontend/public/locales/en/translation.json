@@ -1,0 +1,115 @@
+{
+  "nav": {
+    "overview": "Overview",
+    "fields": "Fields",
+    "map": "Map",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "search": "Search",
+    "noData": "No data"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "confirmPassword": "Confirm password",
+    "loginTitle": "Sign in to your account",
+    "signupTitle": "Create an account",
+    "noAccount": "No account?",
+    "hasAccount": "Already have an account?"
+  },
+  "fields": {
+    "title": "My Fields",
+    "new": "New field",
+    "name": "Field name",
+    "crop": "Crop",
+    "soil": "Soil type",
+    "area": "Area",
+    "createdAt": "Created",
+    "noFields": "No fields yet",
+    "addFirst": "Add first field"
+  },
+  "crops": {
+    "wheat": "Wheat",
+    "corn": "Corn",
+    "sunflower": "Sunflower",
+    "soybeans": "Soybeans",
+    "barley": "Barley",
+    "oats": "Oats",
+    "rye": "Rye",
+    "rapeseed": "Rapeseed"
+  },
+  "soils": {
+    "chalk": "Chalk",
+    "peat": "Peat",
+    "sandy": "Sandy",
+    "silt": "Silt"
+  },
+  "indices": {
+    "title": "Vegetation Indices",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Weather",
+    "current": "Current",
+    "forecast": "Forecast",
+    "temp": "Temperature",
+    "humidity": "Humidity",
+    "rain": "Precipitation"
+  },
+  "predict": {
+    "title": "Yield Forecast",
+    "action": "Predict yield",
+    "result": "Predicted yield",
+    "unit": "t/ha",
+    "confidence": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence"
+    }
+  },
+  "report": {
+    "title": "AI Health Report",
+    "action": "Generate AI report",
+    "health": {
+      "good": "Good",
+      "moderate": "Moderate",
+      "poor": "Poor"
+    },
+    "risks": "Risks",
+    "recommendations": "Recommendations"
+  },
+  "stats": {
+    "totalFields": "Fields",
+    "totalArea": "Total area",
+    "crops": "Crops"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Interface language",
+    "profile": "Profile",
+    "account": "Account"
+  },
+  "map": {
+    "title": "Map",
+    "newField": "New field",
+    "editField": "Edit field",
+    "drawInstructions": "Draw field polygon on the map",
+    "noToken": "Map unavailable — Mapbox token missing"
+  }
+}
