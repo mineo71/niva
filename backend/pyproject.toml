@@ -1,0 +1,37 @@
+[project]
+name = "niva-backend"
+version = "0.1.0"
+description = "Niva — satellite intelligence for your fields"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0",
+    "geoalchemy2>=0.15",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.5",
+    "python-jose[cryptography]>=3.3",
+    "passlib[bcrypt]>=1.7",
+    "python-multipart>=0.0.12",
+    "httpx>=0.27",
+    "scikit-learn>=1.5",
+    "pandas>=2.2",
+    "joblib>=1.4",
+    "groq>=0.11",
+    "shapely>=2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.7",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.setuptools]
+packages = ["app"]
