@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /$
+Allow: /og-image.png
+Allow: /niva-icon.svg
+# app pages are auth-gated and client-rendered — no value to crawl
+Disallow: /dashboard
+Disallow: /auth
+
+Sitemap: https://niva.app/sitemap.xml

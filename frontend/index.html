@@ -2,16 +2,99 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/niva-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Нива — супутниковий інтелект для ваших полів" />
+
+    <!-- Primary -->
+    <title>Нива — супутниковий інтелект для ваших полів | NDVI, погода, AI-прогноз урожаю</title>
+    <meta
+      name="description"
+      content="Нива — платформа точного землеробства: супутникові індекси (NDVI/EVI), погода, ML-прогноз урожайності та AI-звіти здоров'я полів на основі Sentinel-2. Контролюйте стан посівів з космосу в реальному часі."
+    />
+    <meta
+      name="keywords"
+      content="точне землеробство, NDVI, супутниковий моніторинг полів, Sentinel-2, прогноз урожаю, агротех, моніторинг посівів, вегетаційні індекси, precision agriculture, crop monitoring, yield prediction"
+    />
+    <meta name="author" content="Niva" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#16a34a" />
+    <link rel="canonical" href="https://niva.app/" />
+
+    <!-- Icons / PWA -->
+    <link rel="icon" type="image/svg+xml" href="/niva-icon.svg" />
+    <link rel="apple-touch-icon" href="/niva-icon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Нива" />
+    <meta property="og:title" content="Нива — супутниковий інтелект для ваших полів" />
+    <meta
+      property="og:description"
+      content="Супутникові індекси, погода, ML-прогноз урожаю та AI-звіти здоров'я полів на основі Sentinel-2."
+    />
+    <meta property="og:url" content="https://niva.app/" />
+    <meta property="og:image" content="https://niva.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Нива — супутниковий інтелект для ваших полів" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Нива — супутниковий інтелект для ваших полів" />
+    <meta
+      name="twitter:description"
+      content="Супутникові індекси, погода, ML-прогноз урожаю та AI-звіти здоров'я полів на основі Sentinel-2."
+    />
+    <meta name="twitter:image" content="https://niva.app/og-image.png" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap" rel="stylesheet" />
-    <title>Нива — Супутниковий інтелект</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Нива",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Платформа точного землеробства: супутникові індекси (NDVI/EVI/NDMI), погода, ML-прогноз урожайності та AI-звіти здоров'я полів на основі Sentinel-2.",
+        "url": "https://niva.app/",
+        "image": "https://niva.app/og-image.png",
+        "inLanguage": "uk",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Супутникові вегетаційні індекси (NDVI, EVI, NDMI, SAVI)",
+          "Погода та 7-денний прогноз",
+          "ML-прогноз урожайності",
+          "AI-звіти здоров'я полів",
+          "Малювання та облік полів на карті"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Fallback content for crawlers / no-JS -->
+    <noscript>
+      <h1>Нива — супутниковий інтелект для ваших полів</h1>
+      <p>
+        Нива — платформа точного землеробства. Супутникові індекси NDVI/EVI, погода,
+        ML-прогноз урожайності та AI-звіти здоров'я полів на основі Sentinel-2.
+        Будь ласка, увімкніть JavaScript для роботи з застосунком.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
