@@ -37,6 +37,16 @@ def _synthetic(lon: float, lat: float) -> dict:
 async def get_weather(lon: float, lat: float) -> dict:
     if not settings.owm_api_key:
         return _synthetic(lon, lat)
+    try:
+        return await _fetch_owm(lon, lat)
+    except Exception:
+        # OWM error (e.g. key not active yet, rate limit, outage) -> graceful fallback
+        data = _synthetic(lon, lat)
+        data["source"] = "synthetic_fallback"
+        return data
+
+
+async def _fetch_owm(lon: float, lat: float) -> dict:
     params = {"lat": lat, "lon": lon, "appid": settings.owm_api_key, "units": "metric"}
     async with httpx.AsyncClient(timeout=20) as client:
         cur = await client.get(_CURRENT, params=params)
