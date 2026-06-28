@@ -255,7 +255,7 @@ export function FieldDetail() {
                     </div>
                     <ConfidenceBadge confidence={predict.confidence} />
                   </div>
-                  {predict.features_filled_from_baseline && (
+                  {predict.features_filled_from_baseline > 0 && (
                     <p className="text-xs text-[#d97706] flex items-center gap-1">
                       <AlertTriangle size={11} />
                       {isUk ? 'Частина даних взята з базових значень' : 'Some data filled from baseline'}
