@@ -92,7 +92,7 @@ export type HealthLevel = 'good' | 'moderate' | 'poor'
 export interface PredictResponse {
   yield_t_ha: number
   confidence: ConfidenceLevel
-  features_filled_from_baseline: boolean
+  features_filled_from_baseline: number
   inputs: Record<string, number>
 }
 

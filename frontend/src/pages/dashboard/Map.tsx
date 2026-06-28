@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
@@ -167,6 +169,10 @@ export function MapPage() {
 
         mapInstanceRef.current = map
         drawRef.current = draw
+        if (import.meta.env.DEV) {
+          // expose for e2e/debugging in dev only
+          ;(window as unknown as Record<string, unknown>).__niva = { map, draw, onChange: handleDrawChange }
+        }
       } catch {
         if (mounted) setMapError(true)
       }
