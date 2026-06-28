@@ -27,6 +27,7 @@ class Settings(BaseSettings):
 
     # caching
     ndvi_cache_days: int = 7
+    weather_cache_hours: int = 24
 
 
 settings = Settings()

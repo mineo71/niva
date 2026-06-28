@@ -8,9 +8,8 @@ from app.auth.deps import get_current_user
 from app.auth.models import User
 from app.core.db import get_db
 from app.fields.models import Field
-from app.fields.service import centroid_lonlat
 from app.sentinel.cache import get_field_indices
-from app.weather.service import get_weather
+from app.weather.cache import get_field_weather
 from app.yield_pred.service import predict
 
 router = APIRouter(prefix="/fields/{field_id}", tags=["insights"])
@@ -36,11 +35,13 @@ async def field_indices(
 
 @router.get("/weather")
 async def field_weather(
-    field_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+    field_id: int,
+    refresh: bool = False,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     f = _owned(field_id, user, db)
-    lon, lat = centroid_lonlat(f.geometry)
-    return await get_weather(lon, lat)
+    return await get_field_weather(db, f, force=refresh)
 
 
 @router.post("/predict")
@@ -48,9 +49,8 @@ async def field_predict(
     field_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     f = _owned(field_id, user, db)
-    lon, lat = centroid_lonlat(f.geometry)
     indices = await get_field_indices(db, f)
-    weather = await get_weather(lon, lat)
+    weather = await get_field_weather(db, f)
     result = predict(f.crop_type, f.soil_type, indices, weather)
     if "error" in result:
         raise HTTPException(503, result["error"])
@@ -62,9 +62,8 @@ async def field_report(
     field_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     f = _owned(field_id, user, db)
-    lon, lat = centroid_lonlat(f.geometry)
     indices = await get_field_indices(db, f)
-    weather = await get_weather(lon, lat)
+    weather = await get_field_weather(db, f)
     pred = predict(f.crop_type, f.soil_type, indices, weather)
     series = indices.get("series", [])
     ctx = {

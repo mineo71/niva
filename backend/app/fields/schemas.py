@@ -35,3 +35,4 @@ class FieldResponse(BaseModel):
     area_ha: float
     geometry: dict[str, Any]
     created_at: Any
+    latest_ndvi: float | None = None

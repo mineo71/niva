@@ -11,6 +11,7 @@ import { Card, CardHeader, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { formatArea, CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS } from '@/lib/utils'
+import { NDVIChip } from '@/components/NDVIColorScale'
 import { toast } from 'react-toastify'
 
 const CHART_COLORS = ['#16a34a', '#d97706', '#2563eb', '#7c3aed', '#dc2626', '#0891b2', '#db2777', '#64748b']
@@ -229,6 +230,9 @@ export function Overview() {
                           : CROP_LABELS_EN[field.crop_type as keyof typeof CROP_LABELS_EN]}
                       </p>
                     </div>
+                    {field.latest_ndvi != null && (
+                      <NDVIChip value={field.latest_ndvi} className="shrink-0" />
+                    )}
                     <span className="text-sm font-medium text-[#16a34a] tabular-nums shrink-0">
                       {formatArea(field.area_ha)}
                     </span>

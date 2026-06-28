@@ -37,6 +37,7 @@ export interface FieldResponse {
   area_ha: number
   geometry: GeoJSONPolygon
   created_at: string
+  latest_ndvi: number | null
 }
 
 export interface CreateFieldPayload {

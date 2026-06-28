@@ -11,6 +11,7 @@ import { Card, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { SkeletonCard } from '@/components/ui/Skeleton'
 import { Dialog } from '@/components/ui/Dialog'
+import { NDVIChip } from '@/components/NDVIColorScale'
 import {
   formatArea, formatDate,
   CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS,
@@ -132,6 +133,11 @@ export function Fields() {
                           ? CROP_LABELS_UK[field.crop_type as keyof typeof CROP_LABELS_UK] ?? field.crop_type
                           : CROP_LABELS_EN[field.crop_type as keyof typeof CROP_LABELS_EN] ?? field.crop_type}
                       </p>
+                      {field.latest_ndvi != null && (
+                        <div className="mt-1.5">
+                          <NDVIChip value={field.latest_ndvi} />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {/* Action buttons */}
