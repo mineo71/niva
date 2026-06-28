@@ -14,13 +14,14 @@ from app.weather.models import WeatherCache
 router = APIRouter(prefix="/fields", tags=["fields"])
 
 
-def _latest_ndvi(series) -> float | None:
-    if not series:
-        return None
-    return series[-1].get("ndvi")
-
-
-def _to_response(f: Field, latest_ndvi: float | None = None) -> FieldResponse:
+def _to_response(f: Field, cache: IndicesCache | None = None) -> FieldResponse:
+    latest = None
+    trend: list[float] = []
+    updated_at = None
+    if cache and cache.series:
+        trend = [p["ndvi"] for p in cache.series if p.get("ndvi") is not None]
+        latest = trend[-1] if trend else None
+        updated_at = cache.fetched_at
     return FieldResponse(
         id=f.id,
         name=f.name,
@@ -29,13 +30,14 @@ def _to_response(f: Field, latest_ndvi: float | None = None) -> FieldResponse:
         area_ha=f.area_ha,
         geometry=wkb_to_geojson(f.geometry),
         created_at=f.created_at,
-        latest_ndvi=latest_ndvi,
+        latest_ndvi=latest,
+        ndvi_trend=trend,
+        ndvi_updated_at=updated_at,
     )
 
 
-def _ndvi_for(db: Session, field_id: int) -> float | None:
-    row = db.get(IndicesCache, field_id)
-    return _latest_ndvi(row.series) if row else None
+def _ndvi_cache(db: Session, field_id: int) -> IndicesCache | None:
+    return db.get(IndicesCache, field_id)
 
 
 def _owned(field_id: int, user: User, db: Session) -> Field:
@@ -52,11 +54,11 @@ def list_fields(user: User = Depends(get_current_user), db: Session = Depends(ge
     )
     # batch-load cached NDVI for all fields (no external API calls)
     ids = [f.id for f in rows]
-    ndvi_map: dict[int, float | None] = {}
+    cache_map: dict[int, IndicesCache] = {}
     if ids:
         for c in db.scalars(select(IndicesCache).where(IndicesCache.field_id.in_(ids))):
-            ndvi_map[c.field_id] = _latest_ndvi(c.series)
-    return [_to_response(f, ndvi_map.get(f.id)) for f in rows]
+            cache_map[c.field_id] = c
+    return [_to_response(f, cache_map.get(f.id)) for f in rows]
 
 
 @router.post("", response_model=FieldResponse, status_code=status.HTTP_201_CREATED)
@@ -84,7 +86,7 @@ def create_field(
 @router.get("/{field_id}", response_model=FieldResponse)
 def get_field(field_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     f = _owned(field_id, user, db)
-    return _to_response(f, _ndvi_for(db, f.id))
+    return _to_response(f, _ndvi_cache(db, f.id))
 
 
 @router.put("/{field_id}", response_model=FieldResponse)
@@ -109,7 +111,7 @@ def update_field(
         db.execute(delete(WeatherCache).where(WeatherCache.field_id == f.id))
     db.commit()
     db.refresh(f)
-    return _to_response(f, _ndvi_for(db, f.id))
+    return _to_response(f, _ndvi_cache(db, f.id))
 
 
 @router.delete("/{field_id}", status_code=status.HTTP_204_NO_CONTENT)

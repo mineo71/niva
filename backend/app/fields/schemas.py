@@ -36,3 +36,5 @@ class FieldResponse(BaseModel):
     geometry: dict[str, Any]
     created_at: Any
     latest_ndvi: float | None = None
+    ndvi_trend: list[float] = []  # recent NDVI values for a sparkline
+    ndvi_updated_at: Any | None = None  # when NDVI was last fetched (cache age)
