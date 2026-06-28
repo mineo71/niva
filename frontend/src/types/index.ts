@@ -38,6 +38,8 @@ export interface FieldResponse {
   geometry: GeoJSONPolygon
   created_at: string
   latest_ndvi: number | null
+  ndvi_trend: number[]
+  ndvi_updated_at: string | null
 }
 
 export interface CreateFieldPayload {

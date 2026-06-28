@@ -93,3 +93,34 @@ export const ALL_CROPS: CropType[] = [
 ]
 
 export const ALL_SOILS: SoilType[] = ['chalk', 'peat', 'sandy', 'silt']
+
+// ── NDVI staleness helpers ────────────────────────────────────────────────────
+
+const STALE_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+
+export function isStale(iso: string | null): boolean {
+  if (!iso) return false
+  return Date.now() - new Date(iso).getTime() > STALE_THRESHOLD_MS
+}
+
+export function formatRelativeTime(iso: string, lang: 'uk' | 'en'): string {
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const diffMin = Math.floor(diffMs / 60_000)
+  const diffHours = Math.floor(diffMin / 60)
+  const diffDays = Math.floor(diffHours / 24)
+  const diffMonths = Math.floor(diffDays / 30)
+
+  if (lang === 'uk') {
+    if (diffMonths >= 1) return `${diffMonths} міс тому`
+    if (diffDays >= 1)   return `${diffDays} дн тому`
+    if (diffHours >= 1)  return `${diffHours} год тому`
+    if (diffMin >= 1)    return `${diffMin} хв тому`
+    return 'щойно'
+  } else {
+    if (diffMonths >= 1) return `${diffMonths}mo ago`
+    if (diffDays >= 1)   return `${diffDays}d ago`
+    if (diffHours >= 1)  return `${diffHours}h ago`
+    if (diffMin >= 1)    return `${diffMin}m ago`
+    return 'just now'
+  }
+}
