@@ -8,6 +8,7 @@ from app.auth.schemas import (
     LoginRequest,
     SignupRequest,
     TokenResponse,
+    UpdateMeRequest,
     UserResponse,
 )
 from app.auth.security import (
@@ -83,4 +84,19 @@ def logout(response: Response):
 
 @router.get("/me", response_model=UserResponse)
 def me(user: User = Depends(get_current_user)):
+    return user
+
+
+@router.patch("/me", response_model=UserResponse)
+def update_me(
+    body: UpdateMeRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if body.full_name is not None:
+        user.full_name = body.full_name.strip() or None
+    if body.language is not None:
+        user.language = body.language
+    db.commit()
+    db.refresh(user)
     return user

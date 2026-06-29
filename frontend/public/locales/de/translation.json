@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "overview": "Übersicht",
+    "fields": "Felder",
+    "map": "Karte",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "search": "Suchen",
+    "noData": "Keine Daten"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "logout": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "fullName": "Vollständiger Name",
+    "confirmPassword": "Passwort bestätigen",
+    "loginTitle": "Bei Ihrem Konto anmelden",
+    "signupTitle": "Konto erstellen",
+    "noAccount": "Kein Konto?",
+    "hasAccount": "Bereits ein Konto?"
+  },
+  "fields": {
+    "title": "Meine Felder",
+    "new": "Neues Feld",
+    "name": "Feldname",
+    "crop": "Kultur",
+    "soil": "Bodentyp",
+    "area": "Fläche",
+    "createdAt": "Erstellt",
+    "noFields": "Noch keine Felder",
+    "addFirst": "Erstes Feld hinzufügen"
+  },
+  "crops": {
+    "wheat": "Weizen",
+    "corn": "Mais",
+    "sunflower": "Sonnenblume",
+    "soybeans": "Sojabohnen",
+    "barley": "Gerste",
+    "oats": "Hafer",
+    "rye": "Roggen",
+    "rapeseed": "Raps"
+  },
+  "soils": {
+    "chalk": "Kalk",
+    "peat": "Torf",
+    "sandy": "Sandig",
+    "silt": "Schluffig"
+  },
+  "indices": {
+    "title": "Vegetationsindizes",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Wetter",
+    "current": "Aktuell",
+    "forecast": "Vorhersage",
+    "temp": "Temperatur",
+    "humidity": "Luftfeuchtigkeit",
+    "rain": "Niederschlag"
+  },
+  "predict": {
+    "title": "Ertragsprognose",
+    "action": "Ertrag vorhersagen",
+    "result": "Prognostizierter Ertrag",
+    "unit": "t/ha",
+    "confidence": {
+      "high": "Hohe Zuverlässigkeit",
+      "medium": "Mittlere Zuverlässigkeit",
+      "low": "Niedrige Zuverlässigkeit"
+    }
+  },
+  "report": {
+    "title": "KI-Gesundheitsbericht",
+    "action": "KI-Bericht erstellen",
+    "health": {
+      "good": "Gut",
+      "moderate": "Mäßig",
+      "poor": "Schlecht"
+    },
+    "risks": "Risiken",
+    "recommendations": "Empfehlungen"
+  },
+  "stats": {
+    "totalFields": "Felder",
+    "totalArea": "Gesamtfläche",
+    "crops": "Kulturen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache der Oberfläche",
+    "languageChanged": "Sprache geändert",
+    "profile": "Profil",
+    "account": "Konto"
+  },
+  "map": {
+    "title": "Karte",
+    "newField": "Neues Feld",
+    "editField": "Feld bearbeiten",
+    "drawInstructions": "Zeichnen Sie das Feldpolygon auf der Karte",
+    "noToken": "Karte nicht verfügbar — Mapbox-Token fehlt"
+  }
+}

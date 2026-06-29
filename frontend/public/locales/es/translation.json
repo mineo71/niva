@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "overview": "Resumen",
+    "fields": "Campos",
+    "map": "Mapa",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Atrás",
+    "search": "Buscar",
+    "noData": "Sin datos"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "logout": "Cerrar sesión",
+    "email": "Correo",
+    "password": "Contraseña",
+    "fullName": "Nombre completo",
+    "confirmPassword": "Confirmar contraseña",
+    "loginTitle": "Inicia sesión en tu cuenta",
+    "signupTitle": "Crear una cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?"
+  },
+  "fields": {
+    "title": "Mis campos",
+    "new": "Nuevo campo",
+    "name": "Nombre del campo",
+    "crop": "Cultivo",
+    "soil": "Tipo de suelo",
+    "area": "Superficie",
+    "createdAt": "Creado",
+    "noFields": "Aún no hay campos",
+    "addFirst": "Añadir primer campo"
+  },
+  "crops": {
+    "wheat": "Trigo",
+    "corn": "Maíz",
+    "sunflower": "Girasol",
+    "soybeans": "Soja",
+    "barley": "Cebada",
+    "oats": "Avena",
+    "rye": "Centeno",
+    "rapeseed": "Colza"
+  },
+  "soils": {
+    "chalk": "Creta",
+    "peat": "Turba",
+    "sandy": "Arenoso",
+    "silt": "Limoso"
+  },
+  "indices": {
+    "title": "Índices de vegetación",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Clima",
+    "current": "Actual",
+    "forecast": "Pronóstico",
+    "temp": "Temperatura",
+    "humidity": "Humedad",
+    "rain": "Precipitación"
+  },
+  "predict": {
+    "title": "Pronóstico de rendimiento",
+    "action": "Predecir rendimiento",
+    "result": "Rendimiento previsto",
+    "unit": "t/ha",
+    "confidence": {
+      "high": "Confianza alta",
+      "medium": "Confianza media",
+      "low": "Confianza baja"
+    }
+  },
+  "report": {
+    "title": "Informe de salud IA",
+    "action": "Generar informe IA",
+    "health": {
+      "good": "Bueno",
+      "moderate": "Moderado",
+      "poor": "Pobre"
+    },
+    "risks": "Riesgos",
+    "recommendations": "Recomendaciones"
+  },
+  "stats": {
+    "totalFields": "Campos",
+    "totalArea": "Superficie total",
+    "crops": "Cultivos"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma de la interfaz",
+    "languageChanged": "Idioma cambiado",
+    "profile": "Perfil",
+    "account": "Cuenta"
+  },
+  "map": {
+    "title": "Mapa",
+    "newField": "Nuevo campo",
+    "editField": "Editar campo",
+    "drawInstructions": "Dibuja el polígono del campo en el mapa",
+    "noToken": "Mapa no disponible — falta el token de Mapbox"
+  }
+}

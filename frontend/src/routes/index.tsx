@@ -10,6 +10,7 @@ import { Fields } from '@/pages/dashboard/Fields'
 import { FieldDetail } from '@/pages/dashboard/FieldDetail'
 import { MapPage } from '@/pages/dashboard/Map'
 import { SettingsPage } from '@/pages/dashboard/Settings'
+import { Profile } from '@/pages/dashboard/Profile'
 
 export const router = createBrowserRouter([
   // Public landing
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
           { path: '/dashboard/fields/:id', element: <FieldDetail /> },
           { path: '/dashboard/map', element: <MapPage /> },
           { path: '/dashboard/map/:id', element: <MapPage /> },
+          { path: '/dashboard/profile', element: <Profile /> },
           { path: '/dashboard/settings', element: <SettingsPage /> },
         ],
       },

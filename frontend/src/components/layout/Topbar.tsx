@@ -1,18 +1,18 @@
-import { Globe } from 'lucide-react'
+import { Globe, ChevronDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
-import { cn } from '@/lib/utils'
+import { LANGUAGES } from '@/lib/languages'
 
 export function Topbar() {
   const { i18n } = useTranslation()
   const { user } = useAuthStore()
   const { language, setLanguage } = useUIStore()
 
-  const toggleLang = () => {
-    const next = language === 'uk' ? 'en' : 'uk'
-    setLanguage(next)
-    i18n.changeLanguage(next)
+  const changeLang = (code: string) => {
+    setLanguage(code)
+    i18n.changeLanguage(code)
+    document.documentElement.lang = code
   }
 
   const initials = user?.full_name
@@ -21,20 +21,24 @@ export function Topbar() {
 
   return (
     <header className="h-14 flex items-center justify-end gap-2 px-5 border-b border-[#e5e7eb] bg-white shrink-0">
-      {/* Lang toggle */}
-      <button
-        onClick={toggleLang}
-        title={language === 'uk' ? 'Switch to English' : 'Перейти на Українську'}
-        className={cn(
-          'flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium',
-          'text-[#6b7280] hover:text-[#374151] hover:bg-[#f9fafb]',
-          'border border-transparent hover:border-[#e5e7eb]',
-          'transition-colors duration-150'
-        )}
-      >
-        <Globe size={14} />
-        {language === 'uk' ? 'УКР' : 'ENG'}
-      </button>
+      {/* Lang selector */}
+      <div className="relative flex items-center">
+        <Globe size={14} className="absolute left-2.5 text-[#9ca3af] pointer-events-none" />
+        <ChevronDown size={13} className="absolute right-2 text-[#9ca3af] pointer-events-none" />
+        <select
+          aria-label="Interface language"
+          value={language}
+          onChange={(e) => changeLang(e.target.value)}
+          className="h-8 pl-8 pr-7 rounded-lg text-xs font-medium text-[#374151] bg-white
+            border border-transparent hover:border-[#e5e7eb] focus:border-[#16a34a]
+            focus:outline-none focus:ring-2 focus:ring-[#16a34a]/20
+            appearance-none cursor-pointer transition-colors duration-150"
+        >
+          {LANGUAGES.map((l) => (
+            <option key={l.code} value={l.code}>{l.native}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Divider */}
       <div className="w-px h-5 bg-[#e5e7eb]" />

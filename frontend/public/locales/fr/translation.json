@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "overview": "Aperçu",
+    "fields": "Champs",
+    "map": "Carte",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "search": "Rechercher",
+    "noData": "Aucune donnée"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Déconnexion",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "confirmPassword": "Confirmer le mot de passe",
+    "loginTitle": "Connectez-vous à votre compte",
+    "signupTitle": "Créer un compte",
+    "noAccount": "Pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?"
+  },
+  "fields": {
+    "title": "Mes champs",
+    "new": "Nouveau champ",
+    "name": "Nom du champ",
+    "crop": "Culture",
+    "soil": "Type de sol",
+    "area": "Superficie",
+    "createdAt": "Créé",
+    "noFields": "Aucun champ",
+    "addFirst": "Ajouter le premier champ"
+  },
+  "crops": {
+    "wheat": "Blé",
+    "corn": "Maïs",
+    "sunflower": "Tournesol",
+    "soybeans": "Soja",
+    "barley": "Orge",
+    "oats": "Avoine",
+    "rye": "Seigle",
+    "rapeseed": "Colza"
+  },
+  "soils": {
+    "chalk": "Craie",
+    "peat": "Tourbe",
+    "sandy": "Sableux",
+    "silt": "Limoneux"
+  },
+  "indices": {
+    "title": "Indices de végétation",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Météo",
+    "current": "Actuel",
+    "forecast": "Prévisions",
+    "temp": "Température",
+    "humidity": "Humidité",
+    "rain": "Précipitations"
+  },
+  "predict": {
+    "title": "Prévision de rendement",
+    "action": "Prédire le rendement",
+    "result": "Rendement prévu",
+    "unit": "t/ha",
+    "confidence": {
+      "high": "Confiance élevée",
+      "medium": "Confiance moyenne",
+      "low": "Confiance faible"
+    }
+  },
+  "report": {
+    "title": "Rapport de santé IA",
+    "action": "Générer un rapport IA",
+    "health": {
+      "good": "Bon",
+      "moderate": "Modéré",
+      "poor": "Médiocre"
+    },
+    "risks": "Risques",
+    "recommendations": "Recommandations"
+  },
+  "stats": {
+    "totalFields": "Champs",
+    "totalArea": "Superficie totale",
+    "crops": "Cultures"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue de l'interface",
+    "languageChanged": "Langue modifiée",
+    "profile": "Profil",
+    "account": "Compte"
+  },
+  "map": {
+    "title": "Carte",
+    "newField": "Nouveau champ",
+    "editField": "Modifier le champ",
+    "drawInstructions": "Dessinez le polygone du champ sur la carte",
+    "noToken": "Carte indisponible — jeton Mapbox manquant"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "overview": "Przegląd",
+    "fields": "Pola",
+    "map": "Mapa",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj"
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "back": "Wstecz",
+    "search": "Szukaj",
+    "noData": "Brak danych"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się",
+    "logout": "Wyloguj",
+    "email": "Email",
+    "password": "Hasło",
+    "fullName": "Imię i nazwisko",
+    "confirmPassword": "Potwierdź hasło",
+    "loginTitle": "Zaloguj się do konta",
+    "signupTitle": "Utwórz konto",
+    "noAccount": "Nie masz konta?",
+    "hasAccount": "Masz już konto?"
+  },
+  "fields": {
+    "title": "Moje pola",
+    "new": "Nowe pole",
+    "name": "Nazwa pola",
+    "crop": "Uprawa",
+    "soil": "Typ gleby",
+    "area": "Powierzchnia",
+    "createdAt": "Utworzono",
+    "noFields": "Brak pól",
+    "addFirst": "Dodaj pierwsze pole"
+  },
+  "crops": {
+    "wheat": "Pszenica",
+    "corn": "Kukurydza",
+    "sunflower": "Słonecznik",
+    "soybeans": "Soja",
+    "barley": "Jęczmień",
+    "oats": "Owies",
+    "rye": "Żyto",
+    "rapeseed": "Rzepak"
+  },
+  "soils": {
+    "chalk": "Kreda",
+    "peat": "Torf",
+    "sandy": "Piaszczysta",
+    "silt": "Mulista"
+  },
+  "indices": {
+    "title": "Wskaźniki wegetacji",
+    "ndvi": "NDVI",
+    "evi": "EVI",
+    "ndmi": "NDMI",
+    "savi": "SAVI"
+  },
+  "weather": {
+    "title": "Pogoda",
+    "current": "Obecnie",
+    "forecast": "Prognoza",
+    "temp": "Temperatura",
+    "humidity": "Wilgotność",
+    "rain": "Opady"
+  },
+  "predict": {
+    "title": "Prognoza plonu",
+    "action": "Prognozuj plon",
+    "result": "Prognozowany plon",
+    "unit": "t/ha",
+    "confidence": {
+      "high": "Wysoka pewność",
+      "medium": "Średnia pewność",
+      "low": "Niska pewność"
+    }
+  },
+  "report": {
+    "title": "Raport zdrowia AI",
+    "action": "Generuj raport AI",
+    "health": {
+      "good": "Dobry",
+      "moderate": "Umiarkowany",
+      "poor": "Słaby"
+    },
+    "risks": "Zagrożenia",
+    "recommendations": "Zalecenia"
+  },
+  "stats": {
+    "totalFields": "Pola",
+    "totalArea": "Łączna powierzchnia",
+    "crops": "Uprawy"
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "language": "Język interfejsu",
+    "languageChanged": "Zmieniono język",
+    "profile": "Profil",
+    "account": "Konto"
+  },
+  "map": {
+    "title": "Mapa",
+    "newField": "Nowe pole",
+    "editField": "Edytuj pole",
+    "drawInstructions": "Narysuj wielokąt pola na mapie",
+    "noToken": "Mapa niedostępna — brak tokenu Mapbox"
+  }
+}

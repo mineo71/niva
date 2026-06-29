@@ -4,6 +4,7 @@ import {
   Layers,
   Map,
   Settings,
+  User,
   LogOut,
   Satellite,
   ChevronLeft,
@@ -20,6 +21,7 @@ const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, labelUk: 'Огляд', labelEn: 'Overview', end: true },
   { to: '/dashboard/fields', icon: Layers, labelUk: 'Поля', labelEn: 'Fields' },
   { to: '/dashboard/map', icon: Map, labelUk: 'Карта', labelEn: 'Map' },
+  { to: '/dashboard/profile', icon: User, labelUk: 'Профіль', labelEn: 'Profile' },
   { to: '/dashboard/settings', icon: Settings, labelUk: 'Налаштування', labelEn: 'Settings' },
 ]
 

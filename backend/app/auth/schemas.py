@@ -17,6 +17,11 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class UpdateMeRequest(BaseModel):
+    full_name: str | None = None
+    language: str | None = Field(default=None, max_length=5)
+
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

@@ -27,4 +27,7 @@ export const authApi = {
 
   me: () =>
     apiClient.get<User>('/auth/me').then((r) => r.data),
+
+  updateMe: (data: { full_name?: string; language?: string }) =>
+    apiClient.patch<User>('/auth/me', data).then((r) => r.data),
 }

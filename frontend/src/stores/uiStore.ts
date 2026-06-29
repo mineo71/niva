@@ -2,10 +2,10 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 interface UIState {
-  language: 'uk' | 'en'
+  language: string
   ndviLayerVisible: boolean
   sidebarCollapsed: boolean
-  setLanguage: (lang: 'uk' | 'en') => void
+  setLanguage: (lang: string) => void
   toggleNdviLayer: () => void
   toggleSidebar: () => void
 }
