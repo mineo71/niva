@@ -19,6 +19,7 @@ import { NDVIChart } from '@/components/charts/NDVIChart'
 import { WeatherChart } from '@/components/charts/WeatherChart'
 import { NDVIColorScale, NDVIChip } from '@/components/NDVIColorScale'
 import { CropIcon } from '@/components/CropIcon'
+import { Tooltip } from '@/components/ui/Tooltip'
 import {
   formatArea, formatDate, isStale, formatRelativeTime,
   CROP_LABELS_UK, CROP_LABELS_EN,
@@ -39,11 +40,13 @@ function NdviTimestamp({
 
   if (stale) {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] text-[#d97706] font-medium">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] shrink-0" />
-        {lang === 'uk' ? 'застаріло' : 'stale'}
-        <span className="text-[#9ca3af] font-normal">· {rel}</span>
-      </span>
+      <Tooltip content={lang === 'uk' ? 'Супутникові дані старші за 7 днів' : 'Satellite data older than 7 days'}>
+        <span className="inline-flex items-center gap-1 text-[11px] text-[#d97706] font-medium cursor-help">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] shrink-0" />
+          {lang === 'uk' ? 'застаріло' : 'stale'}
+          <span className="text-[#9ca3af] font-normal">· {rel}</span>
+        </span>
+      </Tooltip>
     )
   }
 
@@ -194,27 +197,39 @@ export function FieldDetail() {
               )}
             </div>
             <div className="flex items-center gap-1.5">
-              {latestNdvi && <NDVIChip value={latestNdvi.ndvi} />}
-              <button
-                onClick={() => setShowEvi(!showEvi)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
-                  showEvi
-                    ? 'text-[#2563eb] bg-[#eff6ff] border-[#bfdbfe]'
-                    : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
-                }`}
-              >
-                {showEvi ? <Eye size={11} /> : <EyeOff size={11} />} EVI
-              </button>
-              <button
-                onClick={() => setShowNdmi(!showNdmi)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
-                  showNdmi
-                    ? 'text-[#d97706] bg-[#fffbeb] border-[#fde68a]'
-                    : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
-                }`}
-              >
-                {showNdmi ? <Eye size={11} /> : <EyeOff size={11} />} NDMI
-              </button>
+              {latestNdvi && (
+                <Tooltip content={isUk ? 'NDVI — індекс зеленості: стан і густота посіву' : 'NDVI — greenness index: crop vigour & density'}>
+                  <span><NDVIChip value={latestNdvi.ndvi} /></span>
+                </Tooltip>
+              )}
+              <Tooltip content={isUk ? 'EVI — покращений вегетаційний індекс, менш чутливий до ґрунту' : 'EVI — enhanced vegetation index, less soil-sensitive'}>
+                <button
+                  onClick={() => setShowEvi(!showEvi)}
+                  aria-pressed={showEvi}
+                  aria-label={`EVI ${showEvi ? (isUk ? 'приховати' : 'hide') : (isUk ? 'показати' : 'show')}`}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
+                    showEvi
+                      ? 'text-[#2563eb] bg-[#eff6ff] border-[#bfdbfe]'
+                      : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
+                  }`}
+                >
+                  {showEvi ? <Eye size={11} /> : <EyeOff size={11} />} EVI
+                </button>
+              </Tooltip>
+              <Tooltip content={isUk ? 'NDMI — вологість рослинності' : 'NDMI — vegetation moisture content'}>
+                <button
+                  onClick={() => setShowNdmi(!showNdmi)}
+                  aria-pressed={showNdmi}
+                  aria-label={`NDMI ${showNdmi ? (isUk ? 'приховати' : 'hide') : (isUk ? 'показати' : 'show')}`}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
+                    showNdmi
+                      ? 'text-[#d97706] bg-[#fffbeb] border-[#fde68a]'
+                      : 'text-[#9ca3af] bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
+                  }`}
+                >
+                  {showNdmi ? <Eye size={11} /> : <EyeOff size={11} />} NDMI
+                </button>
+              </Tooltip>
             </div>
           </div>
         </CardHeader>
@@ -328,17 +343,19 @@ export function FieldDetail() {
                     : 'Get ML yield prediction based on satellite and weather data.'}
                 </p>
               )}
-              <Button
-                variant={predict ? 'secondary' : 'primary'}
-                onClick={handlePredict}
-                loading={predictingYield}
-                icon={<TrendingUp size={15} />}
-                className="w-full"
-              >
-                {predict
-                  ? isUk ? 'Оновити прогноз' : 'Refresh forecast'
-                  : isUk ? 'Прогнозувати врожай' : 'Predict yield'}
-              </Button>
+              <Tooltip content={isUk ? 'ML-прогноз врожайності на основі NDVI, ґрунту та погоди' : 'ML yield forecast from NDVI, soil and weather'}>
+                <Button
+                  variant={predict ? 'secondary' : 'primary'}
+                  onClick={handlePredict}
+                  loading={predictingYield}
+                  icon={<TrendingUp size={15} />}
+                  className="w-full"
+                >
+                  {predict
+                    ? isUk ? 'Оновити прогноз' : 'Refresh forecast'
+                    : isUk ? 'Прогнозувати врожай' : 'Predict yield'}
+                </Button>
+              </Tooltip>
             </CardBody>
           </Card>
 
@@ -416,17 +433,19 @@ export function FieldDetail() {
                     : 'Generate a detailed AI report on crop health and recommendations.'}
                 </p>
               )}
-              <Button
-                variant={report ? 'secondary' : 'primary'}
-                onClick={handleReport}
-                loading={generatingReport}
-                icon={<FileText size={15} />}
-                className="w-full"
-              >
-                {report
-                  ? isUk ? 'Оновити звіт' : 'Refresh report'
-                  : isUk ? 'Генерувати AI звіт' : 'Generate AI report'}
-              </Button>
+              <Tooltip content={isUk ? 'AI аналізує дані поля та дає рекомендації агронома' : 'AI analyses field data and gives agronomy recommendations'}>
+                <Button
+                  variant={report ? 'secondary' : 'primary'}
+                  onClick={handleReport}
+                  loading={generatingReport}
+                  icon={<FileText size={15} />}
+                  className="w-full"
+                >
+                  {report
+                    ? isUk ? 'Оновити звіт' : 'Refresh report'
+                    : isUk ? 'Генерувати AI звіт' : 'Generate AI report'}
+                </Button>
+              </Tooltip>
             </CardBody>
           </Card>
 
