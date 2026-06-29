@@ -179,6 +179,7 @@ export function Fields() {
                         to={`/dashboard/map/${field.id}`}
                         onClick={(e) => e.stopPropagation()}
                         title={isUk ? 'Редагувати' : 'Edit'}
+                        aria-label={isUk ? 'Редагувати поле' : 'Edit field'}
                         className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#16a34a] hover:bg-[#f0fdf4] transition-colors"
                       >
                         <Pencil size={13} />
@@ -186,6 +187,7 @@ export function Fields() {
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteId(field.id) }}
                         title={isUk ? 'Видалити' : 'Delete'}
+                        aria-label={isUk ? 'Видалити поле' : 'Delete field'}
                         className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
                       >
                         <Trash2 size={13} />

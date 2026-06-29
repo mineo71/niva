@@ -58,7 +58,12 @@ export function WeatherChart({ data, height = 200 }: WeatherChartProps) {
     ),
   }))
 
+  const summary = i18n.language === 'uk'
+    ? `Графік погоди на ${data.length} днів: температура та опади`
+    : `Weather chart for ${data.length} days: temperature and precipitation`
+
   return (
+    <div role="img" aria-label={summary}>
     <ResponsiveContainer width="100%" height={height}>
       <ComposedChart data={formatted} margin={{ top: 8, right: 8, bottom: 4, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
@@ -96,5 +101,6 @@ export function WeatherChart({ data, height = 200 }: WeatherChartProps) {
         />
       </ComposedChart>
     </ResponsiveContainer>
+    </div>
   )
 }

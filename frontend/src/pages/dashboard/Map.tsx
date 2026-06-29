@@ -303,6 +303,7 @@ export function MapPage() {
                 <button
                   onClick={handleReset}
                   title={isUk ? 'Скинути' : 'Reset'}
+                  aria-label={isUk ? 'Скинути полігон' : 'Reset polygon'}
                   className="ml-auto p-1.5 rounded-lg text-[#9ca3af] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
                 >
                   <RotateCcw size={13} />

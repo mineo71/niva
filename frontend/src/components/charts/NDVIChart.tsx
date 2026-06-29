@@ -69,7 +69,13 @@ export function NDVIChart({ data, showEvi = false, showNdmi = false, height = 26
     } catch { return val }
   }
 
+  const latest = data[data.length - 1]?.ndvi
+  const summary = i18n.language === 'uk'
+    ? `Графік NDVI за ${data.length} вимірювань, останнє значення ${latest?.toFixed(2) ?? '—'}`
+    : `NDVI chart over ${data.length} readings, latest value ${latest?.toFixed(2) ?? '—'}`
+
   return (
+    <div role="img" aria-label={summary}>
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 8, right: 8, bottom: 4, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
@@ -124,5 +130,6 @@ export function NDVIChart({ data, showEvi = false, showNdmi = false, height = 26
         )}
       </LineChart>
     </ResponsiveContainer>
+    </div>
   )
 }
