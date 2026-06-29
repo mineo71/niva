@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { Ruler, Save, RotateCcw, AlertCircle, MapPin } from 'lucide-react'
+import { Ruler, Save, RotateCcw, AlertCircle, MapPin, Pencil, LocateFixed, MousePointerClick } from 'lucide-react'
 import type { Feature, Polygon } from 'geojson'
 import { fieldsApi } from '@/api/fields'
 import type { CropType, SoilType } from '@/types'
@@ -37,6 +38,8 @@ export function MapPage() {
   const [saving, setSaving] = useState(false)
   const [mapReady, setMapReady] = useState(false)
   const [mapError, setMapError] = useState(false)
+  const [drawing, setDrawing] = useState(false)
+  const [locating, setLocating] = useState(false)
 
   const cropOptions = ALL_CROPS.map((c) => ({
     value: c,
@@ -82,6 +85,7 @@ export function MapPage() {
       try {
         const mapboxgl = (await import('mapbox-gl')).default
         const MapboxDraw = (await import('@mapbox/mapbox-gl-draw')).default
+        const MapboxGeocoder = (await import('@mapbox/mapbox-gl-geocoder')).default
         if (!mounted || !mapRef.current) return
 
         mapboxgl.accessToken = MAPBOX_TOKEN
@@ -96,7 +100,7 @@ export function MapPage() {
         const draw = new MapboxDraw({
           displayControlsDefault: false,
           controls: { polygon: true, trash: true },
-          defaultMode: 'draw_polygon',
+          defaultMode: 'simple_select',
           styles: [
             {
               id: 'gl-draw-polygon-fill',
@@ -126,6 +130,16 @@ export function MapPage() {
 
         map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
         map.addControl(draw, 'top-right')
+
+        // address search → fly to location
+        const geocoder = new MapboxGeocoder({
+          accessToken: MAPBOX_TOKEN,
+          mapboxgl: mapboxgl as never,
+          marker: false,
+          placeholder: isUk ? 'Пошук адреси або міста…' : 'Search address or place…',
+          flyTo: { maxZoom: 15 },
+        })
+        map.addControl(geocoder as never, 'top-left')
 
         map.on('load', () => {
           setMapReady(true)
@@ -166,6 +180,7 @@ export function MapPage() {
         map.on('draw.create', handleDrawChange)
         map.on('draw.update', handleDrawChange)
         map.on('draw.delete', handleDrawChange)
+        map.on('draw.modechange', (e: { mode: string }) => setDrawing(e.mode === 'draw_polygon'))
 
         mapInstanceRef.current = map
         drawRef.current = draw
@@ -191,9 +206,41 @@ export function MapPage() {
   }, []) // eslint-disable-line
 
   const handleReset = () => {
-    if (drawRef.current) drawRef.current.deleteAll()
+    if (drawRef.current) {
+      drawRef.current.deleteAll()
+      drawRef.current.changeMode('simple_select')
+    }
     setPolygon(null)
     setAreaHa(null)
+    setDrawing(false)
+  }
+
+  const startDraw = () => {
+    if (!drawRef.current) return
+    drawRef.current.deleteAll() // one field at a time
+    setPolygon(null)
+    setAreaHa(null)
+    drawRef.current.changeMode('draw_polygon')
+    setDrawing(true)
+  }
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation || !mapInstanceRef.current) return
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        mapInstanceRef.current.flyTo({
+          center: [pos.coords.longitude, pos.coords.latitude],
+          zoom: 15,
+        })
+        setLocating(false)
+      },
+      () => {
+        toast.error(isUk ? 'Не вдалося визначити місцезнаходження' : 'Could not get your location')
+        setLocating(false)
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    )
   }
 
   const handleSave = async () => {
@@ -264,6 +311,68 @@ export function MapPage() {
             </CardBody>
           </Card>
 
+          {/* Drawing tools */}
+          {mapReady && (
+            <div className="space-y-2">
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={useMyLocation}
+                loading={locating}
+                icon={<LocateFixed size={14} />}
+              >
+                {isUk ? 'Моє місцезнаходження' : 'Use my location'}
+              </Button>
+              <Button
+                variant={polygon ? 'outline' : 'primary'}
+                className="w-full"
+                onClick={startDraw}
+                disabled={drawing}
+                icon={<Pencil size={14} />}
+              >
+                {drawing
+                  ? isUk ? 'Малювання…' : 'Drawing…'
+                  : polygon
+                    ? isUk ? 'Перемалювати поле' : 'Redraw field'
+                    : isUk ? 'Намалювати поле' : 'Draw field'}
+              </Button>
+            </div>
+          )}
+
+          {/* Guidance */}
+          {mapReady && (drawing || !polygon) && (
+            <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg p-3 text-xs space-y-1.5">
+              <p className="text-[#16a34a] font-semibold flex items-center gap-1.5">
+                <MousePointerClick size={13} />
+                {drawing
+                  ? isUk ? 'Малюйте контур поля' : 'Draw the field outline'
+                  : isUk ? 'Як намалювати поле' : 'How to draw a field'}
+              </p>
+              {drawing ? (
+                <ul className="text-[#6b7280] space-y-0.5 list-disc list-inside">
+                  <li>{isUk ? 'Клацайте по кутах поля' : 'Click each corner of the field'}</li>
+                  <li>{isUk ? 'Двічі клацніть, щоб завершити' : 'Double-click to finish'}</li>
+                  <li>{isUk ? 'Esc — скасувати' : 'Esc to cancel'}</li>
+                </ul>
+              ) : (
+                <p className="text-[#6b7280]">
+                  {isUk
+                    ? 'Знайдіть локацію через пошук або «Моє місцезнаходження», потім натисніть «Намалювати поле».'
+                    : 'Find your location via search or “Use my location”, then press “Draw field”.'}
+                </p>
+              )}
+            </div>
+          )}
+          {polygon && !drawing && (
+            <p className="text-xs text-[#16a34a] flex items-center gap-1.5">
+              <MousePointerClick size={13} />
+              {isUk ? 'Перетягуйте точки, щоб уточнити контур' : 'Drag points to fine-tune the outline'}
+            </p>
+          )}
+          {!mapReady && !mapError && (
+            <p className="text-xs text-[#9ca3af]">{isUk ? 'Карта завантажується...' : 'Map loading...'}</p>
+          )}
+
           {/* Form */}
           <div className="space-y-3">
             <Input
@@ -289,18 +398,6 @@ export function MapPage() {
             />
           </div>
 
-          {/* Instructions */}
-          {mapReady && !polygon && (
-            <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg p-3 text-xs text-[#374151] space-y-1">
-              <p className="text-[#16a34a] font-semibold">{isUk ? 'Як намалювати поле:' : 'How to draw a field:'}</p>
-              <p className="text-[#6b7280]">{isUk ? '1. Натисніть кнопку полігону на карті' : '1. Click the polygon button on map'}</p>
-              <p className="text-[#6b7280]">{isUk ? '2. Клацайте вершини контуру поля' : '2. Click to place polygon vertices'}</p>
-              <p className="text-[#6b7280]">{isUk ? '3. Двічі клацніть для завершення' : '3. Double-click to finish'}</p>
-            </div>
-          )}
-          {!mapReady && !mapError && (
-            <p className="text-xs text-[#9ca3af]">{isUk ? 'Карта завантажується...' : 'Map loading...'}</p>
-          )}
         </div>
 
         <div className="p-5 border-t border-[#f3f4f6]">
