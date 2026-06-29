@@ -225,9 +225,9 @@ export function MapPage() {
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col lg:flex-row h-full">
       {/* Sidebar */}
-      <div className="w-72 shrink-0 flex flex-col bg-white border-r border-[#e5e7eb] z-10">
+      <div className="w-full lg:w-72 lg:shrink-0 flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-[#e5e7eb] z-10 max-h-[45vh] lg:max-h-none overflow-y-auto lg:overflow-visible">
         <div className="px-5 py-4 border-b border-[#f3f4f6]">
           <h1 className="font-semibold text-base text-[#111827] tracking-tight">
             {isEdit ? (isUk ? 'Редагувати поле' : 'Edit field') : (isUk ? 'Нове поле' : 'New field')}
@@ -319,7 +319,7 @@ export function MapPage() {
       </div>
 
       {/* Map */}
-      <div className="flex-1 relative bg-[#f9fafb]">
+      <div className="flex-1 relative bg-[#f9fafb] min-h-[55vh] lg:min-h-0">
         {mapError ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-10">
             <div className="w-14 h-14 rounded-2xl bg-white border border-[#e5e7eb] shadow-sm flex items-center justify-center mb-4">

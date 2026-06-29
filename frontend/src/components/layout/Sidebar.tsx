@@ -9,6 +9,7 @@ import {
   Satellite,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
@@ -28,11 +29,17 @@ const navItems = [
 export function Sidebar() {
   const { i18n } = useTranslation()
   const { logout } = useAuthStore()
-  const { sidebarCollapsed, toggleSidebar } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar, mobileSidebarOpen, setMobileSidebar } = useUIStore()
   const navigate = useNavigate()
   const isUk = i18n.language === 'uk'
 
+  // collapse styling applies on desktop only (lg+); mobile drawer is always full-width
+  const c = sidebarCollapsed
+
+  const closeMobile = () => setMobileSidebar(false)
+
   const handleLogout = async () => {
+    closeMobile()
     try { await authApi.logout() } catch { /* ignore */ }
     logout()
     navigate('/auth/login')
@@ -40,88 +47,109 @@ export function Sidebar() {
   }
 
   return (
-    <aside
-      className={cn(
-        'relative flex flex-col bg-[#f9fafb] border-r border-[#e5e7eb] shrink-0',
-        'transition-all duration-200 ease-in-out',
-        sidebarCollapsed ? 'w-14' : 'w-56'
+    <>
+      {/* Mobile backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+          onClick={closeMobile}
+          aria-hidden="true"
+        />
       )}
-    >
-      {/* Logo + collapse toggle (top) */}
-      <div
+
+      <aside
         className={cn(
-          'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4',
-          sidebarCollapsed && 'flex-col justify-center gap-1.5 px-0'
+          'flex flex-col bg-[#f9fafb] border-r border-[#e5e7eb] shrink-0 z-40',
+          'transition-transform duration-200 ease-in-out',
+          // mobile: fixed drawer, full width, slide in/out
+          'fixed inset-y-0 left-0 w-64',
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+          // desktop: static, collapsible
+          'lg:static lg:translate-x-0 lg:transition-[width]',
+          c ? 'lg:w-14' : 'lg:w-56'
         )}
       >
-        <div className="flex items-center gap-2.5">
-          <div className="shrink-0 w-7 h-7 rounded-lg bg-[#16a34a] flex items-center justify-center">
-            <Satellite size={14} className="text-white" />
-          </div>
-          {!sidebarCollapsed && (
-            <span className="font-semibold text-[#111827] text-[15px] tracking-tight">
+        {/* Logo + collapse toggle (top) */}
+        <div
+          className={cn(
+            'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4',
+            c && 'lg:flex-col lg:justify-center lg:gap-1.5 lg:px-0'
+          )}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="shrink-0 w-7 h-7 rounded-lg bg-[#16a34a] flex items-center justify-center">
+              <Satellite size={14} className="text-white" />
+            </div>
+            <span className={cn('font-semibold text-[#111827] text-[15px] tracking-tight', c && 'lg:hidden')}>
               Нива
             </span>
-          )}
-        </div>
-        <button
-          onClick={toggleSidebar}
-          aria-label={
-            sidebarCollapsed
-              ? isUk ? 'Розгорнути меню' : 'Expand sidebar'
-              : isUk ? 'Згорнути меню' : 'Collapse sidebar'
-          }
-          className={cn(
-            'w-6 h-6 rounded-md flex items-center justify-center shrink-0',
-            'text-[#9ca3af] hover:text-[#374151] hover:bg-white border border-transparent hover:border-[#e5e7eb]',
-            'transition-colors duration-150',
-            !sidebarCollapsed && 'ml-auto'
-          )}
-        >
-          {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
-      </div>
+          </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ to, icon: Icon, labelUk, labelEn, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            title={sidebarCollapsed ? (isUk ? labelUk : labelEn) : undefined}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
-                isActive
-                  ? 'bg-[#f0fdf4] text-[#16a34a]'
-                  : 'text-[#6b7280] hover:text-[#111827] hover:bg-white',
-                sidebarCollapsed && 'justify-center px-0'
-              )
-            }
+          {/* desktop collapse toggle */}
+          <button
+            onClick={toggleSidebar}
+            aria-label={c ? (isUk ? 'Розгорнути меню' : 'Expand sidebar') : (isUk ? 'Згорнути меню' : 'Collapse sidebar')}
+            className={cn(
+              'hidden lg:flex w-6 h-6 rounded-md items-center justify-center shrink-0',
+              'text-[#9ca3af] hover:text-[#374151] hover:bg-white border border-transparent hover:border-[#e5e7eb]',
+              'transition-colors duration-150',
+              !c && 'ml-auto'
+            )}
           >
-            <Icon size={16} className="shrink-0" />
-            {!sidebarCollapsed && (isUk ? labelUk : labelEn)}
-          </NavLink>
-        ))}
-      </nav>
+            {c ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          </button>
 
-      {/* Logout */}
-      <div className="px-2 py-3 border-t border-[#e5e7eb]">
-        <button
-          onClick={handleLogout}
-          title={sidebarCollapsed ? (isUk ? 'Вийти' : 'Log out') : undefined}
-          className={cn(
-            'w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium',
-            'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
-            sidebarCollapsed && 'justify-center px-0'
-          )}
-        >
-          <LogOut size={16} className="shrink-0" />
-          {!sidebarCollapsed && (isUk ? 'Вийти' : 'Log out')}
-        </button>
-      </div>
+          {/* mobile close */}
+          <button
+            onClick={closeMobile}
+            aria-label={isUk ? 'Закрити меню' : 'Close menu'}
+            className="lg:hidden ml-auto w-7 h-7 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white"
+          >
+            <X size={16} />
+          </button>
+        </div>
 
-    </aside>
+        {/* Navigation */}
+        <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+          {navItems.map(({ to, icon: Icon, labelUk, labelEn, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={closeMobile}
+              title={c ? (isUk ? labelUk : labelEn) : undefined}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+                  isActive
+                    ? 'bg-[#f0fdf4] text-[#16a34a]'
+                    : 'text-[#6b7280] hover:text-[#111827] hover:bg-white',
+                  c && 'lg:justify-center lg:px-0'
+                )
+              }
+            >
+              <Icon size={16} className="shrink-0" />
+              <span className={cn(c && 'lg:hidden')}>{isUk ? labelUk : labelEn}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <div className="px-2 py-3 border-t border-[#e5e7eb]">
+          <button
+            onClick={handleLogout}
+            title={c ? (isUk ? 'Вийти' : 'Log out') : undefined}
+            className={cn(
+              'w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium',
+              'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
+              c && 'lg:justify-center lg:px-0'
+            )}
+          >
+            <LogOut size={16} className="shrink-0" />
+            <span className={cn(c && 'lg:hidden')}>{isUk ? 'Вийти' : 'Log out'}</span>
+          </button>
+        </div>
+      </aside>
+    </>
   )
 }
