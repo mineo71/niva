@@ -13,9 +13,10 @@ import { SkeletonCard } from '@/components/ui/Skeleton'
 import { Dialog } from '@/components/ui/Dialog'
 import { NDVIChip } from '@/components/NDVIColorScale'
 import { Sparkline } from '@/components/Sparkline'
+import { CropIcon } from '@/components/CropIcon'
 import {
   formatArea, formatDate, formatRelativeTime, isStale,
-  CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS,
+  CROP_LABELS_UK, CROP_LABELS_EN,
   SOIL_LABELS_UK, SOIL_LABELS_EN,
 } from '@/lib/utils'
 
@@ -158,8 +159,8 @@ export function Fields() {
                   {/* ── Top row: crop icon + name + actions ── */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex items-center justify-center text-lg shrink-0">
-                        {CROP_ICONS[field.crop_type as keyof typeof CROP_ICONS]}
+                      <div className="w-9 h-9 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex items-center justify-center shrink-0">
+                        <CropIcon crop={field.crop_type} size={18} className="text-[#16a34a]" />
                       </div>
                       <div className="min-w-0">
                         <h3 className="font-semibold text-sm text-[#111827] leading-tight truncate">

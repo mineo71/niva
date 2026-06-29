@@ -10,8 +10,10 @@ import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton'
 import { Card, CardHeader, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { formatArea, CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS } from '@/lib/utils'
+import { formatArea, CROP_LABELS_UK, CROP_LABELS_EN } from '@/lib/utils'
 import { NDVIChip } from '@/components/NDVIColorScale'
+import { CropIcon } from '@/components/CropIcon'
+import type { CropType } from '@/types'
 import { toast } from 'react-toastify'
 
 const CHART_COLORS = ['#16a34a', '#d97706', '#2563eb', '#7c3aed', '#dc2626', '#0891b2', '#db2777', '#64748b']
@@ -166,8 +168,8 @@ export function Overview() {
                   {stats.crop_distribution.map((item, i) => (
                     <div key={item.crop} className="flex items-center gap-2 text-xs">
                       <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
-                      <span className="text-[#6b7280] flex-1">
-                        {CROP_ICONS[item.crop as keyof typeof CROP_ICONS]}{' '}
+                      <span className="text-[#6b7280] flex-1 inline-flex items-center gap-1.5">
+                        <CropIcon crop={item.crop as CropType} size={13} className="text-[#6b7280]" />
                         {isUk
                           ? CROP_LABELS_UK[item.crop as keyof typeof CROP_LABELS_UK] ?? item.crop
                           : CROP_LABELS_EN[item.crop as keyof typeof CROP_LABELS_EN] ?? item.crop}
@@ -219,8 +221,8 @@ export function Overview() {
                     to={`/dashboard/fields/${field.id}`}
                     className="flex items-center gap-3 px-5 py-3 hover:bg-[#fafafa] transition-colors group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex items-center justify-center text-base shrink-0">
-                      {CROP_ICONS[field.crop_type as keyof typeof CROP_ICONS]}
+                    <div className="w-8 h-8 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex items-center justify-center shrink-0">
+                      <CropIcon crop={field.crop_type} size={15} className="text-[#16a34a]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-[#111827] truncate">{field.name}</p>

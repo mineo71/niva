@@ -75,18 +75,6 @@ export const SOIL_LABELS_EN: Record<SoilType, string> = {
   silt: 'Silt',
 }
 
-// Crop emoji icons
-export const CROP_ICONS: Record<CropType, string> = {
-  wheat: '🌾',
-  corn: '🌽',
-  sunflower: '🌻',
-  soybeans: '🫛',
-  barley: '🌾',
-  oats: '🌾',
-  rye: '🌾',
-  rapeseed: '🌼',
-}
-
 export const ALL_CROPS: CropType[] = [
   'wheat', 'corn', 'sunflower', 'soybeans',
   'barley', 'oats', 'rye', 'rapeseed',

@@ -45,21 +45,39 @@ export function Sidebar() {
         sidebarCollapsed ? 'w-14' : 'w-56'
       )}
     >
-      {/* Logo */}
+      {/* Logo + collapse toggle (top) */}
       <div
         className={cn(
           'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4',
-          sidebarCollapsed && 'justify-center px-0'
+          sidebarCollapsed && 'flex-col justify-center gap-1.5 px-0'
         )}
       >
-        <div className="shrink-0 w-7 h-7 rounded-lg bg-[#16a34a] flex items-center justify-center">
-          <Satellite size={14} className="text-white" />
+        <div className="flex items-center gap-2.5">
+          <div className="shrink-0 w-7 h-7 rounded-lg bg-[#16a34a] flex items-center justify-center">
+            <Satellite size={14} className="text-white" />
+          </div>
+          {!sidebarCollapsed && (
+            <span className="font-semibold text-[#111827] text-[15px] tracking-tight">
+              Нива
+            </span>
+          )}
         </div>
-        {!sidebarCollapsed && (
-          <span className="font-semibold text-[#111827] text-[15px] tracking-tight">
-            Нива
-          </span>
-        )}
+        <button
+          onClick={toggleSidebar}
+          aria-label={
+            sidebarCollapsed
+              ? isUk ? 'Розгорнути меню' : 'Expand sidebar'
+              : isUk ? 'Згорнути меню' : 'Collapse sidebar'
+          }
+          className={cn(
+            'w-6 h-6 rounded-md flex items-center justify-center shrink-0',
+            'text-[#9ca3af] hover:text-[#374151] hover:bg-white border border-transparent hover:border-[#e5e7eb]',
+            'transition-colors duration-150',
+            !sidebarCollapsed && 'ml-auto'
+          )}
+        >
+          {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
       </div>
 
       {/* Navigation */}
@@ -102,17 +120,6 @@ export function Sidebar() {
         </button>
       </div>
 
-      {/* Collapse toggle */}
-      <button
-        onClick={toggleSidebar}
-        aria-label="Toggle sidebar"
-        className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full
-          bg-white border border-[#e5e7eb] shadow-sm flex items-center justify-center
-          text-[#9ca3af] hover:text-[#374151] hover:border-[#d1d5db]
-          transition-colors duration-150 z-10"
-      >
-        {sidebarCollapsed ? <ChevronRight size={11} /> : <ChevronLeft size={11} />}
-      </button>
     </aside>
   )
 }

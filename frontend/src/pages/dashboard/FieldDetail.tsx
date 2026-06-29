@@ -18,9 +18,10 @@ import { ConfidenceBadge } from '@/components/ConfidenceBadge'
 import { NDVIChart } from '@/components/charts/NDVIChart'
 import { WeatherChart } from '@/components/charts/WeatherChart'
 import { NDVIColorScale, NDVIChip } from '@/components/NDVIColorScale'
+import { CropIcon } from '@/components/CropIcon'
 import {
   formatArea, formatDate, isStale, formatRelativeTime,
-  CROP_LABELS_UK, CROP_LABELS_EN, CROP_ICONS,
+  CROP_LABELS_UK, CROP_LABELS_EN,
   SOIL_LABELS_UK, SOIL_LABELS_EN,
 } from '@/lib/utils'
 
@@ -148,10 +149,12 @@ export function FieldDetail() {
               </h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge variant="neutral">
-                  {CROP_ICONS[field?.crop_type as keyof typeof CROP_ICONS]}{' '}
-                  {isUk
-                    ? CROP_LABELS_UK[field?.crop_type as keyof typeof CROP_LABELS_UK]
-                    : CROP_LABELS_EN[field?.crop_type as keyof typeof CROP_LABELS_EN]}
+                  <span className="inline-flex items-center gap-1.5">
+                    {field && <CropIcon crop={field.crop_type} size={12} />}
+                    {isUk
+                      ? CROP_LABELS_UK[field?.crop_type as keyof typeof CROP_LABELS_UK]
+                      : CROP_LABELS_EN[field?.crop_type as keyof typeof CROP_LABELS_EN]}
+                  </span>
                 </Badge>
                 <Badge variant="neutral">
                   {isUk
