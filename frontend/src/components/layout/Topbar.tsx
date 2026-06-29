@@ -5,10 +5,9 @@ import { useUIStore } from '@/stores/uiStore'
 import { LANGUAGES } from '@/lib/languages'
 
 export function Topbar() {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   const { user } = useAuthStore()
   const { language, setLanguage, setMobileSidebar } = useUIStore()
-  const isUk = i18n.language === 'uk'
 
   const changeLang = (code: string) => {
     setLanguage(code)
@@ -25,7 +24,7 @@ export function Topbar() {
       {/* Mobile menu */}
       <button
         onClick={() => setMobileSidebar(true)}
-        aria-label={isUk ? 'Відкрити меню' : 'Open menu'}
+        aria-label={t('sidebar.openMenu')}
         className="lg:hidden w-8 h-8 -ml-1 rounded-lg flex items-center justify-center text-[#6b7280] hover:text-[#111827] hover:bg-[#f9fafb] transition-colors"
       >
         <Menu size={18} />

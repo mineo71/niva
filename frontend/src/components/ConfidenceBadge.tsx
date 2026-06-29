@@ -10,24 +10,9 @@ interface ConfidenceBadgeProps {
 }
 
 const config = {
-  high: {
-    classes: 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]',
-    icon: TrendingUp,
-    uk: 'Висока точність',
-    en: 'High confidence',
-  },
-  medium: {
-    classes: 'bg-[#fffbeb] text-[#d97706] border-[#fde68a]',
-    icon: Minus,
-    uk: 'Середня точність',
-    en: 'Medium confidence',
-  },
-  low: {
-    classes: 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]',
-    icon: TrendingDown,
-    uk: 'Низька точність',
-    en: 'Low confidence',
-  },
+  high: { classes: 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]', icon: TrendingUp },
+  medium: { classes: 'bg-[#fffbeb] text-[#d97706] border-[#fde68a]', icon: Minus },
+  low: { classes: 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]', icon: TrendingDown },
 } as const
 
 const sizeClasses = {
@@ -39,10 +24,9 @@ const sizeClasses = {
 const iconSizes = { sm: 11, md: 13, lg: 15 }
 
 export function ConfidenceBadge({ confidence, size = 'md', className }: ConfidenceBadgeProps) {
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const cfg = config[confidence]
   const Icon = cfg.icon
-  const lang = i18n.language as 'uk' | 'en'
 
   return (
     <span
@@ -54,7 +38,7 @@ export function ConfidenceBadge({ confidence, size = 'md', className }: Confiden
       )}
     >
       <Icon size={iconSizes[size]} />
-      {lang === 'uk' ? cfg.uk : cfg.en}
+      {t(`predict.confidence.${confidence}`)}
     </span>
   )
 }

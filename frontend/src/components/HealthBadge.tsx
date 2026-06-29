@@ -10,24 +10,9 @@ interface HealthBadgeProps {
 }
 
 const config = {
-  good: {
-    classes: 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]',
-    icon: Leaf,
-    uk: 'Добрий',
-    en: 'Good',
-  },
-  moderate: {
-    classes: 'bg-[#fffbeb] text-[#d97706] border-[#fde68a]',
-    icon: AlertTriangle,
-    uk: 'Помірний',
-    en: 'Moderate',
-  },
-  poor: {
-    classes: 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]',
-    icon: XCircle,
-    uk: 'Поганий',
-    en: 'Poor',
-  },
+  good: { classes: 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]', icon: Leaf },
+  moderate: { classes: 'bg-[#fffbeb] text-[#d97706] border-[#fde68a]', icon: AlertTriangle },
+  poor: { classes: 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]', icon: XCircle },
 } as const
 
 const sizeClasses = {
@@ -39,10 +24,9 @@ const sizeClasses = {
 const iconSizes = { sm: 11, md: 13, lg: 15 }
 
 export function HealthBadge({ health, size = 'md', className }: HealthBadgeProps) {
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const cfg = config[health]
   const Icon = cfg.icon
-  const lang = i18n.language as 'uk' | 'en'
 
   return (
     <span
@@ -54,7 +38,7 @@ export function HealthBadge({ health, size = 'md', className }: HealthBadgeProps
       )}
     >
       <Icon size={iconSizes[size]} />
-      {lang === 'uk' ? cfg.uk : cfg.en}
+      {t(`report.health.${health}`)}
     </span>
   )
 }

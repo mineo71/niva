@@ -19,19 +19,18 @@ import { cn } from '@/lib/utils'
 import { toast } from 'react-toastify'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, labelUk: 'Огляд', labelEn: 'Overview', end: true },
-  { to: '/dashboard/fields', icon: Layers, labelUk: 'Поля', labelEn: 'Fields' },
-  { to: '/dashboard/map', icon: Map, labelUk: 'Карта', labelEn: 'Map' },
-  { to: '/dashboard/profile', icon: User, labelUk: 'Профіль', labelEn: 'Profile' },
-  { to: '/dashboard/settings', icon: Settings, labelUk: 'Налаштування', labelEn: 'Settings' },
+  { to: '/dashboard', icon: LayoutDashboard, key: 'nav.overview', end: true },
+  { to: '/dashboard/fields', icon: Layers, key: 'nav.fields' },
+  { to: '/dashboard/map', icon: Map, key: 'nav.map' },
+  { to: '/dashboard/profile', icon: User, key: 'settings.profile' },
+  { to: '/dashboard/settings', icon: Settings, key: 'nav.settings' },
 ]
 
 export function Sidebar() {
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const { logout } = useAuthStore()
   const { sidebarCollapsed, toggleSidebar, mobileSidebarOpen, setMobileSidebar } = useUIStore()
   const navigate = useNavigate()
-  const isUk = i18n.language === 'uk'
 
   // collapse styling applies on desktop only (lg+); mobile drawer is always full-width
   const c = sidebarCollapsed
@@ -43,7 +42,7 @@ export function Sidebar() {
     try { await authApi.logout() } catch { /* ignore */ }
     logout()
     navigate('/auth/login')
-    toast.success(isUk ? 'Ви вийшли з системи' : 'Signed out successfully')
+    toast.success(t('sidebar.loggedOut'))
   }
 
   return (
@@ -88,7 +87,7 @@ export function Sidebar() {
           {/* desktop collapse toggle */}
           <button
             onClick={toggleSidebar}
-            aria-label={c ? (isUk ? 'Розгорнути меню' : 'Expand sidebar') : (isUk ? 'Згорнути меню' : 'Collapse sidebar')}
+            aria-label={c ? t('sidebar.expandMenu') : t('sidebar.collapseMenu')}
             className={cn(
               'hidden lg:flex w-6 h-6 rounded-md items-center justify-center shrink-0',
               'text-[#9ca3af] hover:text-[#374151] hover:bg-white border border-transparent hover:border-[#e5e7eb]',
@@ -102,7 +101,7 @@ export function Sidebar() {
           {/* mobile close */}
           <button
             onClick={closeMobile}
-            aria-label={isUk ? 'Закрити меню' : 'Close menu'}
+            aria-label={t('sidebar.closeMenu')}
             className="lg:hidden ml-auto w-7 h-7 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white"
           >
             <X size={16} />
@@ -111,13 +110,13 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
-          {navItems.map(({ to, icon: Icon, labelUk, labelEn, end }) => (
+          {navItems.map(({ to, icon: Icon, key, end }) => (
             <NavLink
               key={to}
               to={to}
               end={end}
               onClick={closeMobile}
-              title={c ? (isUk ? labelUk : labelEn) : undefined}
+              title={c ? t(key) : undefined}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
@@ -129,7 +128,7 @@ export function Sidebar() {
               }
             >
               <Icon size={16} className="shrink-0" />
-              <span className={cn(c && 'lg:hidden')}>{isUk ? labelUk : labelEn}</span>
+              <span className={cn(c && 'lg:hidden')}>{t(key)}</span>
             </NavLink>
           ))}
         </nav>
@@ -138,7 +137,7 @@ export function Sidebar() {
         <div className="px-2 py-3 border-t border-[#e5e7eb]">
           <button
             onClick={handleLogout}
-            title={c ? (isUk ? 'Вийти' : 'Log out') : undefined}
+            title={c ? t('nav.logout') : undefined}
             className={cn(
               'w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium',
               'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
@@ -146,7 +145,7 @@ export function Sidebar() {
             )}
           >
             <LogOut size={16} className="shrink-0" />
-            <span className={cn(c && 'lg:hidden')}>{isUk ? 'Вийти' : 'Log out'}</span>
+            <span className={cn(c && 'lg:hidden')}>{t('nav.logout')}</span>
           </button>
         </div>
       </aside>

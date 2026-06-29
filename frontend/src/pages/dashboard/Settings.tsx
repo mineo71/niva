@@ -14,7 +14,6 @@ export function SettingsPage() {
   const { user, setUser, logout } = useAuthStore()
   const { language, setLanguage } = useUIStore()
   const navigate = useNavigate()
-  const isUk = i18n.language === 'uk'
 
   const handleLanguage = async (code: string) => {
     setLanguage(code)
@@ -25,24 +24,24 @@ export function SettingsPage() {
       const updated = await authApi.updateMe({ language: code })
       setUser(updated)
     } catch { /* offline / not critical */ }
-    toast.success(t('settings.languageChanged', { defaultValue: isUk ? 'Мову змінено' : 'Language changed' }))
+    toast.success(t('settings.languageChanged'))
   }
 
   const handleLogout = async () => {
     try { await authApi.logout() } catch { /* ignore */ }
     logout()
     navigate('/auth/login')
-    toast.success(isUk ? 'Ви вийшли з системи' : 'Signed out')
+    toast.success(t('settings.loggedOut'))
   }
 
   return (
     <div className="p-4 sm:p-6 max-w-2xl mx-auto space-y-5 animate-fade-in">
       <div>
         <h1 className="font-semibold text-xl text-[#111827] tracking-tight">
-          {isUk ? 'Налаштування' : 'Settings'}
+          {t('settings.title')}
         </h1>
         <p className="text-sm text-[#6b7280] mt-0.5">
-          {isUk ? 'Параметри платформи' : 'Platform preferences'}
+          {t('settings.subtitle')}
         </p>
       </div>
 
@@ -54,7 +53,7 @@ export function SettingsPage() {
               <User size={16} className="text-[#16a34a]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm text-[#111827]">{isUk ? 'Профіль' : 'Profile'}</p>
+              <p className="font-medium text-sm text-[#111827]">{t('settings.profile')}</p>
               <p className="text-xs text-[#9ca3af] truncate">{user?.email}</p>
             </div>
             <ChevronRight size={16} className="text-[#d1d5db] shrink-0" />
@@ -68,7 +67,7 @@ export function SettingsPage() {
           <div className="flex items-center gap-2">
             <Globe size={15} className="text-[#16a34a]" />
             <h2 className="font-semibold text-sm text-[#111827]">
-              {isUk ? 'Мова інтерфейсу' : 'Interface language'}
+              {t('settings.language')}
             </h2>
           </div>
         </CardHeader>
@@ -104,21 +103,21 @@ export function SettingsPage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <LogOut size={15} className="text-[#dc2626]" />
-            <h2 className="font-semibold text-sm text-[#111827]">{isUk ? 'Акаунт' : 'Account'}</h2>
+            <h2 className="font-semibold text-sm text-[#111827]">{t('settings.account')}</h2>
           </div>
         </CardHeader>
         <CardBody>
           <p className="text-sm text-[#6b7280] mb-4">
-            {isUk ? 'Вийти з системи.' : 'Sign out of your account.'}
+            {t('settings.signOutDesc')}
           </p>
           <Button variant="danger" onClick={handleLogout} icon={<LogOut size={14} />}>
-            {isUk ? 'Вийти з акаунту' : 'Sign out'}
+            {t('settings.signOutBtn')}
           </Button>
         </CardBody>
       </Card>
 
       <p className="text-center text-xs text-[#9ca3af]">
-        Нива v0.1.0 · Satellite Intelligence Platform
+        {t('settings.versionLine')}
       </p>
     </div>
   )

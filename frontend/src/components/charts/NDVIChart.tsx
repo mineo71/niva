@@ -51,28 +51,26 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export function NDVIChart({ data, showEvi = false, showNdmi = false, height = 260 }: NDVIChartProps) {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
 
   if (!data.length) {
     return (
       <div className="flex items-center justify-center text-sm text-[#9ca3af]" style={{ height }}>
-        {i18n.language === 'uk' ? 'Немає даних' : 'No data'}
+        {t('common.noData')}
       </div>
     )
   }
 
   const tickFormatter = (val: string) => {
     try {
-      return new Date(val).toLocaleDateString(i18n.language === 'uk' ? 'uk-UA' : 'en-US', {
+      return new Date(val).toLocaleDateString(i18n.language, {
         month: 'short', day: 'numeric',
       })
     } catch { return val }
   }
 
   const latest = data[data.length - 1]?.ndvi
-  const summary = i18n.language === 'uk'
-    ? `Графік NDVI за ${data.length} вимірювань, останнє значення ${latest?.toFixed(2) ?? '—'}`
-    : `NDVI chart over ${data.length} readings, latest value ${latest?.toFixed(2) ?? '—'}`
+  const summary = t('indices.chartSummary', { count: data.length, latest: latest?.toFixed(2) ?? '—' })
 
   return (
     <div role="img" aria-label={summary}>

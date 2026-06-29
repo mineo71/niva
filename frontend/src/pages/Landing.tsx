@@ -1,60 +1,26 @@
 import { Link } from 'react-router-dom'
 import { Satellite, Leaf, CloudRain, TrendingUp, ArrowRight, Layers, BarChart3, Map } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 
-const features = [
-  {
-    icon: Satellite,
-    titleUk: 'Супутникові індекси',
-    descUk: 'NDVI, EVI, NDMI з Sentinel-2 кожні 5 днів. Відстежуйте стан рослинності з космосу.',
-    titleEn: 'Satellite Indices',
-    descEn: 'NDVI, EVI, NDMI from Sentinel-2 every 5 days. Monitor crop health from orbit.',
-  },
-  {
-    icon: TrendingUp,
-    titleUk: 'ML-прогноз урожаю',
-    descUk: 'Машинне навчання оцінює врожайність з урахуванням погоди, ґрунту та стану культури.',
-    titleEn: 'ML Yield Forecast',
-    descEn: 'Machine learning predicts yield considering weather, soil type, and crop status.',
-  },
-  {
-    icon: CloudRain,
-    titleUk: 'Погода на 7 днів',
-    descUk: 'Гіперлокальний прогноз прямо для вашого поля. Температура, опади, вологість.',
-    titleEn: '7-Day Weather',
-    descEn: 'Hyperlocal forecast directly for your field. Temperature, precipitation, humidity.',
-  },
-  {
-    icon: Leaf,
-    titleUk: "AI звіти здоров'я",
-    descUk: 'Штучний інтелект аналізує стан полів і надає рекомендації агронома.',
-    titleEn: 'AI Health Reports',
-    descEn: 'Artificial intelligence analyses field health and provides agronomist recommendations.',
-  },
-  {
-    icon: Map,
-    titleUk: 'Малювання полів',
-    descUk: 'Обведіть ваші поля прямо на карті. Площа обчислюється автоматично.',
-    titleEn: 'Draw Fields',
-    descEn: 'Draw your fields directly on the map. Area calculated automatically.',
-  },
-  {
-    icon: BarChart3,
-    titleUk: 'Аналітика портфоліо',
-    descUk: 'Загальна площа, розподіл культур, порівняння врожайності між сезонами.',
-    titleEn: 'Portfolio Analytics',
-    descEn: 'Total area, crop distribution, yield comparison across seasons.',
-  },
-]
-
-const stats = [
-  { value: '5 днів', label: 'Оновлення даних' },
-  { value: '10 м', label: 'Роздільна здатність' },
-  { value: '8+', label: 'Культур підтримується' },
-  { value: '99.9%', label: 'Доступність' },
-]
+const featureIcons = [Satellite, TrendingUp, CloudRain, Leaf, Map, BarChart3]
 
 export function Landing() {
+  const { t } = useTranslation()
+
+  const features = featureIcons.map((icon, i) => ({
+    icon,
+    title: t(`landing.feat${i + 1}Title`),
+    desc: t(`landing.feat${i + 1}Desc`),
+  }))
+
+  const stats = [
+    { value: '5d', label: t('landing.statsUpdateCycle') },
+    { value: '10 m', label: t('landing.statsResolution') },
+    { value: '8+', label: t('landing.statsCrops') },
+    { value: '99.9%', label: t('landing.statsUptime') },
+  ]
+
   return (
     <div className="min-h-screen bg-white text-[#111827]">
       {/* ── Nav ── */}
@@ -70,10 +36,10 @@ export function Landing() {
             to="/auth/login"
             className="text-sm text-[#6b7280] hover:text-[#111827] transition-colors font-medium"
           >
-            Увійти
+            {t('landing.login')}
           </Link>
           <Link to="/auth/signup">
-            <Button size="sm">Почати безкоштовно</Button>
+            <Button size="sm">{t('landing.startFree')}</Button>
           </Link>
         </div>
       </nav>
@@ -87,24 +53,23 @@ export function Landing() {
         </div>
 
         <h1 className="font-semibold text-4xl md:text-6xl leading-tight tracking-tight text-[#111827] mb-5">
-          Супутниковий інтелект<br />
-          <span className="text-[#16a34a]">для ваших полів</span>
+          {t('landing.heroTitle1')}<br />
+          <span className="text-[#16a34a]">{t('landing.heroTitle2')}</span>
         </h1>
 
         <p className="text-lg text-[#6b7280] max-w-xl mx-auto leading-relaxed mb-9">
-          Нива об'єднує дані Sentinel-2, машинне навчання та штучний інтелект,
-          щоб дати вам повну картину стану посівів.
+          {t('landing.heroDesc')}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link to="/auth/signup">
             <Button size="lg" icon={<ArrowRight size={18} />}>
-              Почати безкоштовно
+              {t('landing.startFree')}
             </Button>
           </Link>
           <Link to="/auth/login">
             <Button variant="outline" size="lg">
-              Увійти в кабінет
+              {t('landing.signInBtn')}
             </Button>
           </Link>
         </div>
@@ -125,9 +90,9 @@ export function Landing() {
       {/* ── Features ── */}
       <section className="px-6 py-20 max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <p className="text-xs text-[#16a34a] font-semibold uppercase tracking-widest mb-3">Можливості</p>
+          <p className="text-xs text-[#16a34a] font-semibold uppercase tracking-widest mb-3">{t('landing.featuresLabel')}</p>
           <h2 className="font-semibold text-2xl md:text-3xl text-[#111827] tracking-tight">
-            Всі інструменти агронома — в одному місці
+            {t('landing.featuresSectionTitle')}
           </h2>
         </div>
 
@@ -142,8 +107,8 @@ export function Landing() {
                 <div className="w-9 h-9 rounded-lg bg-[#f0fdf4] border border-[#bbf7d0] flex items-center justify-center mb-4">
                   <Icon size={17} className="text-[#16a34a]" />
                 </div>
-                <h3 className="font-semibold text-sm text-[#111827] mb-1.5">{f.titleUk}</h3>
-                <p className="text-sm text-[#6b7280] leading-relaxed">{f.descUk}</p>
+                <h3 className="font-semibold text-sm text-[#111827] mb-1.5">{f.title}</h3>
+                <p className="text-sm text-[#6b7280] leading-relaxed">{f.desc}</p>
               </div>
             )
           })}
@@ -155,14 +120,14 @@ export function Landing() {
         <div className="max-w-xl mx-auto text-center bg-[#f0fdf4] border border-[#bbf7d0] rounded-2xl p-10">
           <Layers size={32} className="text-[#16a34a] mx-auto mb-4 opacity-80" />
           <h2 className="font-semibold text-2xl text-[#111827] mb-3 tracking-tight">
-            Готові до запуску?
+            {t('landing.ctaTitle')}
           </h2>
           <p className="text-[#6b7280] text-sm mb-6">
-            Створіть безкоштовний акаунт і додайте своє перше поле за хвилину.
+            {t('landing.ctaDesc')}
           </p>
           <Link to="/auth/signup">
             <Button size="lg" icon={<ArrowRight size={18} />}>
-              Зареєструватись безкоштовно
+              {t('landing.ctaButton')}
             </Button>
           </Link>
         </div>
@@ -176,7 +141,7 @@ export function Landing() {
           </div>
           <span className="font-semibold text-[#374151] text-sm">Нива</span>
         </div>
-        <p className="text-xs text-[#9ca3af]">© 2025 Нива. Супутниковий інтелект для агросектору.</p>
+        <p className="text-xs text-[#9ca3af]">{t('landing.footerCopyright')}</p>
       </footer>
     </div>
   )

@@ -13,15 +13,14 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Card, CardBody } from '@/components/ui/Card'
-import { formatArea, ALL_CROPS, ALL_SOILS, CROP_LABELS_UK, CROP_LABELS_EN, SOIL_LABELS_UK, SOIL_LABELS_EN } from '@/lib/utils'
+import { formatArea, ALL_CROPS, ALL_SOILS } from '@/lib/utils'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
 
 export function MapPage() {
   const { id } = useParams<{ id?: string }>()
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
-  const isUk = i18n.language === 'uk'
   const isEdit = !!id
 
   const mapRef = useRef<HTMLDivElement>(null)
@@ -41,15 +40,8 @@ export function MapPage() {
   const [drawing, setDrawing] = useState(false)
   const [locating, setLocating] = useState(false)
 
-  const cropOptions = ALL_CROPS.map((c) => ({
-    value: c,
-    label: isUk ? CROP_LABELS_UK[c] : CROP_LABELS_EN[c],
-  }))
-
-  const soilOptions = ALL_SOILS.map((s) => ({
-    value: s,
-    label: isUk ? SOIL_LABELS_UK[s] : SOIL_LABELS_EN[s],
-  }))
+  const cropOptions = ALL_CROPS.map((c) => ({ value: c, label: t(`crops.${c}`) }))
+  const soilOptions = ALL_SOILS.map((s) => ({ value: s, label: t(`soils.${s}`) }))
 
   const computeArea = useCallback(async (feature: Feature<Polygon>) => {
     try {
@@ -68,9 +60,9 @@ export function MapPage() {
       setCropType(field.crop_type)
       setSoilType(field.soil_type)
     }).catch(() => {
-      toast.error(isUk ? 'Поле не знайдено' : 'Field not found')
+      toast.error(t('map.fieldNotFound'))
     })
-  }, [id, isUk])
+  }, [id, t])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
@@ -136,7 +128,7 @@ export function MapPage() {
           accessToken: MAPBOX_TOKEN,
           mapboxgl: mapboxgl as never,
           marker: false,
-          placeholder: isUk ? 'Пошук адреси або міста…' : 'Search address or place…',
+          placeholder: t('map.searchAddress'),
           flyTo: { maxZoom: 15 },
         })
         map.addControl(geocoder as never, 'top-left')
@@ -236,7 +228,7 @@ export function MapPage() {
         setLocating(false)
       },
       () => {
-        toast.error(isUk ? 'Не вдалося визначити місцезнаходження' : 'Could not get your location')
+        toast.error(t('map.locationFailed'))
         setLocating(false)
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -245,11 +237,11 @@ export function MapPage() {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      toast.error(isUk ? 'Введіть назву поля' : 'Enter field name')
+      toast.error(t('map.enterFieldName'))
       return
     }
     if (!polygon) {
-      toast.error(isUk ? 'Намалюйте полігон поля на карті' : 'Draw field polygon on map')
+      toast.error(t('map.drawPolygonFirst'))
       return
     }
     setSaving(true)
@@ -257,15 +249,15 @@ export function MapPage() {
       const payload = { name: name.trim(), crop_type: cropType, soil_type: soilType, geometry: polygon.geometry }
       if (isEdit && id) {
         await fieldsApi.update(id, payload)
-        toast.success(isUk ? 'Поле оновлено' : 'Field updated')
+        toast.success(t('map.fieldUpdated'))
         navigate(`/dashboard/fields/${id}`)
       } else {
         const created = await fieldsApi.create(payload)
-        toast.success(isUk ? 'Поле додано!' : 'Field added!')
+        toast.success(t('map.fieldAdded'))
         navigate(`/dashboard/fields/${created.id}`)
       }
     } catch {
-      toast.error(isUk ? 'Помилка збереження' : 'Save failed')
+      toast.error(t('map.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -277,12 +269,10 @@ export function MapPage() {
       <div className="w-full lg:w-72 lg:shrink-0 flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-[#e5e7eb] z-10 max-h-[45vh] lg:max-h-none overflow-y-auto lg:overflow-visible">
         <div className="px-5 py-4 border-b border-[#f3f4f6]">
           <h1 className="font-semibold text-base text-[#111827] tracking-tight">
-            {isEdit ? (isUk ? 'Редагувати поле' : 'Edit field') : (isUk ? 'Нове поле' : 'New field')}
+            {isEdit ? t('map.editField') : t('map.newField')}
           </h1>
           <p className="text-xs text-[#9ca3af] mt-0.5">
-            {isUk
-              ? 'Намалюйте полігон поля на карті, потім заповніть деталі'
-              : 'Draw field polygon on map, then fill in details'}
+            {t('map.drawInstruction')}
           </p>
         </div>
 
@@ -294,7 +284,7 @@ export function MapPage() {
                 <Ruler size={15} className="text-[#16a34a]" />
               </div>
               <div>
-                <p className="text-xs text-[#9ca3af]">{isUk ? 'Площа поля' : 'Field area'}</p>
+                <p className="text-xs text-[#9ca3af]">{t('map.fieldArea')}</p>
                 <p className="font-semibold text-sm text-[#16a34a] tabular-nums">
                   {areaHa != null ? formatArea(areaHa) : '—'}
                 </p>
@@ -302,8 +292,8 @@ export function MapPage() {
               {polygon && (
                 <button
                   onClick={handleReset}
-                  title={isUk ? 'Скинути' : 'Reset'}
-                  aria-label={isUk ? 'Скинути полігон' : 'Reset polygon'}
+                  title={t('map.reset')}
+                  aria-label={t('map.resetPolygon')}
                   className="ml-auto p-1.5 rounded-lg text-[#9ca3af] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
                 >
                   <RotateCcw size={13} />
@@ -322,7 +312,7 @@ export function MapPage() {
                 loading={locating}
                 icon={<LocateFixed size={14} />}
               >
-                {isUk ? 'Моє місцезнаходження' : 'Use my location'}
+                {t('map.useMyLocation')}
               </Button>
               <Button
                 variant={polygon ? 'outline' : 'primary'}
@@ -331,11 +321,7 @@ export function MapPage() {
                 disabled={drawing}
                 icon={<Pencil size={14} />}
               >
-                {drawing
-                  ? isUk ? 'Малювання…' : 'Drawing…'
-                  : polygon
-                    ? isUk ? 'Перемалювати поле' : 'Redraw field'
-                    : isUk ? 'Намалювати поле' : 'Draw field'}
+                {drawing ? t('map.drawing') : polygon ? t('map.redrawField') : t('map.drawField')}
               </Button>
             </div>
           )}
@@ -345,21 +331,17 @@ export function MapPage() {
             <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg p-3 text-xs space-y-1.5">
               <p className="text-[#16a34a] font-semibold flex items-center gap-1.5">
                 <MousePointerClick size={13} />
-                {drawing
-                  ? isUk ? 'Малюйте контур поля' : 'Draw the field outline'
-                  : isUk ? 'Як намалювати поле' : 'How to draw a field'}
+                {drawing ? t('map.drawFieldOutline') : t('map.howToDrawField')}
               </p>
               {drawing ? (
                 <ul className="text-[#6b7280] space-y-0.5 list-disc list-inside">
-                  <li>{isUk ? 'Клацайте по кутах поля' : 'Click each corner of the field'}</li>
-                  <li>{isUk ? 'Двічі клацніть, щоб завершити' : 'Double-click to finish'}</li>
-                  <li>{isUk ? 'Esc — скасувати' : 'Esc to cancel'}</li>
+                  <li>{t('map.clickCorners')}</li>
+                  <li>{t('map.doubleClickFinish')}</li>
+                  <li>{t('map.escCancel')}</li>
                 </ul>
               ) : (
                 <p className="text-[#6b7280]">
-                  {isUk
-                    ? 'Знайдіть локацію через пошук або «Моє місцезнаходження», потім натисніть «Намалювати поле».'
-                    : 'Find your location via search or “Use my location”, then press “Draw field”.'}
+                  {t('map.findLocation')}
                 </p>
               )}
             </div>
@@ -367,35 +349,35 @@ export function MapPage() {
           {polygon && !drawing && (
             <p className="text-xs text-[#16a34a] flex items-center gap-1.5">
               <MousePointerClick size={13} />
-              {isUk ? 'Перетягуйте точки, щоб уточнити контур' : 'Drag points to fine-tune the outline'}
+              {t('map.dragPoints')}
             </p>
           )}
           {!mapReady && !mapError && (
-            <p className="text-xs text-[#9ca3af]">{isUk ? 'Карта завантажується...' : 'Map loading...'}</p>
+            <p className="text-xs text-[#9ca3af]">{t('map.mapLoading')}</p>
           )}
 
           {/* Form */}
           <div className="space-y-3">
             <Input
-              label={isUk ? 'Назва поля' : 'Field name'}
-              placeholder={isUk ? 'наприклад: Ділянка №3' : 'e.g. Plot #3'}
+              label={t('fields.name')}
+              placeholder={t('map.fieldNamePlaceholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               leftIcon={<MapPin size={14} />}
             />
             <Select
-              label={isUk ? 'Культура' : 'Crop'}
+              label={t('fields.crop')}
               value={cropType}
               onValueChange={(v) => setCropType(v as CropType)}
               options={cropOptions}
-              placeholder={isUk ? 'Оберіть культуру' : 'Select crop'}
+              placeholder={t('map.cropPlaceholder')}
             />
             <Select
-              label={isUk ? 'Тип ґрунту' : 'Soil type'}
+              label={t('fields.soil')}
               value={soilType}
               onValueChange={(v) => setSoilType(v as SoilType)}
               options={soilOptions}
-              placeholder={isUk ? 'Оберіть ґрунт' : 'Select soil'}
+              placeholder={t('map.soilPlaceholder')}
             />
           </div>
 
@@ -409,9 +391,7 @@ export function MapPage() {
             className="w-full"
             icon={<Save size={15} />}
           >
-            {isEdit
-              ? isUk ? 'Зберегти зміни' : 'Save changes'
-              : isUk ? 'Зберегти поле' : 'Save field'}
+            {isEdit ? t('map.saveChanges') : t('map.saveField')}
           </Button>
         </div>
       </div>
@@ -424,12 +404,10 @@ export function MapPage() {
               <AlertCircle size={24} className="text-[#d97706]" />
             </div>
             <h3 className="font-semibold text-[#111827] mb-1.5">
-              {isUk ? 'Карта недоступна' : 'Map unavailable'}
+              {t('map.mapUnavailable')}
             </h3>
             <p className="text-sm text-[#6b7280] max-w-xs leading-relaxed">
-              {isUk
-                ? 'Для відображення карти необхідний токен Mapbox. Додайте VITE_MAPBOX_TOKEN у файл .env.'
-                : 'A Mapbox token is required. Add VITE_MAPBOX_TOKEN to your .env file.'}
+              {t('map.mapboxRequired')}
             </p>
             <code className="mt-4 text-xs bg-[#f9fafb] border border-[#e5e7eb] rounded-lg px-4 py-2 text-[#16a34a] font-mono">
               VITE_MAPBOX_TOKEN=pk.your_token_here

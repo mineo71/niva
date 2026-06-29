@@ -23,9 +23,8 @@ interface CustomTooltipProps {
 }
 
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   if (!active || !payload?.length) return null
-  const isUk = i18n.language === 'uk'
 
   return (
     <div className="bg-white border border-[#e5e7eb] rounded-lg px-3 py-2.5 shadow-md text-xs">
@@ -34,9 +33,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
         <div key={p.name} className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
           <span className="text-[#374151]">
-            {p.name === 'temp_c'
-              ? isUk ? 'Темп.' : 'Temp.'
-              : isUk ? 'Дощ' : 'Rain'}
+            {p.name === 'temp_c' ? t('weather.tempLabel') : t('weather.rainLabel')}
           </span>
           <span className="ml-auto pl-3 tabular-nums font-medium text-[#111827]">
             {p.value.toFixed(1)}{p.name === 'temp_c' ? '°C' : ' мм'}
@@ -48,19 +45,17 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export function WeatherChart({ data, height = 200 }: WeatherChartProps) {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
 
   const formatted = data.map((d) => ({
     ...d,
     label: new Date(d.date).toLocaleDateString(
-      i18n.language === 'uk' ? 'uk-UA' : 'en-US',
+      i18n.language,
       { weekday: 'short', day: 'numeric' }
     ),
   }))
 
-  const summary = i18n.language === 'uk'
-    ? `Графік погоди на ${data.length} днів: температура та опади`
-    : `Weather chart for ${data.length} days: temperature and precipitation`
+  const summary = t('weather.chartSummary', { count: data.length })
 
   return (
     <div role="img" aria-label={summary}>

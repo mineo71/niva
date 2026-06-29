@@ -22,28 +22,21 @@ import { CropIcon } from '@/components/CropIcon'
 import { Tooltip } from '@/components/ui/Tooltip'
 import {
   formatArea, formatDate, isStale, formatRelativeTime,
-  CROP_LABELS_UK, CROP_LABELS_EN,
-  SOIL_LABELS_UK, SOIL_LABELS_EN,
 } from '@/lib/utils'
 
-// ── Inline stale / freshness label (same as Fields.tsx) ──────────────────────
-function NdviTimestamp({
-  updatedAt,
-  lang,
-}: {
-  updatedAt: string | null
-  lang: 'uk' | 'en'
-}) {
+// ── Inline stale / freshness label ───────────────────────────────────────────
+function NdviTimestamp({ updatedAt }: { updatedAt: string | null }) {
+  const { t, i18n } = useTranslation()
   if (!updatedAt) return null
   const stale = isStale(updatedAt)
-  const rel   = formatRelativeTime(updatedAt, lang)
+  const rel = formatRelativeTime(updatedAt, i18n.language)
 
   if (stale) {
     return (
-      <Tooltip content={lang === 'uk' ? 'Супутникові дані старші за 7 днів' : 'Satellite data older than 7 days'}>
+      <Tooltip content={t('fieldDetail.satelliteStale')}>
         <span className="inline-flex items-center gap-1 text-[11px] text-[#d97706] font-medium cursor-help">
           <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] shrink-0" />
-          {lang === 'uk' ? 'застаріло' : 'stale'}
+          {t('fields.stale')}
           <span className="text-[#9ca3af] font-normal">· {rel}</span>
         </span>
       </Tooltip>
@@ -53,17 +46,15 @@ function NdviTimestamp({
   return (
     <span className="inline-flex items-center gap-1 text-[11px] text-[#9ca3af]">
       <Clock size={10} className="shrink-0" />
-      {lang === 'uk' ? `оновлено ${rel}` : `updated ${rel}`}
+      {t('fields.updatedAgo', { rel })}
     </span>
   )
 }
 
 export function FieldDetail() {
   const { id } = useParams<{ id: string }>()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const isUk = i18n.language === 'uk'
-  const lang  = i18n.language as 'uk' | 'en'
 
   const [field, setField]     = useState<FieldResponse | null>(null)
   const [indices, setIndices] = useState<IndicesResponse | null>(null)
@@ -85,7 +76,7 @@ export function FieldDetail() {
       const f = await fieldsApi.get(id)
       setField(f)
     } catch {
-      toast.error(isUk ? 'Поле не знайдено' : 'Field not found')
+      toast.error(t('fieldDetail.notFound'))
       navigate('/dashboard/fields')
     } finally {
       setLoadingField(false)
@@ -101,7 +92,7 @@ export function FieldDetail() {
       setWeather(w)
     } catch { /* non-critical */ }
     finally { setLoadingWeather(false) }
-  }, [id, isUk, navigate])
+  }, [id, t, navigate])
 
   useEffect(() => { loadData() }, [loadData])
 
@@ -111,7 +102,7 @@ export function FieldDetail() {
     try {
       setPredict(await insightsApi.predict(id))
     } catch {
-      toast.error(isUk ? 'Помилка прогнозування' : 'Prediction failed')
+      toast.error(t('fieldDetail.predictionFailed'))
     } finally {
       setPredictingYield(false)
     }
@@ -123,7 +114,7 @@ export function FieldDetail() {
     try {
       setReport(await insightsApi.report(id))
     } catch {
-      toast.error(isUk ? 'Помилка генерації звіту' : 'Report generation failed')
+      toast.error(t('fieldDetail.reportFailed'))
     } finally {
       setGeneratingReport(false)
     }
@@ -154,18 +145,14 @@ export function FieldDetail() {
                 <Badge variant="neutral">
                   <span className="inline-flex items-center gap-1.5">
                     {field && <CropIcon crop={field.crop_type} size={12} />}
-                    {isUk
-                      ? CROP_LABELS_UK[field?.crop_type as keyof typeof CROP_LABELS_UK]
-                      : CROP_LABELS_EN[field?.crop_type as keyof typeof CROP_LABELS_EN]}
+                    {field && t(`crops.${field.crop_type}`, { defaultValue: field.crop_type })}
                   </span>
                 </Badge>
                 <Badge variant="neutral">
-                  {isUk
-                    ? SOIL_LABELS_UK[field?.soil_type as keyof typeof SOIL_LABELS_UK]
-                    : SOIL_LABELS_EN[field?.soil_type as keyof typeof SOIL_LABELS_EN]}
+                  {field && t(`soils.${field.soil_type}`, { defaultValue: field.soil_type })}
                 </Badge>
                 <span className="text-sm font-semibold text-[#16a34a] tabular-nums">
-                  {formatArea(field?.area_ha ?? 0)}
+                  {formatArea(field?.area_ha ?? 0, i18n.language)}
                 </span>
               </div>
             </>
@@ -173,7 +160,7 @@ export function FieldDetail() {
         </div>
         <Link to={`/dashboard/map/${id}`}>
           <Button size="sm" variant="outline" icon={<Pencil size={13} />}>
-            {isUk ? 'Редагувати' : 'Edit'}
+            {t('common.edit')}
           </Button>
         </Link>
       </div>
@@ -185,28 +172,28 @@ export function FieldDetail() {
             <div className="flex items-center gap-2 min-w-0">
               <Satellite size={16} className="text-[#16a34a] shrink-0" />
               <h2 className="font-semibold text-sm text-[#111827]">
-                {isUk ? 'Вегетаційні індекси' : 'Vegetation Indices'}
+                {t('fieldDetail.vegetationIndices')}
               </h2>
               {/* source + freshness */}
               {indices && (
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="text-xs text-[#9ca3af]">{indices.source}</span>
                   <span className="text-[#e5e7eb]">·</span>
-                  <NdviTimestamp updatedAt={field?.ndvi_updated_at ?? null} lang={lang} />
+                  <NdviTimestamp updatedAt={field?.ndvi_updated_at ?? null} />
                 </div>
               )}
             </div>
             <div className="flex items-center gap-1.5">
               {latestNdvi && (
-                <Tooltip content={isUk ? 'NDVI — індекс зеленості: стан і густота посіву' : 'NDVI — greenness index: crop vigour & density'}>
+                <Tooltip content={t('fieldDetail.ndviTooltip')}>
                   <span><NDVIChip value={latestNdvi.ndvi} /></span>
                 </Tooltip>
               )}
-              <Tooltip content={isUk ? 'EVI — покращений вегетаційний індекс, менш чутливий до ґрунту' : 'EVI — enhanced vegetation index, less soil-sensitive'}>
+              <Tooltip content={t('fieldDetail.eviTooltip')}>
                 <button
                   onClick={() => setShowEvi(!showEvi)}
                   aria-pressed={showEvi}
-                  aria-label={`EVI ${showEvi ? (isUk ? 'приховати' : 'hide') : (isUk ? 'показати' : 'show')}`}
+                  aria-label={`EVI ${showEvi ? t('fieldDetail.hide') : t('fieldDetail.show')}`}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
                     showEvi
                       ? 'text-[#2563eb] bg-[#eff6ff] border-[#bfdbfe]'
@@ -216,11 +203,11 @@ export function FieldDetail() {
                   {showEvi ? <Eye size={11} /> : <EyeOff size={11} />} EVI
                 </button>
               </Tooltip>
-              <Tooltip content={isUk ? 'NDMI — вологість рослинності' : 'NDMI — vegetation moisture content'}>
+              <Tooltip content={t('fieldDetail.ndmiTooltip')}>
                 <button
                   onClick={() => setShowNdmi(!showNdmi)}
                   aria-pressed={showNdmi}
-                  aria-label={`NDMI ${showNdmi ? (isUk ? 'приховати' : 'hide') : (isUk ? 'показати' : 'show')}`}
+                  aria-label={`NDMI ${showNdmi ? t('fieldDetail.hide') : t('fieldDetail.show')}`}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors border ${
                     showNdmi
                       ? 'text-[#d97706] bg-[#fffbeb] border-[#fde68a]'
@@ -256,7 +243,7 @@ export function FieldDetail() {
             <div className="flex items-center gap-2">
               <CloudRain size={16} className="text-[#2563eb]" />
               <h2 className="font-semibold text-sm text-[#111827]">
-                {isUk ? 'Погода' : 'Weather'}
+                {t('weather.title')}
               </h2>
             </div>
           </CardHeader>
@@ -278,7 +265,7 @@ export function FieldDetail() {
                     </p>
                   </div>
                   <div className="ml-auto text-right">
-                    <p className="text-xs text-[#9ca3af]">{isUk ? 'Вологість' : 'Humidity'}</p>
+                    <p className="text-xs text-[#9ca3af]">{t('weather.humidity')}</p>
                     <p className="text-sm font-semibold text-[#374151] tabular-nums">
                       {weather.current.humidity}%
                     </p>
@@ -288,7 +275,7 @@ export function FieldDetail() {
               </>
             ) : (
               <div className="flex items-center justify-center h-32 text-[#9ca3af] text-sm">
-                {isUk ? 'Дані недоступні' : 'Data unavailable'}
+                {t('fieldDetail.dataUnavailable')}
               </div>
             )}
           </CardBody>
@@ -303,7 +290,7 @@ export function FieldDetail() {
               <div className="flex items-center gap-2">
                 <TrendingUp size={16} className="text-[#d97706]" />
                 <h2 className="font-semibold text-sm text-[#111827]">
-                  {isUk ? 'Прогноз врожаю' : 'Yield Forecast'}
+                  {t('predict.title')}
                 </h2>
               </div>
             </CardHeader>
@@ -314,14 +301,14 @@ export function FieldDetail() {
                   <div className="bg-[#f9fafb] rounded-xl px-4 py-3.5 border border-[#f3f4f6] flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-1">
-                        {isUk ? 'Очікувана врожайність' : 'Expected yield'}
+                        {t('fieldDetail.expectedYield')}
                       </p>
                       <p className="font-semibold tabular-nums leading-none">
                         <span className="text-[2rem] text-[#111827]">
                           {predict.yield_t_ha.toFixed(2)}
                         </span>
                         <span className="text-sm text-[#9ca3af] ml-1.5">
-                          {isUk ? 'т/га' : 't/ha'}
+                          {t('predict.unit')}
                         </span>
                       </p>
                     </div>
@@ -330,20 +317,16 @@ export function FieldDetail() {
                   {predict.features_filled_from_baseline > 0 && (
                     <p className="text-xs text-[#d97706] flex items-center gap-1.5">
                       <AlertTriangle size={11} className="shrink-0" />
-                      {isUk
-                        ? 'Частина даних взята з базових значень'
-                        : 'Some data filled from baseline'}
+                      {t('fieldDetail.baselineFilled')}
                     </p>
                   )}
                 </div>
               ) : (
                 <p className="text-sm text-[#6b7280] leading-relaxed">
-                  {isUk
-                    ? 'Отримайте ML-прогноз врожайності на основі супутникових та погодних даних.'
-                    : 'Get ML yield prediction based on satellite and weather data.'}
+                  {t('fieldDetail.yieldPrompt')}
                 </p>
               )}
-              <Tooltip content={isUk ? 'ML-прогноз врожайності на основі NDVI, ґрунту та погоди' : 'ML yield forecast from NDVI, soil and weather'}>
+              <Tooltip content={t('fieldDetail.predictTooltip')}>
                 <Button
                   variant={predict ? 'secondary' : 'primary'}
                   onClick={handlePredict}
@@ -351,9 +334,7 @@ export function FieldDetail() {
                   icon={<TrendingUp size={15} />}
                   className="w-full"
                 >
-                  {predict
-                    ? isUk ? 'Оновити прогноз' : 'Refresh forecast'
-                    : isUk ? 'Прогнозувати врожай' : 'Predict yield'}
+                  {predict ? t('fieldDetail.refreshForecast') : t('predict.action')}
                 </Button>
               </Tooltip>
             </CardBody>
@@ -365,7 +346,7 @@ export function FieldDetail() {
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-[#7c3aed]" />
                 <h2 className="font-semibold text-sm text-[#111827]">
-                  {isUk ? "AI Звіт здоров'я" : 'AI Health Report'}
+                  {t('report.title')}
                 </h2>
               </div>
             </CardHeader>
@@ -379,7 +360,7 @@ export function FieldDetail() {
                     <HealthBadge health={report.health} size="lg" />
                     <div className="min-w-0">
                       <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-0.5">
-                        {isUk ? 'Стан рослинності' : 'Crop health'}
+                        {t('fieldDetail.cropHealth')}
                       </p>
                       <p className="text-xs text-[#374151] leading-snug line-clamp-2">
                         {report.summary}
@@ -396,7 +377,7 @@ export function FieldDetail() {
                     <div className="space-y-1.5">
                       <p className="text-[10px] font-semibold text-[#dc2626] uppercase tracking-wide flex items-center gap-1">
                         <AlertTriangle size={10} />
-                        {isUk ? 'Ризики' : 'Risks'}
+                        {t('report.risks')}
                       </p>
                       <ul className="space-y-1">
                         {report.risks.map((risk, i) => (
@@ -413,7 +394,7 @@ export function FieldDetail() {
                     <div className="space-y-1.5">
                       <p className="text-[10px] font-semibold text-[#16a34a] uppercase tracking-wide flex items-center gap-1">
                         <Lightbulb size={10} />
-                        {isUk ? 'Рекомендації' : 'Recommendations'}
+                        {t('report.recommendations')}
                       </p>
                       <ul className="space-y-1">
                         {report.recommendations.map((rec, i) => (
@@ -428,12 +409,10 @@ export function FieldDetail() {
                 </div>
               ) : (
                 <p className="text-sm text-[#6b7280] leading-relaxed">
-                  {isUk
-                    ? 'Генеруйте детальний AI-звіт про стан рослинності та рекомендації.'
-                    : 'Generate a detailed AI report on crop health and recommendations.'}
+                  {t('fieldDetail.reportPrompt')}
                 </p>
               )}
-              <Tooltip content={isUk ? 'AI аналізує дані поля та дає рекомендації агронома' : 'AI analyses field data and gives agronomy recommendations'}>
+              <Tooltip content={t('fieldDetail.aiTooltip')}>
                 <Button
                   variant={report ? 'secondary' : 'primary'}
                   onClick={handleReport}
@@ -441,9 +420,7 @@ export function FieldDetail() {
                   icon={<FileText size={15} />}
                   className="w-full"
                 >
-                  {report
-                    ? isUk ? 'Оновити звіт' : 'Refresh report'
-                    : isUk ? 'Генерувати AI звіт' : 'Generate AI report'}
+                  {report ? t('fieldDetail.refreshReport') : t('report.action')}
                 </Button>
               </Tooltip>
             </CardBody>
@@ -457,33 +434,29 @@ export function FieldDetail() {
         <Card>
           <CardHeader>
             <h2 className="font-semibold text-sm text-[#111827]">
-              {isUk ? 'Деталі поля' : 'Field Details'}
+              {t('fieldDetail.fieldDetails')}
             </h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
-                { label: isUk ? 'Назва' : 'Name',    value: field.name },
+                { label: t('fields.name'),    value: field.name },
                 {
-                  label: isUk ? 'Площа' : 'Area',
-                  value: formatArea(field.area_ha),
+                  label: t('fields.area'),
+                  value: formatArea(field.area_ha, i18n.language),
                   mono: true, accent: true,
                 },
                 {
-                  label: isUk ? 'Культура' : 'Crop',
-                  value: isUk
-                    ? CROP_LABELS_UK[field.crop_type as keyof typeof CROP_LABELS_UK]
-                    : CROP_LABELS_EN[field.crop_type as keyof typeof CROP_LABELS_EN],
+                  label: t('fields.crop'),
+                  value: t(`crops.${field.crop_type}`, { defaultValue: field.crop_type }),
                 },
                 {
-                  label: isUk ? 'Ґрунт' : 'Soil',
-                  value: isUk
-                    ? SOIL_LABELS_UK[field.soil_type as keyof typeof SOIL_LABELS_UK]
-                    : SOIL_LABELS_EN[field.soil_type as keyof typeof SOIL_LABELS_EN],
+                  label: t('fields.soil_label'),
+                  value: t(`soils.${field.soil_type}`, { defaultValue: field.soil_type }),
                 },
                 { label: 'ID',                       value: field.id,    mono: true },
                 {
-                  label: isUk ? 'Створено' : 'Created',
+                  label: t('fields.createdAt'),
                   value: formatDate(field.created_at, i18n.language),
                 },
               ].map(({ label, value, mono, accent }) => (
