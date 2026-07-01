@@ -163,7 +163,13 @@
     "deleteSuccess": "Champ supprimé",
     "deleteError": "Erreur de suppression",
     "stale": "obsolète",
-    "updatedAgo": "mis à jour {{rel}}"
+    "updatedAgo": "mis à jour {{rel}}",
+    "filterAllCrops": "Toutes les cultures",
+    "sortBy": "Trier",
+    "sortNewest": "Plus récents",
+    "sortName": "Nom (A–Z)",
+    "sortAreaDesc": "Surface (grand→petit)",
+    "sortNdviDesc": "NDVI (haut→bas)"
   },
   "fieldDetail": {
     "vegetationIndices": "Indices de végétation",

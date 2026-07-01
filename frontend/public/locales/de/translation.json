@@ -163,7 +163,13 @@
     "deleteSuccess": "Feld gelöscht",
     "deleteError": "Löschfehler",
     "stale": "veraltet",
-    "updatedAgo": "aktualisiert {{rel}}"
+    "updatedAgo": "aktualisiert {{rel}}",
+    "filterAllCrops": "Alle Kulturen",
+    "sortBy": "Sortieren",
+    "sortNewest": "Neueste",
+    "sortName": "Name (A–Z)",
+    "sortAreaDesc": "Fläche (groß→klein)",
+    "sortNdviDesc": "NDVI (hoch→niedrig)"
   },
   "fieldDetail": {
     "vegetationIndices": "Vegetationsindizes",

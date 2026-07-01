@@ -163,7 +163,13 @@
     "deleteSuccess": "Field deleted",
     "deleteError": "Delete failed",
     "stale": "stale",
-    "updatedAgo": "updated {{rel}}"
+    "updatedAgo": "updated {{rel}}",
+    "filterAllCrops": "All crops",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest",
+    "sortName": "Name (A–Z)",
+    "sortAreaDesc": "Area (high→low)",
+    "sortNdviDesc": "NDVI (high→low)"
   },
   "fieldDetail": {
     "vegetationIndices": "Vegetation Indices",

@@ -163,7 +163,13 @@
     "deleteSuccess": "Поле видалено",
     "deleteError": "Помилка видалення",
     "stale": "застаріло",
-    "updatedAgo": "оновлено {{rel}}"
+    "updatedAgo": "оновлено {{rel}}",
+    "filterAllCrops": "Усі культури",
+    "sortBy": "Сортувати",
+    "sortNewest": "Найновіші",
+    "sortName": "Назва (А–Я)",
+    "sortAreaDesc": "Площа (більша→менша)",
+    "sortNdviDesc": "NDVI (вищий→нижчий)"
   },
   "fieldDetail": {
     "vegetationIndices": "Вегетаційні індекси",

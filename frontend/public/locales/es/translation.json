@@ -163,7 +163,13 @@
     "deleteSuccess": "Campo eliminado",
     "deleteError": "Error al eliminar",
     "stale": "desactualizado",
-    "updatedAgo": "actualizado {{rel}}"
+    "updatedAgo": "actualizado {{rel}}",
+    "filterAllCrops": "Todos los cultivos",
+    "sortBy": "Ordenar",
+    "sortNewest": "Más recientes",
+    "sortName": "Nombre (A–Z)",
+    "sortAreaDesc": "Área (mayor→menor)",
+    "sortNdviDesc": "NDVI (alto→bajo)"
   },
   "fieldDetail": {
     "vegetationIndices": "Índices de vegetación",

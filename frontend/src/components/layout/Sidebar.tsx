@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 import {
   LayoutDashboard,
@@ -6,17 +6,13 @@ import {
   Map,
   Settings,
   User,
-  LogOut,
   ChevronLeft,
   ChevronRight,
   X,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
-import { authApi } from '@/api/auth'
 import { cn } from '@/lib/utils'
-import { toast } from 'react-toastify'
 
 interface NavItem {
   to: string
@@ -38,22 +34,12 @@ const bottomNav: NavItem[] = [
 
 export function Sidebar() {
   const { t } = useTranslation()
-  const { logout } = useAuthStore()
   const { sidebarCollapsed, toggleSidebar, mobileSidebarOpen, setMobileSidebar } = useUIStore()
-  const navigate = useNavigate()
 
   // collapse styling applies on desktop only (lg+); mobile drawer is always full-width
   const c = sidebarCollapsed
 
   const closeMobile = () => setMobileSidebar(false)
-
-  const handleLogout = async () => {
-    closeMobile()
-    try { await authApi.logout() } catch { /* ignore */ }
-    logout()
-    navigate('/auth/login')
-    toast.success(t('sidebar.loggedOut'))
-  }
 
   // Nav items are large on mobile/tablet (drawer) and compact on desktop (lg+).
   const renderNavItem = ({ to, icon: Icon, key, end }: NavItem) => (
@@ -145,21 +131,6 @@ export function Sidebar() {
           >
             {c ? <ChevronRight className="size-5 shrink-0" /> : <ChevronLeft className="size-5 shrink-0" />}
             <span className={cn(c && 'lg:hidden')}>{t('sidebar.collapseMenu')}</span>
-          </button>
-
-          {/* logout */}
-          <button
-            onClick={handleLogout}
-            title={c ? t('nav.logout') : undefined}
-            className={cn(
-              'w-full flex items-center gap-3.5 px-3.5 py-3 rounded-lg font-medium',
-              'text-base lg:text-[15px] lg:py-2.5 lg:px-3',
-              'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
-              c && 'lg:justify-center lg:px-0'
-            )}
-          >
-            <LogOut className="size-6 lg:size-5 shrink-0" />
-            <span className={cn(c && 'lg:hidden')}>{t('nav.logout')}</span>
           </button>
         </div>
       </aside>

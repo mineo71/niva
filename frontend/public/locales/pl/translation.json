@@ -163,7 +163,13 @@
     "deleteSuccess": "Pole usunięte",
     "deleteError": "Błąd usuwania",
     "stale": "nieaktualne",
-    "updatedAgo": "zaktualizowano {{rel}}"
+    "updatedAgo": "zaktualizowano {{rel}}",
+    "filterAllCrops": "Wszystkie uprawy",
+    "sortBy": "Sortuj",
+    "sortNewest": "Najnowsze",
+    "sortName": "Nazwa (A–Z)",
+    "sortAreaDesc": "Powierzchnia (duża→mała)",
+    "sortNdviDesc": "NDVI (wysoki→niski)"
   },
   "fieldDetail": {
     "vegetationIndices": "Wskaźniki wegetacji",

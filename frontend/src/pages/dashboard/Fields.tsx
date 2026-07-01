@@ -7,6 +7,7 @@ import { fieldsApi } from '@/api/fields'
 import type { FieldResponse } from '@/types'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
 import { Card, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { SkeletonCard } from '@/components/ui/Skeleton'
@@ -15,9 +16,12 @@ import { NDVIChip } from '@/components/NDVIColorScale'
 import { Sparkline } from '@/components/Sparkline'
 import { CropIcon } from '@/components/CropIcon'
 import { Onboarding } from '@/components/Onboarding'
+import { fieldPreviewUrl } from '@/lib/mapPreview'
 import {
   formatArea, formatDate, formatRelativeTime, isStale,
 } from '@/lib/utils'
+
+type SortKey = 'newest' | 'name' | 'area' | 'ndvi'
 
 // ── Inline stale / freshness label ────────────────────────────────────────────
 function NdviTimestamp({ updatedAt }: { updatedAt: string | null }) {
@@ -51,6 +55,8 @@ export function Fields() {
   const [fields, setFields] = useState<FieldResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch]   = useState('')
+  const [cropFilter, setCropFilter] = useState('all')
+  const [sortBy, setSortBy] = useState<SortKey>('newest')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
@@ -67,10 +73,33 @@ export function Fields() {
 
   useEffect(() => { load() }, []) // eslint-disable-line
 
-  const filtered = fields.filter((f) =>
-    f.name.toLowerCase().includes(search.toLowerCase()) ||
-    f.crop_type.includes(search.toLowerCase())
-  )
+  // crop options present in the user's fields (for the filter dropdown)
+  const cropsPresent = Array.from(new Set(fields.map((f) => f.crop_type)))
+  const cropOptions = [
+    { value: 'all', label: t('fields.filterAllCrops') },
+    ...cropsPresent.map((c) => ({ value: c, label: t(`crops.${c}`, { defaultValue: c }) })),
+  ]
+  const sortOptions = [
+    { value: 'newest', label: t('fields.sortNewest') },
+    { value: 'name', label: t('fields.sortName') },
+    { value: 'area', label: t('fields.sortAreaDesc') },
+    { value: 'ndvi', label: t('fields.sortNdviDesc') },
+  ]
+
+  const filtered = fields
+    .filter((f) =>
+      (cropFilter === 'all' || f.crop_type === cropFilter) &&
+      (f.name.toLowerCase().includes(search.toLowerCase()) ||
+        f.crop_type.includes(search.toLowerCase()))
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name': return a.name.localeCompare(b.name)
+        case 'area': return b.area_ha - a.area_ha
+        case 'ndvi': return (b.latest_ndvi ?? -1) - (a.latest_ndvi ?? -1)
+        default: return b.created_at.localeCompare(a.created_at) // newest
+      }
+    })
 
   const handleDelete = async () => {
     if (!deleteId) return
@@ -101,21 +130,45 @@ export function Fields() {
             {t('fields.found', { count: fields.length })}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <Link to="/dashboard/map" className="hidden sm:block">
+          <Button size="sm" icon={<Plus size={14} />}>
+            {t('fields.new')}
+          </Button>
+        </Link>
+      </div>
+
+      {/* Toolbar: search + filter + sort */}
+      {!loading && fields.length > 0 && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <Input
             placeholder={t('fields.searchPlaceholder')}
             leftIcon={<Search size={15} />}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-52"
+            className="sm:w-56"
           />
-          <Link to="/dashboard/map">
-            <Button size="sm" icon={<Plus size={14} />}>
+          <div className="flex items-center gap-2">
+            <Select
+              value={cropFilter}
+              onValueChange={setCropFilter}
+              options={cropOptions}
+              className="flex-1 sm:flex-none sm:w-40"
+            />
+            <Select
+              value={sortBy}
+              onValueChange={(v) => setSortBy(v as SortKey)}
+              options={sortOptions}
+              placeholder={t('fields.sortBy')}
+              className="flex-1 sm:flex-none sm:w-48"
+            />
+          </div>
+          <Link to="/dashboard/map" className="sm:hidden">
+            <Button size="sm" icon={<Plus size={14} />} className="w-full">
               {t('fields.new')}
             </Button>
           </Link>
         </div>
-      </div>
+      )}
 
       {/* Grid */}
       {loading ? (
@@ -137,9 +190,25 @@ export function Fields() {
             const hasTrend   = field.ndvi_trend.length >= 2
             const hasNdvi    = field.latest_ndvi != null
             const stale      = isStale(field.ndvi_updated_at)
+            const previewUrl = fieldPreviewUrl(field)
 
             return (
-              <Card key={field.id} hover className="group">
+              <Card key={field.id} hover className="group overflow-hidden">
+                {previewUrl && (
+                  <Link to={`/dashboard/fields/${field.id}`} className="block relative h-32 bg-[#f3f4f6]">
+                    <img
+                      src={previewUrl}
+                      alt={field.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                    {hasNdvi && (
+                      <div className="absolute top-2 right-2">
+                        <NDVIChip value={field.latest_ndvi!} />
+                      </div>
+                    )}
+                  </Link>
+                )}
                 <CardBody className="flex flex-col gap-3">
                   {/* ── Top row: crop icon + name + actions ── */}
                   <div className="flex items-start justify-between">
