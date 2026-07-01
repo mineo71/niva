@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import type { LucideIcon } from 'lucide-react'
 import {
   LayoutDashboard,
   Layers,
@@ -17,10 +18,20 @@ import { authApi } from '@/api/auth'
 import { cn } from '@/lib/utils'
 import { toast } from 'react-toastify'
 
-const navItems = [
+interface NavItem {
+  to: string
+  icon: LucideIcon
+  key: string
+  end?: boolean
+}
+
+const mainNav: NavItem[] = [
   { to: '/dashboard', icon: LayoutDashboard, key: 'nav.overview', end: true },
   { to: '/dashboard/fields', icon: Layers, key: 'nav.fields' },
   { to: '/dashboard/map', icon: Map, key: 'nav.map' },
+]
+
+const bottomNav: NavItem[] = [
   { to: '/dashboard/profile', icon: User, key: 'settings.profile' },
   { to: '/dashboard/settings', icon: Settings, key: 'nav.settings' },
 ]
@@ -44,6 +55,30 @@ export function Sidebar() {
     toast.success(t('sidebar.loggedOut'))
   }
 
+  // Nav items are large on mobile/tablet (drawer) and compact on desktop (lg+).
+  const renderNavItem = ({ to, icon: Icon, key, end }: NavItem) => (
+    <NavLink
+      key={to}
+      to={to}
+      end={end}
+      onClick={closeMobile}
+      title={c ? t(key) : undefined}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-3.5 px-3.5 py-3 rounded-lg font-medium transition-colors duration-150',
+          'text-base lg:text-[15px] lg:py-2.5 lg:px-3',
+          isActive
+            ? 'bg-[#f0fdf4] text-[#16a34a]'
+            : 'text-[#6b7280] hover:text-[#111827] hover:bg-white',
+          c && 'lg:justify-center lg:px-0'
+        )
+      }
+    >
+      <Icon className="size-6 lg:size-5 shrink-0" />
+      <span className={cn(c && 'lg:hidden')}>{t(key)}</span>
+    </NavLink>
+  )
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -59,89 +94,71 @@ export function Sidebar() {
         className={cn(
           'flex flex-col bg-[#f9fafb] border-r border-[#e5e7eb] shrink-0 z-40',
           'transition-transform duration-200 ease-in-out',
-          // mobile: fixed drawer, full width, slide in/out
-          'fixed inset-y-0 left-0 w-64',
+          // mobile: fixed drawer, slide in/out
+          'fixed inset-y-0 left-0 w-72',
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
           // desktop: static, collapsible
-          'lg:static lg:translate-x-0 lg:transition-[width]',
-          c ? 'lg:w-14' : 'lg:w-56'
+          'lg:static lg:translate-x-0 lg:w-56 lg:transition-[width]',
+          c && 'lg:w-16'
         )}
       >
-        {/* Logo + collapse toggle (top) */}
+        {/* Logo (top) */}
         <div
           className={cn(
-            'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4',
-            c && 'lg:flex-col lg:justify-center lg:gap-1.5 lg:px-0'
+            'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4 shrink-0',
+            c && 'lg:justify-center lg:px-0'
           )}
         >
-          <div className="flex items-center gap-2.5">
-            <img src="/niva-logo.png" alt="Niva" className="shrink-0 w-9 h-9 rounded-lg" />
-            <span className={cn('font-semibold text-[#111827] text-[15px] tracking-tight', c && 'lg:hidden')}>
-              Нива
-            </span>
-          </div>
+          <img src="/niva-logo.png" alt="Niva" className="shrink-0 w-9 h-9 rounded-lg" />
+          <span className={cn('font-semibold text-[#111827] text-base tracking-tight', c && 'lg:hidden')}>
+            Нива
+          </span>
+
+          {/* mobile close */}
+          <button
+            onClick={closeMobile}
+            aria-label={t('sidebar.closeMenu')}
+            className="lg:hidden ml-auto w-9 h-9 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Main navigation */}
+        <nav className="flex-1 px-2.5 py-3 space-y-1 overflow-y-auto">
+          {mainNav.map(renderNavItem)}
+        </nav>
+
+        {/* Bottom: profile / settings / collapse / logout */}
+        <div className="px-2.5 py-3 border-t border-[#e5e7eb] space-y-1">
+          {bottomNav.map(renderNavItem)}
 
           {/* desktop collapse toggle */}
           <button
             onClick={toggleSidebar}
             aria-label={c ? t('sidebar.expandMenu') : t('sidebar.collapseMenu')}
             className={cn(
-              'hidden lg:flex w-6 h-6 rounded-md items-center justify-center shrink-0',
-              'text-[#9ca3af] hover:text-[#374151] hover:bg-white border border-transparent hover:border-[#e5e7eb]',
-              'transition-colors duration-150',
-              !c && 'ml-auto'
+              'hidden lg:flex w-full items-center gap-3.5 px-3 py-2.5 rounded-lg text-[15px] font-medium',
+              'text-[#9ca3af] hover:text-[#374151] hover:bg-white transition-colors duration-150',
+              c && 'lg:justify-center lg:px-0'
             )}
           >
-            {c ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {c ? <ChevronRight className="size-5 shrink-0" /> : <ChevronLeft className="size-5 shrink-0" />}
+            <span className={cn(c && 'lg:hidden')}>{t('sidebar.collapseMenu')}</span>
           </button>
 
-          {/* mobile close */}
-          <button
-            onClick={closeMobile}
-            aria-label={t('sidebar.closeMenu')}
-            className="lg:hidden ml-auto w-7 h-7 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-2.5 py-3 space-y-1 overflow-y-auto">
-          {navItems.map(({ to, icon: Icon, key, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={closeMobile}
-              title={c ? t(key) : undefined}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium transition-colors duration-150',
-                  isActive
-                    ? 'bg-[#f0fdf4] text-[#16a34a]'
-                    : 'text-[#6b7280] hover:text-[#111827] hover:bg-white',
-                  c && 'lg:justify-center lg:px-0'
-                )
-              }
-            >
-              <Icon size={20} className="shrink-0" />
-              <span className={cn(c && 'lg:hidden')}>{t(key)}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Logout */}
-        <div className="px-2.5 py-3 border-t border-[#e5e7eb]">
+          {/* logout */}
           <button
             onClick={handleLogout}
             title={c ? t('nav.logout') : undefined}
             className={cn(
-              'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium',
+              'w-full flex items-center gap-3.5 px-3.5 py-3 rounded-lg font-medium',
+              'text-base lg:text-[15px] lg:py-2.5 lg:px-3',
               'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
               c && 'lg:justify-center lg:px-0'
             )}
           >
-            <LogOut size={20} className="shrink-0" />
+            <LogOut className="size-6 lg:size-5 shrink-0" />
             <span className={cn(c && 'lg:hidden')}>{t('nav.logout')}</span>
           </button>
         </div>
