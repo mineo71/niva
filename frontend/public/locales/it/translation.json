@@ -260,5 +260,10 @@
     "closeMenu": "Chiudi menu",
     "openMenu": "Apri menu",
     "loggedOut": "Disconnesso con successo"
+  },
+  "validation": {
+    "waterUrbanBarren": "Questa area non sembra terreno coltivato. I dati satellitari la classificano come acqua, sviluppo urbano o roccia nuda.",
+    "forestPerennial": "Questa area non sembra una coltura annuale. I dati satellitari la classificano come vegetazione perenne stabile o foresta densa.",
+    "fieldAreaRange": "La superficie del campo deve essere compresa tra 0,1 e 10.000 ettari."
   }
 }

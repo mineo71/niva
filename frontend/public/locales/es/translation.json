@@ -260,5 +260,10 @@
     "closeMenu": "Cerrar menú",
     "openMenu": "Abrir menú",
     "loggedOut": "Sesión cerrada correctamente"
+  },
+  "validation": {
+    "waterUrbanBarren": "Esta zona no parece tierra de cultivo. Los datos satelitales la clasifican como agua, desarrollo urbano o roca desnuda.",
+    "forestPerennial": "Esta zona no parece cultivo anual. Los datos satelitales la clasifican como vegetación perenne estable o bosque denso.",
+    "fieldAreaRange": "La superficie del campo debe estar entre 0,1 y 10.000 hectáreas."
   }
 }
