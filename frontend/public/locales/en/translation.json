@@ -17,7 +17,10 @@
     "search": "Search",
     "noData": "No data",
     "moreActions": "More actions",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "interfaceLanguage": "Interface language",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right"
   },
   "auth": {
     "login": "Log in",

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
+import { LanguageSelect } from '@/components/LanguageSelect'
 
 const featureIcons = [Satellite, TrendingUp, CloudRain, Leaf, Map, BarChart3]
 
@@ -96,7 +97,7 @@ export function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-8 h-14 border-b border-[#f3f4f6] bg-white/90 backdrop-blur-md">
         <div className="flex items-center gap-2">
           <img src="/niva-logo.png" alt="Niva" className="w-9 h-9 rounded-lg" />
-          <span className="font-semibold text-[#111827] text-lg tracking-tight">Нива</span>
+          <span className="hidden sm:inline font-semibold text-[#111827] text-lg tracking-tight">Нива</span>
         </div>
         <div className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((l) => (
@@ -109,15 +110,16 @@ export function Landing() {
             </a>
           ))}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSelect />
           <Link
             to="/auth/login"
-            className="text-sm text-[#6b7280] hover:text-[#111827] transition-colors font-medium"
+            className="hidden sm:inline text-sm text-[#6b7280] hover:text-[#111827] transition-colors font-medium"
           >
             {t('landing.login')}
           </Link>
           <Link to="/auth/signup">
-            <Button size="sm">{t('landing.startFree')}</Button>
+            <Button size="sm" className="whitespace-nowrap">{t('landing.startFree')}</Button>
           </Link>
         </div>
       </nav>

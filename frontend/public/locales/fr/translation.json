@@ -17,7 +17,10 @@
     "search": "Rechercher",
     "noData": "Aucune donnée",
     "moreActions": "Plus d'actions",
-    "skipToContent": "Aller au contenu"
+    "skipToContent": "Aller au contenu",
+    "interfaceLanguage": "Langue de l'interface",
+    "scrollLeft": "Défiler à gauche",
+    "scrollRight": "Défiler à droite"
   },
   "auth": {
     "login": "Se connecter",

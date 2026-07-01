@@ -17,7 +17,10 @@
     "search": "Suchen",
     "noData": "Keine Daten",
     "moreActions": "Weitere Aktionen",
-    "skipToContent": "Zum Inhalt springen"
+    "skipToContent": "Zum Inhalt springen",
+    "interfaceLanguage": "Oberflächensprache",
+    "scrollLeft": "Nach links scrollen",
+    "scrollRight": "Nach rechts scrollen"
   },
   "auth": {
     "login": "Anmelden",

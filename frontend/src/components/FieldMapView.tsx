@@ -351,7 +351,7 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm max-w-[calc(100%-1.5rem)]">
           <button
             onClick={() => scrollTimeline(-1)}
-            aria-label="scroll left"
+            aria-label={t('common.scrollLeft')}
             className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-[#6b7280] hover:bg-[#f3f4f6] cursor-pointer"
           >
             <ChevronLeft size={15} />
@@ -381,7 +381,7 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
           </div>
           <button
             onClick={() => scrollTimeline(1)}
-            aria-label="scroll right"
+            aria-label={t('common.scrollRight')}
             className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-[#6b7280] hover:bg-[#f3f4f6] cursor-pointer"
           >
             <ChevronRight size={15} />

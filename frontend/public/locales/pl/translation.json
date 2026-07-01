@@ -17,7 +17,10 @@
     "search": "Szukaj",
     "noData": "Brak danych",
     "moreActions": "Więcej akcji",
-    "skipToContent": "Przejdź do treści"
+    "skipToContent": "Przejdź do treści",
+    "interfaceLanguage": "Język interfejsu",
+    "scrollLeft": "Przewiń w lewo",
+    "scrollRight": "Przewiń w prawo"
   },
   "auth": {
     "login": "Zaloguj się",
