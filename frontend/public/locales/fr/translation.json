@@ -201,7 +201,9 @@
     "classPoor": "Faible",
     "loadingImagery": "Chargement de l'image…",
     "noImagery": "Pas d'image sans nuages pour cette date",
-    "ndviHeatmap": "Carte thermique NDVI"
+    "ndviHeatmap": "Carte thermique NDVI",
+    "recenter": "Recentrer sur le champ",
+    "opacity": "Opacité de la carte thermique"
   },
   "crops": {
     "wheat": "Blé",

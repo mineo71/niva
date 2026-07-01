@@ -201,7 +201,9 @@
     "classPoor": "Незадовільно",
     "loadingImagery": "Завантаження знімка…",
     "noImagery": "Немає безхмарного знімка на цю дату",
-    "ndviHeatmap": "Теплова карта NDVI"
+    "ndviHeatmap": "Теплова карта NDVI",
+    "recenter": "Центрувати на полі",
+    "opacity": "Прозорість теплокарти"
   },
   "crops": {
     "wheat": "Пшениця",

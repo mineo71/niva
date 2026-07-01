@@ -201,7 +201,9 @@
     "classPoor": "Scarso",
     "loadingImagery": "Caricamento immagine…",
     "noImagery": "Nessuna immagine senza nuvole per questa data",
-    "ndviHeatmap": "Mappa termica NDVI"
+    "ndviHeatmap": "Mappa termica NDVI",
+    "recenter": "Centra sul campo",
+    "opacity": "Opacità mappa termica"
   },
   "crops": {
     "wheat": "Grano",

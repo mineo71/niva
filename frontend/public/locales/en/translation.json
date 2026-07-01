@@ -201,7 +201,9 @@
     "classPoor": "Poor",
     "loadingImagery": "Loading imagery…",
     "noImagery": "No cloud-free image for this date",
-    "ndviHeatmap": "NDVI heatmap"
+    "ndviHeatmap": "NDVI heatmap",
+    "recenter": "Recenter on field",
+    "opacity": "Heatmap opacity"
   },
   "crops": {
     "wheat": "Wheat",

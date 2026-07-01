@@ -201,7 +201,9 @@
     "classPoor": "Deficiente",
     "loadingImagery": "Cargando imagen…",
     "noImagery": "Sin imagen despejada para esta fecha",
-    "ndviHeatmap": "Mapa de calor NDVI"
+    "ndviHeatmap": "Mapa de calor NDVI",
+    "recenter": "Centrar en el campo",
+    "opacity": "Opacidad del mapa de calor"
   },
   "crops": {
     "wheat": "Trigo",

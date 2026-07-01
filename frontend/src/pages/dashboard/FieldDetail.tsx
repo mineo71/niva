@@ -177,7 +177,7 @@ export function FieldDetail() {
               </h2>
             </div>
           </CardHeader>
-          <CardBody>
+          <CardBody className="p-2.5">
             <FieldMapView field={field} />
           </CardBody>
         </Card>

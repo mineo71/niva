@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 import {
   LayoutDashboard,
@@ -51,7 +51,7 @@ export function Sidebar() {
       title={c ? t(key) : undefined}
       className={({ isActive }) =>
         cn(
-          'flex items-center gap-3.5 px-3.5 py-3 rounded-lg font-medium transition-colors duration-150',
+          'flex items-center gap-3.5 px-3.5 py-3 rounded-lg font-medium transition-colors duration-150 cursor-pointer',
           'text-base lg:text-[15px] lg:py-2.5 lg:px-3',
           isActive
             ? 'bg-[#f0fdf4] text-[#16a34a]'
@@ -91,20 +91,26 @@ export function Sidebar() {
         {/* Logo (top) */}
         <div
           className={cn(
-            'flex items-center gap-2.5 border-b border-[#e5e7eb] h-14 px-4 shrink-0',
+            'flex items-center gap-2.5 border-b border-[#e5e7eb] h-16 px-4 shrink-0',
             c && 'lg:justify-center lg:px-0'
           )}
         >
-          <img src="/niva-logo.png" alt="Niva" className="shrink-0 w-9 h-9 rounded-lg" />
-          <span className={cn('font-semibold text-[#111827] text-base tracking-tight', c && 'lg:hidden')}>
-            Нива
-          </span>
+          <Link
+            to="/"
+            onClick={closeMobile}
+            className={cn('flex items-center gap-2.5 cursor-pointer', c && 'lg:justify-center')}
+          >
+            <img src="/niva-logo.png" alt="Niva" className="shrink-0 w-11 h-11 rounded-xl" />
+            <span className={cn('font-semibold text-[#111827] text-lg tracking-tight', c && 'lg:hidden')}>
+              Нива
+            </span>
+          </Link>
 
           {/* mobile close */}
           <button
             onClick={closeMobile}
             aria-label={t('sidebar.closeMenu')}
-            className="lg:hidden ml-auto w-9 h-9 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white"
+            className="lg:hidden ml-auto w-9 h-9 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#374151] hover:bg-white cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -124,7 +130,7 @@ export function Sidebar() {
             onClick={toggleSidebar}
             aria-label={c ? t('sidebar.expandMenu') : t('sidebar.collapseMenu')}
             className={cn(
-              'hidden lg:flex w-full items-center gap-3.5 px-3 py-2.5 rounded-lg text-[15px] font-medium',
+              'hidden lg:flex w-full items-center gap-3.5 px-3 py-2.5 rounded-lg text-[15px] font-medium cursor-pointer',
               'text-[#9ca3af] hover:text-[#374151] hover:bg-white transition-colors duration-150',
               c && 'lg:justify-center lg:px-0'
             )}

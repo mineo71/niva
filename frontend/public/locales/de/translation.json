@@ -201,7 +201,9 @@
     "classPoor": "Schlecht",
     "loadingImagery": "Bild wird geladen…",
     "noImagery": "Kein wolkenfreies Bild für dieses Datum",
-    "ndviHeatmap": "NDVI-Heatmap"
+    "ndviHeatmap": "NDVI-Heatmap",
+    "recenter": "Auf Feld zentrieren",
+    "opacity": "Heatmap-Deckkraft"
   },
   "crops": {
     "wheat": "Weizen",

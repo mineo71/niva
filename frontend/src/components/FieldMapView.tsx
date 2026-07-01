@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useTranslation } from 'react-i18next'
-import { Loader2, AlertCircle } from 'lucide-react'
+import {
+  Loader2, AlertCircle, ChevronLeft, ChevronRight, Crosshair, SlidersHorizontal,
+} from 'lucide-react'
 import { insightsApi } from '@/api/insights'
 import type { FieldResponse, TimelinePoint } from '@/types'
 import { formatArea, formatDate } from '@/lib/utils'
@@ -30,6 +32,8 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
   const mapInstance = useRef<any>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const popupRef = useRef<any>(null)
+  const boundsRef = useRef<[[number, number], [number, number]] | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const reqId = useRef(0)
 
   const [ready, setReady] = useState(false)
@@ -38,8 +42,20 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
   const [selected, setSelected] = useState<string | null>(null)
   const [imgLoading, setImgLoading] = useState(false)
   const [imgMissing, setImgMissing] = useState(false)
+  const [opacity, setOpacity] = useState(0.85)
+  const [showOpacity, setShowOpacity] = useState(false)
 
   const selectedPoint = timeline.find((d) => d.date === selected) ?? null
+
+  const recenter = () => {
+    if (mapInstance.current && boundsRef.current) {
+      mapInstance.current.fitBounds(boundsRef.current, { padding: 60, duration: 600 })
+    }
+  }
+
+  const scrollTimeline = (dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' })
+  }
 
   // ── init map ────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -62,6 +78,7 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
         [Math.min(...lons), Math.min(...lats)],
         [Math.max(...lons), Math.max(...lats)],
       ]
+      boundsRef.current = bounds
 
       const map = new mapboxgl.Map({
         container: mapRef.current,
@@ -142,6 +159,12 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
     }
   }, [field.id])
 
+  // keep the selected chip scrolled into view
+  useEffect(() => {
+    const el = scrollRef.current?.querySelector('[data-active="true"]') as HTMLElement | null
+    el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  }, [selected, timeline])
+
   // ── load heatmap for selected date ────────────────────────────────────────
   useEffect(() => {
     if (!ready || !selected || !mapInstance.current) return
@@ -168,7 +191,7 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
               id: 'ndvi-layer',
               type: 'raster',
               source: 'ndvi-img',
-              paint: { 'raster-opacity': 0.85, 'raster-fade-duration': 0 },
+              paint: { 'raster-opacity': opacity, 'raster-fade-duration': 0 },
             },
             'field-outline'
           )
@@ -182,23 +205,24 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
       .finally(() => {
         if (rid === reqId.current) setImgLoading(false)
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, selected, field.id])
 
-  // re-show layer after a missing date
+  // apply opacity + re-show layer after a missing date
   useEffect(() => {
     const map = mapInstance.current
-    if (map?.getLayer?.('ndvi-layer') && !imgMissing) {
-      map.setLayoutProperty('ndvi-layer', 'visibility', 'visible')
-    }
-  }, [imgMissing])
+    if (!map?.getLayer?.('ndvi-layer')) return
+    map.setPaintProperty('ndvi-layer', 'raster-opacity', opacity)
+    map.setLayoutProperty('ndvi-layer', 'visibility', imgMissing ? 'none' : 'visible')
+  }, [opacity, imgMissing])
 
   if (mapError) return null
 
   return (
     <div className="relative rounded-xl overflow-hidden border border-[#e5e7eb] bg-[#0b1a12]">
-      <div ref={mapRef} className="h-[420px] w-full" />
+      <div ref={mapRef} className="h-[calc(100vh-11rem)] min-h-[440px] w-full" />
 
-      {/* loading imagery */}
+      {/* loading / missing imagery banner */}
       {imgLoading && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 bg-white/95 rounded-full px-3 py-1.5 shadow-sm text-xs text-[#374151]">
           <Loader2 size={13} className="animate-spin text-[#16a34a]" />
@@ -211,6 +235,48 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
           {t('fieldDetail.noImagery')}
         </div>
       )}
+
+      {/* recenter + opacity controls (below the zoom control) */}
+      <div className="absolute top-[86px] left-2.5 z-10 flex flex-col gap-1.5">
+        <button
+          onClick={recenter}
+          title={t('fieldDetail.recenter')}
+          aria-label={t('fieldDetail.recenter')}
+          className="w-8 h-8 rounded-lg bg-white shadow-sm border border-[#e5e7eb] flex items-center justify-center text-[#374151] hover:bg-[#f9fafb] cursor-pointer"
+        >
+          <Crosshair size={16} />
+        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowOpacity((v) => !v)}
+            title={t('fieldDetail.opacity')}
+            aria-label={t('fieldDetail.opacity')}
+            className={`w-8 h-8 rounded-lg shadow-sm border flex items-center justify-center cursor-pointer transition-colors ${
+              showOpacity
+                ? 'bg-[#16a34a] border-[#16a34a] text-white'
+                : 'bg-white border-[#e5e7eb] text-[#374151] hover:bg-[#f9fafb]'
+            }`}
+          >
+            <SlidersHorizontal size={16} />
+          </button>
+          {showOpacity && (
+            <div className="absolute top-0 left-10 w-44 bg-white rounded-lg shadow-lg border border-[#e5e7eb] p-3">
+              <div className="flex items-center justify-between text-xs mb-2">
+                <span className="font-medium text-[#374151]">{t('fieldDetail.opacity')}</span>
+                <span className="font-semibold text-[#111827] tabular-nums">{Math.round(opacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={Math.round(opacity * 100)}
+                onChange={(e) => setOpacity(Number(e.target.value) / 100)}
+                className="w-full accent-[#16a34a] cursor-pointer"
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* area distribution panel */}
       {selectedPoint && (
@@ -240,17 +306,29 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
         </div>
       )}
 
-      {/* date timeline */}
+      {/* date timeline — compact, centered, with scroll arrows */}
       {timeline.length > 0 && (
-        <div className="absolute bottom-3 left-3 right-3 z-10">
-          <div className="flex gap-1.5 overflow-x-auto pb-1 bg-white/90 backdrop-blur-sm rounded-lg p-1.5 shadow-sm">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-sm max-w-[calc(100%-1.5rem)]">
+          <button
+            onClick={() => scrollTimeline(-1)}
+            aria-label="scroll left"
+            className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-[#6b7280] hover:bg-[#f3f4f6] cursor-pointer"
+          >
+            <ChevronLeft size={15} />
+          </button>
+          <div
+            ref={scrollRef}
+            className="flex gap-1.5 overflow-x-auto max-w-[52vw] sm:max-w-[380px] [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: 'none' }}
+          >
             {timeline.map((d) => {
               const active = d.date === selected
               return (
                 <button
                   key={d.date}
+                  data-active={active}
                   onClick={() => setSelected(d.date)}
-                  className={`shrink-0 px-2.5 py-1 rounded-md text-xs font-medium tabular-nums transition-colors ${
+                  className={`shrink-0 px-2.5 py-1 rounded-md text-xs font-medium tabular-nums transition-colors cursor-pointer ${
                     active
                       ? 'bg-[#16a34a] text-white'
                       : 'bg-[#f3f4f6] text-[#6b7280] hover:bg-[#e5e7eb]'
@@ -261,6 +339,13 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
               )
             })}
           </div>
+          <button
+            onClick={() => scrollTimeline(1)}
+            aria-label="scroll right"
+            className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-[#6b7280] hover:bg-[#f3f4f6] cursor-pointer"
+          >
+            <ChevronRight size={15} />
+          </button>
         </div>
       )}
     </div>

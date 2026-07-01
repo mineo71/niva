@@ -201,7 +201,9 @@
     "classPoor": "Słaby",
     "loadingImagery": "Ładowanie zdjęcia…",
     "noImagery": "Brak bezchmurnego zdjęcia dla tej daty",
-    "ndviHeatmap": "Mapa cieplna NDVI"
+    "ndviHeatmap": "Mapa cieplna NDVI",
+    "recenter": "Wyśrodkuj na polu",
+    "opacity": "Krycie mapy cieplnej"
   },
   "crops": {
     "wheat": "Pszenica",
