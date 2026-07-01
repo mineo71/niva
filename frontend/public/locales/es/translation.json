@@ -15,7 +15,8 @@
     "edit": "Editar",
     "back": "Atrás",
     "search": "Buscar",
-    "noData": "Sin datos"
+    "noData": "Sin datos",
+    "moreActions": "Más acciones"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -169,7 +170,11 @@
     "sortNewest": "Más recientes",
     "sortName": "Nombre (A–Z)",
     "sortAreaDesc": "Área (mayor→menor)",
-    "sortNdviDesc": "NDVI (alto→bajo)"
+    "sortNdviDesc": "NDVI (alto→bajo)",
+    "editTitle": "Editar campo",
+    "tabDetails": "Detalles",
+    "tabLocation": "Ubicación",
+    "relocateHint": "Arrastra los puntos del campo o vuelve a dibujarlo."
   },
   "fieldDetail": {
     "vegetationIndices": "Índices de vegetación",
@@ -284,7 +289,11 @@
       "poor": "Pobre"
     },
     "risks": "Riesgos",
-    "recommendations": "Recomendaciones"
+    "recommendations": "Recomendaciones",
+    "copy": "Copiar informe",
+    "download": "Descargar informe",
+    "copied": "Informe copiado",
+    "copyFailed": "Error al copiar"
   },
   "stats": {
     "totalFields": "Campos",

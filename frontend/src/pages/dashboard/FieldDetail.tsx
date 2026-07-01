@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Satellite, CloudRain, TrendingUp, FileText,
   AlertTriangle, CheckCircle, Lightbulb, Pencil, Eye, EyeOff, Clock,
+  Copy, Download,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
@@ -121,6 +122,38 @@ export function FieldDetail() {
     }
   }
 
+  const reportToText = (r: ReportResponse): string => {
+    const lines = [`# ${field?.name ?? 'Field'} — ${t('report.title')}`, '', r.summary]
+    if (r.risks.length) {
+      lines.push('', `## ${t('report.risks')}`, ...r.risks.map((x) => `- ${x}`))
+    }
+    if (r.recommendations.length) {
+      lines.push('', `## ${t('report.recommendations')}`, ...r.recommendations.map((x) => `- ${x}`))
+    }
+    return lines.join('\n')
+  }
+
+  const copyReport = async () => {
+    if (!report) return
+    try {
+      await navigator.clipboard.writeText(reportToText(report))
+      toast.success(t('report.copied'))
+    } catch {
+      toast.error(t('report.copyFailed'))
+    }
+  }
+
+  const downloadReport = () => {
+    if (!report) return
+    const blob = new Blob([reportToText(report)], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${(field?.name ?? 'field').replace(/[^\w-]+/g, '_')}-report.md`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const latestNdvi = indices?.series[indices.series.length - 1]
 
   return (
@@ -179,6 +212,51 @@ export function FieldDetail() {
           </CardHeader>
           <CardBody className="p-2.5">
             <FieldMapView field={field} />
+          </CardBody>
+        </Card>
+      )}
+
+      {/* ── Field metadata (right under the map) ── */}
+      {field && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-semibold text-sm text-[#111827]">
+              {t('fieldDetail.fieldDetails')}
+            </h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { label: t('fields.name'),    value: field.name },
+                {
+                  label: t('fields.area'),
+                  value: formatArea(field.area_ha, i18n.language),
+                  mono: true, accent: true,
+                },
+                {
+                  label: t('fields.crop'),
+                  value: t(`crops.${field.crop_type}`, { defaultValue: field.crop_type }),
+                },
+                {
+                  label: t('fields.soil_label'),
+                  value: t(`soils.${field.soil_type}`, { defaultValue: field.soil_type }),
+                },
+                { label: 'ID',                       value: field.id,    mono: true },
+                {
+                  label: t('fields.createdAt'),
+                  value: formatDate(field.created_at, i18n.language),
+                },
+              ].map(({ label, value, mono, accent }) => (
+                <div key={label} className="bg-[#f9fafb] rounded-lg px-3 py-2.5 border border-[#f3f4f6]">
+                  <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-1">
+                    {label}
+                  </p>
+                  <p className={`text-sm truncate font-medium ${mono ? 'tabular-nums' : ''} ${accent ? 'text-[#16a34a]' : 'text-[#111827]'}`}>
+                    {value}
+                  </p>
+                </div>
+              ))}
+            </div>
           </CardBody>
         </Card>
       )}
@@ -252,11 +330,8 @@ export function FieldDetail() {
         </CardBody>
       </Card>
 
-      {/* ── Weather + ML actions ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-        {/* Weather */}
-        <Card>
+      {/* ── Weather ── */}
+      <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
               <CloudRain size={16} className="text-[#2563eb]" />
@@ -299,10 +374,10 @@ export function FieldDetail() {
               </div>
             )}
           </CardBody>
-        </Card>
+      </Card>
 
-        {/* ML cards column */}
-        <div className="space-y-4">
+      {/* ── ML actions: yield forecast + AI report ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
           {/* Yield forecast */}
           <Card>
@@ -362,13 +437,33 @@ export function FieldDetail() {
 
           {/* AI health report */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-[#7c3aed]" />
                 <h2 className="font-semibold text-sm text-[#111827]">
                   {t('report.title')}
                 </h2>
               </div>
+              {report && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={copyReport}
+                    title={t('report.copy')}
+                    aria-label={t('report.copy')}
+                    className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#7c3aed] hover:bg-[#f5f3ff] transition-colors"
+                  >
+                    <Copy size={14} />
+                  </button>
+                  <button
+                    onClick={downloadReport}
+                    title={t('report.download')}
+                    aria-label={t('report.download')}
+                    className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#7c3aed] hover:bg-[#f5f3ff] transition-colors"
+                  >
+                    <Download size={14} />
+                  </button>
+                </div>
+              )}
             </CardHeader>
             <CardBody className="space-y-3">
               {generatingReport ? (
@@ -446,53 +541,7 @@ export function FieldDetail() {
             </CardBody>
           </Card>
 
-        </div>
       </div>
-
-      {/* ── Field metadata ── */}
-      {field && (
-        <Card>
-          <CardHeader>
-            <h2 className="font-semibold text-sm text-[#111827]">
-              {t('fieldDetail.fieldDetails')}
-            </h2>
-          </CardHeader>
-          <CardBody>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-              {[
-                { label: t('fields.name'),    value: field.name },
-                {
-                  label: t('fields.area'),
-                  value: formatArea(field.area_ha, i18n.language),
-                  mono: true, accent: true,
-                },
-                {
-                  label: t('fields.crop'),
-                  value: t(`crops.${field.crop_type}`, { defaultValue: field.crop_type }),
-                },
-                {
-                  label: t('fields.soil_label'),
-                  value: t(`soils.${field.soil_type}`, { defaultValue: field.soil_type }),
-                },
-                { label: 'ID',                       value: field.id,    mono: true },
-                {
-                  label: t('fields.createdAt'),
-                  value: formatDate(field.created_at, i18n.language),
-                },
-              ].map(({ label, value, mono, accent }) => (
-                <div key={label} className="bg-[#f9fafb] rounded-lg px-3 py-2.5 border border-[#f3f4f6]">
-                  <p className="text-[10px] text-[#9ca3af] font-semibold uppercase tracking-wide mb-1">
-                    {label}
-                  </p>
-                  <p className={`text-sm truncate font-medium ${mono ? 'tabular-nums' : ''} ${accent ? 'text-[#16a34a]' : 'text-[#111827]'}`}>
-                    {value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
-      )}
 
     </div>
   )

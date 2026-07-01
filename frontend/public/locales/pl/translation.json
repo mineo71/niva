@@ -15,7 +15,8 @@
     "edit": "Edytuj",
     "back": "Wstecz",
     "search": "Szukaj",
-    "noData": "Brak danych"
+    "noData": "Brak danych",
+    "moreActions": "Więcej akcji"
   },
   "auth": {
     "login": "Zaloguj się",
@@ -169,7 +170,11 @@
     "sortNewest": "Najnowsze",
     "sortName": "Nazwa (A–Z)",
     "sortAreaDesc": "Powierzchnia (duża→mała)",
-    "sortNdviDesc": "NDVI (wysoki→niski)"
+    "sortNdviDesc": "NDVI (wysoki→niski)",
+    "editTitle": "Edytuj pole",
+    "tabDetails": "Szczegóły",
+    "tabLocation": "Lokalizacja",
+    "relocateHint": "Przeciągnij punkty pola lub narysuj je ponownie."
   },
   "fieldDetail": {
     "vegetationIndices": "Wskaźniki wegetacji",
@@ -284,7 +289,11 @@
       "poor": "Słaby"
     },
     "risks": "Zagrożenia",
-    "recommendations": "Zalecenia"
+    "recommendations": "Zalecenia",
+    "copy": "Kopiuj raport",
+    "download": "Pobierz raport",
+    "copied": "Raport skopiowany",
+    "copyFailed": "Kopiowanie nie powiodło się"
   },
   "stats": {
     "totalFields": "Pola",

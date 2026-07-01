@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, MapPin, Pencil, Trash2, ArrowRight, Search, Clock } from 'lucide-react'
+import { Plus, MapPin, ArrowRight, Search, Clock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { fieldsApi } from '@/api/fields'
@@ -16,6 +16,8 @@ import { NDVIChip } from '@/components/NDVIColorScale'
 import { Sparkline } from '@/components/Sparkline'
 import { CropIcon } from '@/components/CropIcon'
 import { Onboarding } from '@/components/Onboarding'
+import { FieldCardMenu } from '@/components/FieldCardMenu'
+import { EditFieldModal } from '@/components/EditFieldModal'
 import { fieldPreviewUrl } from '@/lib/mapPreview'
 import { ndviToHex } from '@/lib/ndvi'
 import {
@@ -60,6 +62,7 @@ export function Fields() {
   const [sortBy, setSortBy] = useState<SortKey>('newest')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [editField, setEditField] = useState<FieldResponse | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -232,26 +235,11 @@ export function Fields() {
                         </p>
                       </div>
                     </div>
-                    {/* Action buttons — appear on hover */}
-                    <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1">
-                      <Link
-                        to={`/dashboard/map/${field.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        title={t('common.edit')}
-                        aria-label={t('map.editField')}
-                        className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#16a34a] hover:bg-[#f0fdf4] transition-colors"
-                      >
-                        <Pencil size={13} />
-                      </Link>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setDeleteId(field.id) }}
-                        title={t('common.delete')}
-                        aria-label={t('fields.deleteTitle')}
-                        className="p-1.5 rounded-lg text-[#9ca3af] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
+                    {/* Action menu */}
+                    <FieldCardMenu
+                      onEdit={() => setEditField(field)}
+                      onDelete={() => setDeleteId(field.id)}
+                    />
                   </div>
 
                   {/* ── Area + Soil stats ── */}
@@ -329,6 +317,19 @@ export function Fields() {
           </Button>
         </div>
       </Dialog>
+
+      {/* Edit field (multi-tab modal) */}
+      {editField && (
+        <EditFieldModal
+          field={editField}
+          open={!!editField}
+          onOpenChange={(o) => !o && setEditField(null)}
+          onSaved={(updated) => {
+            setFields((prev) => prev.map((f) => (f.id === updated.id ? updated : f)))
+            setEditField(null)
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -15,7 +15,8 @@
     "edit": "Bearbeiten",
     "back": "Zurück",
     "search": "Suchen",
-    "noData": "Keine Daten"
+    "noData": "Keine Daten",
+    "moreActions": "Weitere Aktionen"
   },
   "auth": {
     "login": "Anmelden",
@@ -169,7 +170,11 @@
     "sortNewest": "Neueste",
     "sortName": "Name (A–Z)",
     "sortAreaDesc": "Fläche (groß→klein)",
-    "sortNdviDesc": "NDVI (hoch→niedrig)"
+    "sortNdviDesc": "NDVI (hoch→niedrig)",
+    "editTitle": "Feld bearbeiten",
+    "tabDetails": "Details",
+    "tabLocation": "Standort",
+    "relocateHint": "Ziehen Sie die Punkte des Feldes oder zeichnen Sie es neu."
   },
   "fieldDetail": {
     "vegetationIndices": "Vegetationsindizes",
@@ -284,7 +289,11 @@
       "poor": "Schlecht"
     },
     "risks": "Risiken",
-    "recommendations": "Empfehlungen"
+    "recommendations": "Empfehlungen",
+    "copy": "Bericht kopieren",
+    "download": "Bericht herunterladen",
+    "copied": "Bericht kopiert",
+    "copyFailed": "Kopieren fehlgeschlagen"
   },
   "stats": {
     "totalFields": "Felder",

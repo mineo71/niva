@@ -15,7 +15,8 @@
     "edit": "Редагувати",
     "back": "Назад",
     "search": "Пошук",
-    "noData": "Немає даних"
+    "noData": "Немає даних",
+    "moreActions": "Більше дій"
   },
   "auth": {
     "login": "Увійти",
@@ -169,7 +170,11 @@
     "sortNewest": "Найновіші",
     "sortName": "Назва (А–Я)",
     "sortAreaDesc": "Площа (більша→менша)",
-    "sortNdviDesc": "NDVI (вищий→нижчий)"
+    "sortNdviDesc": "NDVI (вищий→нижчий)",
+    "editTitle": "Редагувати поле",
+    "tabDetails": "Деталі",
+    "tabLocation": "Розташування",
+    "relocateHint": "Перетягуйте точки поля або намалюйте його заново."
   },
   "fieldDetail": {
     "vegetationIndices": "Вегетаційні індекси",
@@ -284,7 +289,11 @@
       "poor": "Поганий"
     },
     "risks": "Ризики",
-    "recommendations": "Рекомендації"
+    "recommendations": "Рекомендації",
+    "copy": "Копіювати звіт",
+    "download": "Завантажити звіт",
+    "copied": "Звіт скопійовано",
+    "copyFailed": "Не вдалося скопіювати"
   },
   "stats": {
     "totalFields": "Полів",

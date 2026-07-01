@@ -15,7 +15,8 @@
     "edit": "Edit",
     "back": "Back",
     "search": "Search",
-    "noData": "No data"
+    "noData": "No data",
+    "moreActions": "More actions"
   },
   "auth": {
     "login": "Log in",
@@ -169,7 +170,11 @@
     "sortNewest": "Newest",
     "sortName": "Name (A–Z)",
     "sortAreaDesc": "Area (high→low)",
-    "sortNdviDesc": "NDVI (high→low)"
+    "sortNdviDesc": "NDVI (high→low)",
+    "editTitle": "Edit field",
+    "tabDetails": "Details",
+    "tabLocation": "Location",
+    "relocateHint": "Drag the field's points to adjust, or redraw it from scratch."
   },
   "fieldDetail": {
     "vegetationIndices": "Vegetation Indices",
@@ -284,7 +289,11 @@
       "poor": "Poor"
     },
     "risks": "Risks",
-    "recommendations": "Recommendations"
+    "recommendations": "Recommendations",
+    "copy": "Copy report",
+    "download": "Download report",
+    "copied": "Report copied",
+    "copyFailed": "Copy failed"
   },
   "stats": {
     "totalFields": "Fields",
