@@ -109,7 +109,7 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-2.5 py-3 space-y-1 overflow-y-auto">
           {navItems.map(({ to, icon: Icon, key, end }) => (
             <NavLink
               key={to}
@@ -119,7 +119,7 @@ export function Sidebar() {
               title={c ? t(key) : undefined}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium transition-colors duration-150',
                   isActive
                     ? 'bg-[#f0fdf4] text-[#16a34a]'
                     : 'text-[#6b7280] hover:text-[#111827] hover:bg-white',
@@ -127,24 +127,24 @@ export function Sidebar() {
                 )
               }
             >
-              <Icon size={16} className="shrink-0" />
+              <Icon size={20} className="shrink-0" />
               <span className={cn(c && 'lg:hidden')}>{t(key)}</span>
             </NavLink>
           ))}
         </nav>
 
         {/* Logout */}
-        <div className="px-2 py-3 border-t border-[#e5e7eb]">
+        <div className="px-2.5 py-3 border-t border-[#e5e7eb]">
           <button
             onClick={handleLogout}
             title={c ? t('nav.logout') : undefined}
             className={cn(
-              'w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium',
+              'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium',
               'text-[#6b7280] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors duration-150',
               c && 'lg:justify-center lg:px-0'
             )}
           >
-            <LogOut size={16} className="shrink-0" />
+            <LogOut size={20} className="shrink-0" />
             <span className={cn(c && 'lg:hidden')}>{t('nav.logout')}</span>
           </button>
         </div>

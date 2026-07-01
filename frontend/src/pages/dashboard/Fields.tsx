@@ -14,6 +14,7 @@ import { Dialog } from '@/components/ui/Dialog'
 import { NDVIChip } from '@/components/NDVIColorScale'
 import { Sparkline } from '@/components/Sparkline'
 import { CropIcon } from '@/components/CropIcon'
+import { Onboarding } from '@/components/Onboarding'
 import {
   formatArea, formatDate, formatRelativeTime, isStale,
 } from '@/lib/utils'
@@ -121,19 +122,14 @@ export function Fields() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
+      ) : !fields.length ? (
+        <Onboarding />
       ) : !filtered.length ? (
         <div className="flex flex-col items-center justify-center py-20 text-[#9ca3af]">
           <MapPin size={40} className="mb-4 opacity-30" />
           <p className="text-sm font-medium text-[#6b7280] mb-1">
-            {search ? t('fields.noFieldsFound') : t('fields.noFields')}
+            {t('fields.noFieldsFound')}
           </p>
-          {!search && (
-            <Link to="/dashboard/map">
-              <Button size="sm" variant="secondary" icon={<Plus size={13} />} className="mt-3">
-                {t('fields.addFirst')}
-              </Button>
-            </Link>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

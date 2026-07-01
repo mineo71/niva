@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Layers, MapPin, TrendingUp, ArrowRight, Plus } from 'lucide-react'
+import { Layers, MapPin, TrendingUp, ArrowRight, Plus, Activity, AlertTriangle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { statsApi } from '@/api/stats'
@@ -10,9 +10,12 @@ import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton'
 import { Card, CardHeader, CardBody } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { formatArea } from '@/lib/utils'
+import { formatArea, isStale } from '@/lib/utils'
 import { NDVIChip } from '@/components/NDVIColorScale'
+import { ndviToHex } from '@/lib/ndvi'
+import { Sparkline } from '@/components/Sparkline'
 import { CropIcon } from '@/components/CropIcon'
+import { Onboarding } from '@/components/Onboarding'
 import type { CropType } from '@/types'
 import { toast } from 'react-toastify'
 
@@ -22,7 +25,7 @@ export function Overview() {
   const { t, i18n } = useTranslation()
 
   const [stats, setStats] = useState<StatsResponse | null>(null)
-  const [fields, setFields] = useState<FieldResponse[]>([])
+  const [allFields, setAllFields] = useState<FieldResponse[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,7 +34,7 @@ export function Overview() {
       try {
         const [s, f] = await Promise.all([statsApi.get(), fieldsApi.list()])
         setStats(s)
-        setFields(f.slice(0, 5))
+        setAllFields(f)
       } catch {
         toast.error(t('overview.loadError'))
       } finally {
@@ -40,6 +43,20 @@ export function Overview() {
     }
     load()
   }, [t])
+
+  const fields = allFields.slice(0, 5)
+
+  const ndviValues = allFields
+    .map((f) => f.latest_ndvi)
+    .filter((v): v is number => v != null)
+  const avgNdvi = ndviValues.length
+    ? ndviValues.reduce((a, b) => a + b, 0) / ndviValues.length
+    : null
+
+  // fields that need a look: low vegetation or stale satellite data
+  const attention = allFields
+    .filter((f) => (f.latest_ndvi != null && f.latest_ndvi < 0.3) || isStale(f.ndvi_updated_at))
+    .slice(0, 4)
 
   const statCards = [
     {
@@ -50,6 +67,7 @@ export function Overview() {
       color: 'text-[#16a34a]',
       bg: 'bg-[#f0fdf4]',
       border: 'border-[#bbf7d0]',
+      valueColor: undefined as string | undefined,
     },
     {
       label: t('stats.totalArea'),
@@ -59,6 +77,7 @@ export function Overview() {
       color: 'text-[#2563eb]',
       bg: 'bg-[#eff6ff]',
       border: 'border-[#bfdbfe]',
+      valueColor: undefined as string | undefined,
     },
     {
       label: t('stats.crops'),
@@ -68,8 +87,21 @@ export function Overview() {
       color: 'text-[#d97706]',
       bg: 'bg-[#fffbeb]',
       border: 'border-[#fde68a]',
+      valueColor: undefined as string | undefined,
+    },
+    {
+      label: t('overview.avgNdvi'),
+      value: avgNdvi != null ? avgNdvi.toFixed(2) : '—',
+      icon: Activity,
+      hint: t('overview.avgNdviHint'),
+      color: 'text-[#16a34a]',
+      bg: 'bg-[#f0fdf4]',
+      border: 'border-[#bbf7d0]',
+      valueColor: avgNdvi != null ? ndviToHex(avgNdvi) : undefined,
     },
   ]
+
+  const isEmpty = !loading && fields.length === 0 && (stats?.total_fields ?? 0) === 0
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-5 animate-fade-in">
@@ -83,32 +115,77 @@ export function Overview() {
             {t('overview.subtitle')}
           </p>
         </div>
-        <Link to="/dashboard/map">
-          <Button size="sm" icon={<Plus size={14} />}>
-            {t('map.newField')}
-          </Button>
-        </Link>
+        {!isEmpty && (
+          <Link to="/dashboard/map">
+            <Button size="sm" icon={<Plus size={14} />}>
+              {t('map.newField')}
+            </Button>
+          </Link>
+        )}
       </div>
 
+      {isEmpty && <Onboarding />}
+
+      {!isEmpty && (
+      <>
       {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {loading
-          ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-          : statCards.map(({ label, value, icon: Icon, hint, color, bg, border }) => (
+          ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+          : statCards.map(({ label, value, icon: Icon, hint, color, bg, border, valueColor }) => (
             <Card key={label}>
-              <CardBody className="flex items-start gap-4">
+              <CardBody className="flex items-start gap-3">
                 <div className={`w-9 h-9 rounded-lg ${bg} border ${border} flex items-center justify-center shrink-0`}>
                   <Icon size={16} className={color} />
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-[#6b7280] uppercase tracking-wide mb-1">{label}</p>
-                  <p className="font-semibold text-2xl text-[#111827] tabular-nums">{value}</p>
+                  <p
+                    className="font-semibold text-xl sm:text-2xl tabular-nums text-[#111827] whitespace-nowrap"
+                    style={valueColor ? { color: valueColor } : undefined}
+                  >
+                    {value}
+                  </p>
                   <p className="text-xs text-[#9ca3af] mt-0.5">{hint}</p>
                 </div>
               </CardBody>
             </Card>
           ))}
       </div>
+
+      {/* Needs attention */}
+      {!loading && attention.length > 0 && (
+        <Card className="border-[#fde68a] bg-[#fffbeb]">
+          <CardBody>
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle size={15} className="text-[#d97706]" />
+              <h2 className="font-semibold text-sm text-[#92400e]">
+                {t('overview.attentionTitle')}
+              </h2>
+              <Badge variant="warning">{attention.length}</Badge>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {attention.map((f) => {
+                const low = f.latest_ndvi != null && f.latest_ndvi < 0.3
+                return (
+                  <Link
+                    key={f.id}
+                    to={`/dashboard/fields/${f.id}`}
+                    className="flex items-center gap-3 bg-white border border-[#fde68a] rounded-lg px-3 py-2 hover:border-[#d97706] transition-colors"
+                  >
+                    <CropIcon crop={f.crop_type} size={15} className="text-[#16a34a] shrink-0" />
+                    <span className="font-medium text-sm text-[#111827] truncate flex-1">{f.name}</span>
+                    <span className="text-[10px] font-medium text-[#92400e] bg-[#fef3c7] rounded px-1.5 py-0.5 shrink-0">
+                      {low ? t('overview.reasonLow') : t('overview.reasonStale')}
+                    </span>
+                    {f.latest_ndvi != null && <NDVIChip value={f.latest_ndvi} className="shrink-0" />}
+                  </Link>
+                )
+              })}
+            </div>
+          </CardBody>
+        </Card>
+      )}
 
       {/* Main row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -227,6 +304,15 @@ export function Overview() {
                         {t(`crops.${field.crop_type}`, { defaultValue: field.crop_type })}
                       </p>
                     </div>
+                    {field.ndvi_trend.length >= 2 && (
+                      <Sparkline
+                        values={field.ndvi_trend}
+                        width={64}
+                        height={22}
+                        color={isStale(field.ndvi_updated_at) ? '#d97706' : '#16a34a'}
+                        className="shrink-0 hidden sm:block"
+                      />
+                    )}
                     {field.latest_ndvi != null && (
                       <NDVIChip value={field.latest_ndvi} className="shrink-0" />
                     )}
@@ -241,6 +327,8 @@ export function Overview() {
           </CardBody>
         </Card>
       </div>
+      </>
+      )}
     </div>
   )
 }

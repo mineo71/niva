@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Card, CardBody } from '@/components/ui/Card'
 import { formatArea, ALL_CROPS, ALL_SOILS } from '@/lib/utils'
+import { ndviToHex } from '@/lib/ndvi'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
 
@@ -39,6 +40,7 @@ export function MapPage() {
   const [mapError, setMapError] = useState(false)
   const [drawing, setDrawing] = useState(false)
   const [locating, setLocating] = useState(false)
+  const [existingCount, setExistingCount] = useState(0)
 
   const cropOptions = ALL_CROPS.map((c) => ({ value: c, label: t(`crops.${c}`) }))
   const soilOptions = ALL_SOILS.map((s) => ({ value: s, label: t(`soils.${s}`) }))
@@ -133,8 +135,89 @@ export function MapPage() {
         })
         map.addControl(geocoder as never, 'top-left')
 
+        // Read-only overlay: user's existing fields, polygons colored by latest NDVI
+        const loadExistingFields = async () => {
+          try {
+            const fields = await fieldsApi.list()
+            const others = fields.filter((f) => String(f.id) !== String(id))
+            if (!others.length || !mounted) return
+
+            const fc = {
+              type: 'FeatureCollection' as const,
+              features: others.map((f) => ({
+                type: 'Feature' as const,
+                geometry: f.geometry,
+                properties: {
+                  id: String(f.id),
+                  name: f.name,
+                  color: f.latest_ndvi != null ? ndviToHex(f.latest_ndvi) : '#9ca3af',
+                  ndvi: f.latest_ndvi != null ? f.latest_ndvi.toFixed(2) : '—',
+                },
+              })),
+            }
+
+            if (map.getSource('existing-fields')) {
+              ;(map.getSource('existing-fields') as { setData: (d: unknown) => void }).setData(fc)
+            } else {
+              map.addSource('existing-fields', { type: 'geojson', data: fc })
+              map.addLayer({
+                id: 'existing-fill',
+                type: 'fill',
+                source: 'existing-fields',
+                paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.45 },
+              })
+              map.addLayer({
+                id: 'existing-line',
+                type: 'line',
+                source: 'existing-fields',
+                paint: { 'line-color': ['get', 'color'], 'line-width': 2 },
+              })
+              map.addLayer({
+                id: 'existing-label',
+                type: 'symbol',
+                source: 'existing-fields',
+                layout: {
+                  'text-field': ['get', 'name'],
+                  'text-size': 12,
+                  'text-offset': [0, 0],
+                  'text-anchor': 'center',
+                },
+                paint: {
+                  'text-color': '#ffffff',
+                  'text-halo-color': 'rgba(0,0,0,0.6)',
+                  'text-halo-width': 1.2,
+                },
+              })
+
+              // click a field → open its detail
+              map.on('click', 'existing-fill', (e: { features?: Array<{ properties: Record<string, unknown> | null }> }) => {
+                const fid = e.features?.[0]?.properties?.id as string | undefined
+                if (fid) navigate(`/dashboard/fields/${fid}`)
+              })
+              map.on('mouseenter', 'existing-fill', () => { map.getCanvas().style.cursor = 'pointer' })
+              map.on('mouseleave', 'existing-fill', () => { map.getCanvas().style.cursor = '' })
+            }
+
+            setExistingCount(others.length)
+
+            // when adding a new field, frame the existing portfolio
+            if (!id) {
+              const all = others.flatMap((f) => f.geometry.coordinates[0])
+              const lons = all.map((c: number[]) => c[0])
+              const lats = all.map((c: number[]) => c[1])
+              map.fitBounds(
+                [[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]],
+                { padding: 100, maxZoom: 13, duration: 0 }
+              )
+            }
+          } catch {
+            /* non-fatal: overlay is optional */
+          }
+        }
+
         map.on('load', () => {
           setMapReady(true)
+          loadExistingFields()
           if (id) {
             fieldsApi.get(id).then((field) => {
               const feature: Feature<Polygon> = {
@@ -415,6 +498,26 @@ export function MapPage() {
           </div>
         ) : (
           <div ref={mapRef} className="w-full h-full" />
+        )}
+
+        {/* NDVI legend for existing fields overlay */}
+        {mapReady && existingCount > 0 && (
+          <div className="absolute bottom-3 left-3 z-10 bg-white/95 backdrop-blur-sm border border-[#e5e7eb] rounded-lg shadow-sm px-3 py-2">
+            <p className="text-[10px] font-semibold text-[#374151] mb-1.5">
+              {t('map.yourFields')} · NDVI
+            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] text-[#9ca3af]">{t('map.ndviLow')}</span>
+              <span
+                className="h-2 w-24 rounded-full"
+                style={{
+                  background:
+                    'linear-gradient(90deg, #a05028 0%, #d2c850 40%, #5ab950 65%, #0a6428 100%)',
+                }}
+              />
+              <span className="text-[9px] text-[#9ca3af]">{t('map.ndviHigh')}</span>
+            </div>
+          </div>
         )}
       </div>
     </div>
