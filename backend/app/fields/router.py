@@ -13,6 +13,9 @@ from app.weather.models import WeatherCache
 
 router = APIRouter(prefix="/fields", tags=["fields"])
 
+MIN_FIELD_AREA_HA = 0.1
+MAX_FIELD_AREA_HA = 10_000.0
+
 
 def _to_response(f: Field, cache: IndicesCache | None = None) -> FieldResponse:
     latest = None
@@ -47,6 +50,17 @@ def _owned(field_id: int, user: User, db: Session) -> Field:
     return f
 
 
+def _validate_area_ha(area_ha: float) -> None:
+    if area_ha < MIN_FIELD_AREA_HA or area_ha > MAX_FIELD_AREA_HA:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=(
+                f"Field area must be between {MIN_FIELD_AREA_HA} and "
+                f"{MAX_FIELD_AREA_HA} hectares"
+            ),
+        )
+
+
 @router.get("", response_model=list[FieldResponse])
 def list_fields(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     rows = list(
@@ -69,12 +83,14 @@ def create_field(
         raise HTTPException(422, f"crop_type must be one of {CROPS}")
     if body.soil_type not in SOILS:
         raise HTTPException(422, f"soil_type must be one of {SOILS}")
+    area_ha = area_hectares(body.geometry)
+    _validate_area_ha(area_ha)
     f = Field(
         owner_id=user.id,
         name=body.name,
         crop_type=body.crop_type,
         soil_type=body.soil_type,
-        area_ha=area_hectares(body.geometry),
+        area_ha=area_ha,
         geometry=geojson_to_wkb(body.geometry),
     )
     db.add(f)
@@ -104,8 +120,10 @@ def update_field(
     if body.soil_type is not None:
         f.soil_type = body.soil_type
     if body.geometry is not None:
+        area_ha = area_hectares(body.geometry)
+        _validate_area_ha(area_ha)
         f.geometry = geojson_to_wkb(body.geometry)
-        f.area_ha = area_hectares(body.geometry)
+        f.area_ha = area_ha
         # cached indices/weather are for the old polygon — drop them
         db.execute(delete(IndicesCache).where(IndicesCache.field_id == f.id))
         db.execute(delete(WeatherCache).where(WeatherCache.field_id == f.id))
