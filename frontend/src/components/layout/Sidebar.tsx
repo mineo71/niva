@@ -84,8 +84,8 @@ export function Sidebar() {
           'fixed inset-y-0 left-0 w-72',
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
           // desktop: static, collapsible
-          'lg:static lg:translate-x-0 lg:w-56 lg:transition-[width]',
-          c && 'lg:w-16'
+          'lg:static lg:translate-x-0 lg:transition-[width]',
+          c ? 'lg:w-16' : 'lg:w-56'
         )}
       >
         {/* Logo (top) */}
