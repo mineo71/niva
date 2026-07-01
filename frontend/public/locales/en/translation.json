@@ -238,7 +238,31 @@
     "rain": "Precipitation",
     "tempLabel": "Temp.",
     "rainLabel": "Rain",
-    "chartSummary": "Weather chart for {{count}} days: temperature and precipitation"
+    "chartSummary": "Weather chart for {{count}} days: temperature and precipitation",
+    "cond": {
+      "clear_sky": "clear sky",
+      "few_clouds": "few clouds",
+      "scattered_clouds": "scattered clouds",
+      "broken_clouds": "broken clouds",
+      "overcast_clouds": "overcast clouds",
+      "light_rain": "light rain",
+      "moderate_rain": "moderate rain",
+      "heavy_intensity_rain": "heavy rain",
+      "shower_rain": "shower rain",
+      "rain": "rain",
+      "drizzle": "drizzle",
+      "light_intensity_drizzle": "light drizzle",
+      "light_snow": "light snow",
+      "snow": "snow",
+      "thunderstorm": "thunderstorm",
+      "mist": "mist",
+      "fog": "fog",
+      "haze": "haze",
+      "smoke": "smoke",
+      "freezing_rain": "freezing rain",
+      "sleet": "sleet",
+      "squalls": "squalls"
+    }
   },
   "predict": {
     "title": "Yield Forecast",

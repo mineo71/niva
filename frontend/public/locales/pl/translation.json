@@ -238,7 +238,31 @@
     "rain": "Opady",
     "tempLabel": "Temp.",
     "rainLabel": "Deszcz",
-    "chartSummary": "Wykres pogody na {{count}} dni: temperatura i opady"
+    "chartSummary": "Wykres pogody na {{count}} dni: temperatura i opady",
+    "cond": {
+      "clear_sky": "bezchmurnie",
+      "few_clouds": "małe zachmurzenie",
+      "scattered_clouds": "rozproszone chmury",
+      "broken_clouds": "zachmurzenie umiarkowane",
+      "overcast_clouds": "zachmurzenie całkowite",
+      "light_rain": "lekki deszcz",
+      "moderate_rain": "umiarkowany deszcz",
+      "heavy_intensity_rain": "silny deszcz",
+      "shower_rain": "przelotny deszcz",
+      "rain": "deszcz",
+      "drizzle": "mżawka",
+      "light_intensity_drizzle": "lekka mżawka",
+      "light_snow": "lekki śnieg",
+      "snow": "śnieg",
+      "thunderstorm": "burza",
+      "mist": "zamglenie",
+      "fog": "mgła",
+      "haze": "mgiełka",
+      "smoke": "dym",
+      "freezing_rain": "marznący deszcz",
+      "sleet": "deszcz ze śniegiem",
+      "squalls": "szkwały"
+    }
   },
   "predict": {
     "title": "Prognoza plonu",

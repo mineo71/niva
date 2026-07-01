@@ -238,7 +238,31 @@
     "rain": "Precipitazioni",
     "tempLabel": "Temp.",
     "rainLabel": "Pioggia",
-    "chartSummary": "Grafico meteo per {{count}} giorni: temperatura e precipitazioni"
+    "chartSummary": "Grafico meteo per {{count}} giorni: temperatura e precipitazioni",
+    "cond": {
+      "clear_sky": "cielo sereno",
+      "few_clouds": "poche nuvole",
+      "scattered_clouds": "nubi sparse",
+      "broken_clouds": "nubi frammentate",
+      "overcast_clouds": "cielo coperto",
+      "light_rain": "pioggia leggera",
+      "moderate_rain": "pioggia moderata",
+      "heavy_intensity_rain": "pioggia intensa",
+      "shower_rain": "rovesci",
+      "rain": "pioggia",
+      "drizzle": "pioggerella",
+      "light_intensity_drizzle": "pioggerella leggera",
+      "light_snow": "neve leggera",
+      "snow": "neve",
+      "thunderstorm": "temporale",
+      "mist": "foschia",
+      "fog": "nebbia",
+      "haze": "caligine",
+      "smoke": "fumo",
+      "freezing_rain": "pioggia gelata",
+      "sleet": "nevischio",
+      "squalls": "raffiche"
+    }
   },
   "predict": {
     "title": "Previsione del raccolto",

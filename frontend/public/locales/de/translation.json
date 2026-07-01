@@ -238,7 +238,31 @@
     "rain": "Niederschlag",
     "tempLabel": "Temp.",
     "rainLabel": "Regen",
-    "chartSummary": "Wetterdiagramm für {{count}} Tage: Temperatur und Niederschlag"
+    "chartSummary": "Wetterdiagramm für {{count}} Tage: Temperatur und Niederschlag",
+    "cond": {
+      "clear_sky": "klarer Himmel",
+      "few_clouds": "leicht bewölkt",
+      "scattered_clouds": "aufgelockert bewölkt",
+      "broken_clouds": "überwiegend bewölkt",
+      "overcast_clouds": "bedeckt",
+      "light_rain": "leichter Regen",
+      "moderate_rain": "mäßiger Regen",
+      "heavy_intensity_rain": "starker Regen",
+      "shower_rain": "Regenschauer",
+      "rain": "Regen",
+      "drizzle": "Nieselregen",
+      "light_intensity_drizzle": "leichter Nieselregen",
+      "light_snow": "leichter Schneefall",
+      "snow": "Schnee",
+      "thunderstorm": "Gewitter",
+      "mist": "Dunst",
+      "fog": "Nebel",
+      "haze": "trockener Dunst",
+      "smoke": "Rauch",
+      "freezing_rain": "gefrierender Regen",
+      "sleet": "Schneeregen",
+      "squalls": "Böen"
+    }
   },
   "predict": {
     "title": "Ertragsprognose",

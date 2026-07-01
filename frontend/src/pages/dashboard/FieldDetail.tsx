@@ -279,7 +279,9 @@ export function FieldDetail() {
                       {weather.current.temp_c.toFixed(1)}°
                     </p>
                     <p className="text-xs text-[#6b7280] mt-0.5 capitalize">
-                      {weather.current.description}
+                      {t(`weather.cond.${weather.current.description.trim().toLowerCase().replace(/\s+/g, '_')}`, {
+                        defaultValue: weather.current.description,
+                      })}
                     </p>
                   </div>
                   <div className="ml-auto text-right">

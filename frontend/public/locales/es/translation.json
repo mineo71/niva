@@ -238,7 +238,31 @@
     "rain": "Precipitación",
     "tempLabel": "Temp.",
     "rainLabel": "Lluvia",
-    "chartSummary": "Gráfico meteorológico de {{count}} días: temperatura y precipitaciones"
+    "chartSummary": "Gráfico meteorológico de {{count}} días: temperatura y precipitaciones",
+    "cond": {
+      "clear_sky": "cielo despejado",
+      "few_clouds": "algo de nubes",
+      "scattered_clouds": "nubes dispersas",
+      "broken_clouds": "nubes rotas",
+      "overcast_clouds": "nublado",
+      "light_rain": "lluvia ligera",
+      "moderate_rain": "lluvia moderada",
+      "heavy_intensity_rain": "lluvia intensa",
+      "shower_rain": "chubascos",
+      "rain": "lluvia",
+      "drizzle": "llovizna",
+      "light_intensity_drizzle": "llovizna ligera",
+      "light_snow": "nieve ligera",
+      "snow": "nieve",
+      "thunderstorm": "tormenta",
+      "mist": "neblina",
+      "fog": "niebla",
+      "haze": "calima",
+      "smoke": "humo",
+      "freezing_rain": "lluvia helada",
+      "sleet": "aguanieve",
+      "squalls": "turbonadas"
+    }
   },
   "predict": {
     "title": "Pronóstico de rendimiento",

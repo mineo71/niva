@@ -238,7 +238,31 @@
     "rain": "Опади",
     "tempLabel": "Темп.",
     "rainLabel": "Дощ",
-    "chartSummary": "Графік погоди на {{count}} днів: температура та опади"
+    "chartSummary": "Графік погоди на {{count}} днів: температура та опади",
+    "cond": {
+      "clear_sky": "ясно",
+      "few_clouds": "невелика хмарність",
+      "scattered_clouds": "мінлива хмарність",
+      "broken_clouds": "хмарно з проясненнями",
+      "overcast_clouds": "суцільна хмарність",
+      "light_rain": "невеликий дощ",
+      "moderate_rain": "помірний дощ",
+      "heavy_intensity_rain": "сильний дощ",
+      "shower_rain": "злива",
+      "rain": "дощ",
+      "drizzle": "мряка",
+      "light_intensity_drizzle": "слабка мряка",
+      "light_snow": "невеликий сніг",
+      "snow": "сніг",
+      "thunderstorm": "гроза",
+      "mist": "серпанок",
+      "fog": "туман",
+      "haze": "імла",
+      "smoke": "дим",
+      "freezing_rain": "крижаний дощ",
+      "sleet": "мокрий сніг",
+      "squalls": "шквали"
+    }
   },
   "predict": {
     "title": "Прогноз врожаю",

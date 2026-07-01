@@ -238,7 +238,31 @@
     "rain": "Précipitations",
     "tempLabel": "Temp.",
     "rainLabel": "Pluie",
-    "chartSummary": "Graphique météo sur {{count}} jours : température et précipitations"
+    "chartSummary": "Graphique météo sur {{count}} jours : température et précipitations",
+    "cond": {
+      "clear_sky": "ciel dégagé",
+      "few_clouds": "quelques nuages",
+      "scattered_clouds": "nuages épars",
+      "broken_clouds": "nuages fragmentés",
+      "overcast_clouds": "ciel couvert",
+      "light_rain": "pluie légère",
+      "moderate_rain": "pluie modérée",
+      "heavy_intensity_rain": "forte pluie",
+      "shower_rain": "averses",
+      "rain": "pluie",
+      "drizzle": "bruine",
+      "light_intensity_drizzle": "bruine légère",
+      "light_snow": "neige légère",
+      "snow": "neige",
+      "thunderstorm": "orage",
+      "mist": "brume",
+      "fog": "brouillard",
+      "haze": "brume sèche",
+      "smoke": "fumée",
+      "freezing_rain": "pluie verglaçante",
+      "sleet": "neige fondue",
+      "squalls": "rafales"
+    }
   },
   "predict": {
     "title": "Prévision de rendement",
