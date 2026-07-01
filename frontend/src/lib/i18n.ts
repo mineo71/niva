@@ -37,9 +37,26 @@ i18n
   })
 
 // keep <html lang> in sync
-document.documentElement.lang = initialLng
-i18n.on('languageChanged', (lng) => {
+function syncHead(lng: string) {
   document.documentElement.lang = lng
-})
+  const title = i18n.t('meta.title')
+  const desc = i18n.t('meta.description')
+  if (title && title !== 'meta.title') document.title = title
+  if (desc && desc !== 'meta.description') {
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc)
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc)
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', desc)
+  }
+  if (title && title !== 'meta.title') {
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', title)
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', title)
+  }
+  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', lng)
+}
+
+syncHead(initialLng)
+// resources load async via HttpBackend — re-sync once loaded and on every change
+i18n.on('loaded', () => syncHead(i18n.language))
+i18n.on('languageChanged', syncHead)
 
 export default i18n
