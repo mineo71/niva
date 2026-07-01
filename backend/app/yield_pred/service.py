@@ -53,6 +53,23 @@ def _split_phases(series: list[dict]) -> tuple[list, list, list]:
     return series[:third], series[third : 2 * third], series[2 * third :]
 
 
+def verify_agricultural_land(series: list[dict]) -> tuple[bool, str]:
+    ndvi_values = [row["ndvi"] for row in series if row.get("ndvi") is not None]
+    if not ndvi_values:
+        return True, "Valid cropland"
+
+    avg_ndvi = sum(ndvi_values) / len(ndvi_values)
+    min_ndvi = min(ndvi_values)
+    max_ndvi = max(ndvi_values)
+    ndvi_variance = max_ndvi - min_ndvi
+
+    if avg_ndvi < 0.15 and max_ndvi < 0.25:
+        return False, "Area classified as water, urban development, or barren rock"
+    if avg_ndvi > 0.70 and ndvi_variance < 0.10:
+        return False, "Area classified as stable perennial vegetation or dense forest, not cropland"
+    return True, "Valid cropland"
+
+
 def predict(crop: str, soil: str, indices: dict, weather: dict) -> dict:
     if _model is None:
         return {"error": "model not loaded"}
