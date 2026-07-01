@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Card, CardBody } from '@/components/ui/Card'
 import { formatArea, ALL_CROPS, ALL_SOILS } from '@/lib/utils'
+import { getApiErrorMessage } from '@/lib/apiErrors'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
 
@@ -256,8 +257,8 @@ export function MapPage() {
         toast.success(t('map.fieldAdded'))
         navigate(`/dashboard/fields/${created.id}`)
       }
-    } catch {
-      toast.error(t('map.saveFailed'))
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t, t('map.saveFailed')))
     } finally {
       setSaving(false)
     }
