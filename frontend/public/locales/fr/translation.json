@@ -383,5 +383,10 @@
     "step2": "Niva récupère les images Sentinel-2 et la météo locale",
     "step3": "Obtenez les tendances NDVI, la prévision de rendement et un rapport de santé IA",
     "cta": "Ajouter votre premier champ"
+  },
+  "validation": {
+    "waterUrbanBarren": "Cette zone ne ressemble pas à une terre cultivée. Les données satellites la classent comme eau, zone urbaine ou roche nue.",
+    "forestPerennial": "Cette zone ne ressemble pas à une culture annuelle. Les données satellites la classent comme végétation pérenne stable ou forêt dense.",
+    "fieldAreaRange": "La surface du champ doit être comprise entre 0,1 et 10 000 hectares."
   }
 }

@@ -383,5 +383,10 @@
     "step2": "Niva pulls Sentinel-2 imagery and local weather",
     "step3": "Get NDVI trends, yield forecast and an AI health report",
     "cta": "Add your first field"
+  },
+  "validation": {
+    "waterUrbanBarren": "This area does not look like cropland. Satellite data classifies it as water, urban development, or barren rock.",
+    "forestPerennial": "This area does not look like annual cropland. Satellite data classifies it as stable perennial vegetation or dense forest.",
+    "fieldAreaRange": "Field area must be between 0.1 and 10,000 hectares."
   }
 }

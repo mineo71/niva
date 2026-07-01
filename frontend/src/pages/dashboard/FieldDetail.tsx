@@ -25,6 +25,7 @@ import { Tooltip } from '@/components/ui/Tooltip'
 import {
   formatArea, formatDate, isStale, formatRelativeTime,
 } from '@/lib/utils'
+import { getApiErrorMessage } from '@/lib/apiErrors'
 
 // ── Inline stale / freshness label ───────────────────────────────────────────
 function NdviTimestamp({ updatedAt }: { updatedAt: string | null }) {
@@ -69,6 +70,8 @@ export function FieldDetail() {
   const [loadingWeather, setLoadingWeather] = useState(true)
   const [predictingYield,   setPredictingYield]   = useState(false)
   const [generatingReport,  setGeneratingReport]  = useState(false)
+  const [predictError, setPredictError] = useState<string | null>(null)
+  const [reportError, setReportError] = useState<string | null>(null)
   const [showEvi,  setShowEvi]  = useState(false)
   const [showNdmi, setShowNdmi] = useState(false)
 
@@ -101,10 +104,13 @@ export function FieldDetail() {
   const handlePredict = async () => {
     if (!id) return
     setPredictingYield(true)
+    setPredictError(null)
     try {
       setPredict(await insightsApi.predict(id))
-    } catch {
-      toast.error(t('fieldDetail.predictionFailed'))
+    } catch (error) {
+      const message = getApiErrorMessage(error, t, t('fieldDetail.predictionFailed'))
+      setPredictError(message)
+      toast.error(message)
     } finally {
       setPredictingYield(false)
     }
@@ -113,10 +119,13 @@ export function FieldDetail() {
   const handleReport = async () => {
     if (!id) return
     setGeneratingReport(true)
+    setReportError(null)
     try {
       setReport(await insightsApi.report(id))
-    } catch {
-      toast.error(t('fieldDetail.reportFailed'))
+    } catch (error) {
+      const message = getApiErrorMessage(error, t, t('fieldDetail.reportFailed'))
+      setReportError(message)
+      toast.error(message)
     } finally {
       setGeneratingReport(false)
     }
@@ -421,6 +430,12 @@ export function FieldDetail() {
                   {t('fieldDetail.yieldPrompt')}
                 </p>
               )}
+              {predictError && (
+                <div className="flex items-start gap-2 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-xs leading-relaxed text-[#991b1b]">
+                  <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+                  <span>{predictError}</span>
+                </div>
+              )}
               <Tooltip content={t('fieldDetail.predictTooltip')}>
                 <Button
                   variant={predict ? 'secondary' : 'primary'}
@@ -526,6 +541,12 @@ export function FieldDetail() {
                 <p className="text-sm text-[#6b7280] leading-relaxed">
                   {t('fieldDetail.reportPrompt')}
                 </p>
+              )}
+              {reportError && (
+                <div className="flex items-start gap-2 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-xs leading-relaxed text-[#991b1b]">
+                  <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+                  <span>{reportError}</span>
+                </div>
               )}
               <Tooltip content={t('fieldDetail.aiTooltip')}>
                 <Button

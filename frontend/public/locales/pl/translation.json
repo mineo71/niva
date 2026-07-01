@@ -383,5 +383,10 @@
     "step2": "Niva pobiera zdjęcia Sentinel-2 i lokalną pogodę",
     "step3": "Uzyskaj trendy NDVI, prognozę plonu i raport kondycji AI",
     "cta": "Dodaj pierwsze pole"
+  },
+  "validation": {
+    "waterUrbanBarren": "Ten obszar nie wygląda na grunty uprawne. Dane satelitarne klasyfikują go jako wodę, zabudowę miejską lub nagą skałę.",
+    "forestPerennial": "Ten obszar nie wygląda na roczne uprawy. Dane satelitarne klasyfikują go jako stabilną roślinność wieloletnią lub gęsty las.",
+    "fieldAreaRange": "Powierzchnia pola musi wynosić od 0,1 do 10 000 hektarów."
   }
 }

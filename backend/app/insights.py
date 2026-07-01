@@ -12,7 +12,7 @@ from app.fields.service import centroid_lonlat, wkb_to_geojson
 from app.sentinel.cache import get_field_indices
 from app.sentinel.service import get_heatmap, get_timeline
 from app.weather.cache import get_field_weather
-from app.yield_pred.service import predict
+from app.yield_pred.service import predict, verify_agricultural_land
 
 router = APIRouter(prefix="/fields/{field_id}", tags=["insights"])
 
@@ -22,6 +22,13 @@ def _owned(field_id: int, user: User, db: Session) -> Field:
     if f is None or f.owner_id != user.id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Field not found")
     return f
+
+
+def _verify_cropland(indices: dict) -> None:
+    series = indices.get("series", [])
+    is_valid, reason = verify_agricultural_land(series)
+    if not is_valid:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=reason)
 
 
 @router.get("/indices")
@@ -80,6 +87,7 @@ async def field_predict(
 ):
     f = _owned(field_id, user, db)
     indices = await get_field_indices(db, f)
+    _verify_cropland(indices)
     weather = await get_field_weather(db, f)
     result = predict(f.crop_type, f.soil_type, indices, weather)
     if "error" in result:
@@ -93,6 +101,7 @@ async def field_report(
 ):
     f = _owned(field_id, user, db)
     indices = await get_field_indices(db, f)
+    _verify_cropland(indices)
     weather = await get_field_weather(db, f)
     pred = predict(f.crop_type, f.soil_type, indices, weather)
     series = indices.get("series", [])

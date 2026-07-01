@@ -17,6 +17,7 @@ import { CropIcon } from '@/components/CropIcon'
 import { NDVIChip } from '@/components/NDVIColorScale'
 import { formatArea, ALL_CROPS, ALL_SOILS } from '@/lib/utils'
 import { ndviToHex } from '@/lib/ndvi'
+import { getApiErrorMessage } from '@/lib/apiErrors'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
 
@@ -435,8 +436,8 @@ export function MapPage() {
         toast.success(t('map.fieldAdded'))
         navigate(`/dashboard/fields/${created.id}`)
       }
-    } catch {
-      toast.error(t('map.saveFailed'))
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, t, t('map.saveFailed')))
     } finally {
       setSaving(false)
     }
