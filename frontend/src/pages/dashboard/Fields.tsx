@@ -301,9 +301,9 @@ export function Fields() {
                     </Badge>
                     <Link
                       to={`/dashboard/fields/${field.id}`}
-                      className="flex items-center gap-1 text-xs text-[#16a34a] hover:text-[#15803d] transition-colors font-medium"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-[#16a34a] bg-[#f0fdf4] border border-[#bbf7d0] hover:bg-[#dcfce7] hover:border-[#86efac] transition-colors cursor-pointer"
                     >
-                      {t('fields.details')} <ArrowRight size={11} />
+                      {t('fields.details')} <ArrowRight size={14} />
                     </Link>
                   </div>
                 </CardBody>
