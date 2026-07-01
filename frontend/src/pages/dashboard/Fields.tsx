@@ -17,6 +17,7 @@ import { Sparkline } from '@/components/Sparkline'
 import { CropIcon } from '@/components/CropIcon'
 import { Onboarding } from '@/components/Onboarding'
 import { fieldPreviewUrl } from '@/lib/mapPreview'
+import { ndviToHex } from '@/lib/ndvi'
 import {
   formatArea, formatDate, formatRelativeTime, isStale,
 } from '@/lib/utils'
@@ -203,8 +204,14 @@ export function Fields() {
                       className="w-full h-full object-cover"
                     />
                     {hasNdvi && (
-                      <div className="absolute top-2 right-2 rounded-md bg-white shadow-sm">
-                        <NDVIChip value={field.latest_ndvi!} />
+                      <div className="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-1 shadow-md ring-1 ring-black/10">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: ndviToHex(field.latest_ndvi!) }}
+                        />
+                        <span className="text-xs font-bold text-[#111827] tabular-nums">
+                          {field.latest_ndvi!.toFixed(3)}
+                        </span>
                       </div>
                     )}
                   </Link>
