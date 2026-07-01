@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Mail, Lock, Satellite } from 'lucide-react'
+import { Mail, Lock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/stores/authStore'
@@ -49,9 +49,7 @@ export function Login() {
       <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-[#16a34a] flex items-center justify-center mb-4 shadow-sm">
-            <Satellite size={20} className="text-white" />
-          </div>
+          <img src="/niva-logo.png" alt="Niva" className="w-11 h-11 rounded-xl mb-4 shadow-sm" />
           <h1 className="font-semibold text-xl text-[#111827] tracking-tight">Нива</h1>
           <p className="text-sm text-[#6b7280] mt-1">{t('auth.loginSubtitle')}</p>
         </div>

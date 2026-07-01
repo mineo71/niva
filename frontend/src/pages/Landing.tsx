@@ -95,10 +95,8 @@ export function Landing() {
       {/* ── Nav ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-8 h-14 border-b border-[#f3f4f6] bg-white/90 backdrop-blur-md">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#16a34a] flex items-center justify-center">
-            <Satellite size={14} className="text-white" />
-          </div>
-          <span className="font-semibold text-[#111827] tracking-tight">Нива</span>
+          <img src="/niva-logo.png" alt="Niva" className="w-9 h-9 rounded-lg" />
+          <span className="font-semibold text-[#111827] text-lg tracking-tight">Нива</span>
         </div>
         <div className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((l) => (
@@ -413,9 +411,7 @@ export function Landing() {
       {/* ── Footer ── */}
       <footer className="border-t border-[#f3f4f6] px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-[#16a34a] flex items-center justify-center">
-            <Satellite size={12} className="text-white" />
-          </div>
+          <img src="/niva-logo.png" alt="Niva" className="w-6 h-6 rounded" />
           <span className="font-semibold text-[#374151] text-sm">Нива</span>
         </div>
         <p className="text-xs text-[#9ca3af]">{t('landing.footerCopyright')}</p>

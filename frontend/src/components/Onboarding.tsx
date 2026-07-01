@@ -28,9 +28,7 @@ export function Onboarding() {
           }}
         />
         <div className="relative px-6 py-12 sm:py-14 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-white border border-[#bbf7d0] shadow-sm flex items-center justify-center mx-auto mb-5">
-            <Satellite size={26} className="text-[#16a34a]" />
-          </div>
+          <img src="/niva-logo.png" alt="Niva" className="w-14 h-14 rounded-2xl shadow-sm mx-auto mb-5" />
 
           <h2 className="font-semibold text-2xl text-[#111827] tracking-tight mb-2">
             {t('onboarding.title')}
