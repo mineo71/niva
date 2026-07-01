@@ -593,7 +593,12 @@ export function MapPage() {
             </code>
           </div>
         ) : (
-          <div ref={mapRef} className="w-full h-full" />
+          <div
+            ref={mapRef}
+            role="application"
+            aria-label={isEdit ? t('map.editField') : t('map.newField')}
+            className="w-full h-full"
+          />
         )}
 
         {/* NDVI legend for existing fields overlay */}

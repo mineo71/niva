@@ -16,7 +16,8 @@
     "back": "Back",
     "search": "Search",
     "noData": "No data",
-    "moreActions": "More actions"
+    "moreActions": "More actions",
+    "skipToContent": "Skip to content"
   },
   "auth": {
     "login": "Log in",

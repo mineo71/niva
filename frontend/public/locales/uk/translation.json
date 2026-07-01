@@ -16,7 +16,8 @@
     "back": "Назад",
     "search": "Пошук",
     "noData": "Немає даних",
-    "moreActions": "Більше дій"
+    "moreActions": "Більше дій",
+    "skipToContent": "Перейти до вмісту"
   },
   "auth": {
     "login": "Увійти",

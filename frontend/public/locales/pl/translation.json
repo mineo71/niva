@@ -16,7 +16,8 @@
     "back": "Wstecz",
     "search": "Szukaj",
     "noData": "Brak danych",
-    "moreActions": "Więcej akcji"
+    "moreActions": "Więcej akcji",
+    "skipToContent": "Przejdź do treści"
   },
   "auth": {
     "login": "Zaloguj się",

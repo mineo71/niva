@@ -255,7 +255,12 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
 
   return (
     <div className="relative rounded-xl overflow-hidden border border-[#e5e7eb] bg-[#0b1a12]">
-      <div ref={mapRef} className="h-[calc(100vh-11rem)] min-h-[440px] w-full" />
+      <div
+        ref={mapRef}
+        role="application"
+        aria-label={t('fieldDetail.fieldMapTitle')}
+        className="h-[calc(100vh-11rem)] min-h-[440px] w-full"
+      />
 
       {/* loading / missing imagery banner */}
       {imgLoading && (

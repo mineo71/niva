@@ -16,7 +16,8 @@
     "back": "Indietro",
     "search": "Cerca",
     "noData": "Nessun dato",
-    "moreActions": "Altre azioni"
+    "moreActions": "Altre azioni",
+    "skipToContent": "Vai al contenuto"
   },
   "auth": {
     "login": "Accedi",
