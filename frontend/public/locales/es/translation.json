@@ -192,7 +192,16 @@
     "notFound": "Campo no encontrado",
     "predictionFailed": "Error en la predicción",
     "reportFailed": "Error al generar el informe",
-    "satelliteStale": "Datos satelitales con más de 7 días de antigüedad"
+    "satelliteStale": "Datos satelitales con más de 7 días de antigüedad",
+    "fieldMapTitle": "Campo en el mapa",
+    "areaDistribution": "Distribución del área",
+    "classExcellent": "Excelente",
+    "classGood": "Bueno",
+    "classModerate": "Moderado",
+    "classPoor": "Deficiente",
+    "loadingImagery": "Cargando imagen…",
+    "noImagery": "Sin imagen despejada para esta fecha",
+    "ndviHeatmap": "Mapa de calor NDVI"
   },
   "crops": {
     "wheat": "Trigo",

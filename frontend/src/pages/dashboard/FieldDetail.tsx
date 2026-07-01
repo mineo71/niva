@@ -18,6 +18,7 @@ import { ConfidenceBadge } from '@/components/ConfidenceBadge'
 import { NDVIChart } from '@/components/charts/NDVIChart'
 import { WeatherChart } from '@/components/charts/WeatherChart'
 import { NDVIColorScale, NDVIChip } from '@/components/NDVIColorScale'
+import { FieldMapView } from '@/components/FieldMapView'
 import { CropIcon } from '@/components/CropIcon'
 import { Tooltip } from '@/components/ui/Tooltip'
 import {
@@ -164,6 +165,23 @@ export function FieldDetail() {
           </Button>
         </Link>
       </div>
+
+      {/* ── Field map: NDVI heatmap + area distribution + date timeline ── */}
+      {field && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Satellite size={16} className="text-[#16a34a] shrink-0" />
+              <h2 className="font-semibold text-sm text-[#111827]">
+                {t('fieldDetail.fieldMapTitle')}
+              </h2>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <FieldMapView field={field} />
+          </CardBody>
+        </Card>
+      )}
 
       {/* ── Vegetation indices chart ── */}
       <Card>

@@ -8,7 +8,9 @@ from app.auth.deps import get_current_user
 from app.auth.models import User
 from app.core.db import get_db
 from app.fields.models import Field
+from app.fields.service import centroid_lonlat, wkb_to_geojson
 from app.sentinel.cache import get_field_indices
+from app.sentinel.service import get_heatmap, get_timeline
 from app.weather.cache import get_field_weather
 from app.yield_pred.service import predict
 
@@ -31,6 +33,34 @@ async def field_indices(
 ):
     f = _owned(field_id, user, db)
     return await get_field_indices(db, f, force=refresh)
+
+
+@router.get("/timeline")
+async def field_timeline(
+    field_id: int,
+    days: int = 75,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Available NDVI acquisition dates with per-date area-class distribution."""
+    f = _owned(field_id, user, db)
+    lon, lat = centroid_lonlat(f.geometry)
+    return await get_timeline(lon, lat, wkb_to_geojson(f.geometry), days=days)
+
+
+@router.get("/heatmap")
+async def field_heatmap(
+    field_id: int,
+    date: str,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Colored NDVI raster (base64 PNG + corner coords) for a field on a date."""
+    f = _owned(field_id, user, db)
+    result = await get_heatmap(wkb_to_geojson(f.geometry), date)
+    if result is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No imagery for this date")
+    return result
 
 
 @router.get("/weather")

@@ -192,7 +192,16 @@
     "notFound": "Поле не знайдено",
     "predictionFailed": "Помилка прогнозування",
     "reportFailed": "Помилка генерації звіту",
-    "satelliteStale": "Супутникові дані старші за 7 днів"
+    "satelliteStale": "Супутникові дані старші за 7 днів",
+    "fieldMapTitle": "Поле на карті",
+    "areaDistribution": "Розподіл по площі",
+    "classExcellent": "Відмінно",
+    "classGood": "Добре",
+    "classModerate": "Помірно",
+    "classPoor": "Незадовільно",
+    "loadingImagery": "Завантаження знімка…",
+    "noImagery": "Немає безхмарного знімка на цю дату",
+    "ndviHeatmap": "Теплова карта NDVI"
   },
   "crops": {
     "wheat": "Пшениця",

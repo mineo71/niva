@@ -192,7 +192,16 @@
     "notFound": "Field not found",
     "predictionFailed": "Prediction failed",
     "reportFailed": "Report generation failed",
-    "satelliteStale": "Satellite data older than 7 days"
+    "satelliteStale": "Satellite data older than 7 days",
+    "fieldMapTitle": "Field on the map",
+    "areaDistribution": "Area distribution",
+    "classExcellent": "Excellent",
+    "classGood": "Good",
+    "classModerate": "Moderate",
+    "classPoor": "Poor",
+    "loadingImagery": "Loading imagery…",
+    "noImagery": "No cloud-free image for this date",
+    "ndviHeatmap": "NDVI heatmap"
   },
   "crops": {
     "wheat": "Wheat",

@@ -93,6 +93,13 @@ body {
 }
 .mapboxgl-ctrl-group button { background-color: transparent !important; }
 .mapboxgl-ctrl-group button:not(:disabled):hover { background-color: #f9fafb !important; }
+.niva-field-popup .mapboxgl-popup-content {
+  border-radius: 10px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.12) !important;
+  padding: 8px 12px !important;
+}
+.niva-field-popup .mapboxgl-popup-tip { display: none !important; }
 
 /* ── Toastify ── */
 .Toastify__toast {

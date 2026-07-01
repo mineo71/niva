@@ -192,7 +192,16 @@
     "notFound": "Campo non trovato",
     "predictionFailed": "Previsione fallita",
     "reportFailed": "Generazione del rapporto fallita",
-    "satelliteStale": "Dati satellitari più vecchi di 7 giorni"
+    "satelliteStale": "Dati satellitari più vecchi di 7 giorni",
+    "fieldMapTitle": "Campo sulla mappa",
+    "areaDistribution": "Distribuzione dell'area",
+    "classExcellent": "Eccellente",
+    "classGood": "Buono",
+    "classModerate": "Moderato",
+    "classPoor": "Scarso",
+    "loadingImagery": "Caricamento immagine…",
+    "noImagery": "Nessuna immagine senza nuvole per questa data",
+    "ndviHeatmap": "Mappa termica NDVI"
   },
   "crops": {
     "wheat": "Grano",

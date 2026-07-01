@@ -192,7 +192,16 @@
     "notFound": "Pole nie znalezione",
     "predictionFailed": "Błąd prognozy",
     "reportFailed": "Błąd generowania raportu",
-    "satelliteStale": "Dane satelitarne starsze niż 7 dni"
+    "satelliteStale": "Dane satelitarne starsze niż 7 dni",
+    "fieldMapTitle": "Pole na mapie",
+    "areaDistribution": "Rozkład powierzchni",
+    "classExcellent": "Doskonały",
+    "classGood": "Dobry",
+    "classModerate": "Umiarkowany",
+    "classPoor": "Słaby",
+    "loadingImagery": "Ładowanie zdjęcia…",
+    "noImagery": "Brak bezchmurnego zdjęcia dla tej daty",
+    "ndviHeatmap": "Mapa cieplna NDVI"
   },
   "crops": {
     "wheat": "Pszenica",

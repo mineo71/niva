@@ -70,6 +70,31 @@ export interface IndicesResponse {
   series: IndexDataPoint[]
 }
 
+// ── NDVI timeline + heatmap ─────────────────────────────────────────────────
+export interface AreaDistribution {
+  poor: number
+  moderate: number
+  good: number
+  excellent: number
+}
+
+export interface TimelinePoint {
+  date: string
+  ndvi: number
+  distribution: AreaDistribution
+}
+
+export interface TimelineResponse {
+  source: string
+  dates: TimelinePoint[]
+}
+
+export interface HeatmapResponse {
+  date: string
+  image: string
+  coordinates: [number, number][]
+}
+
 export interface WeatherCurrent {
   temp_c: number
   humidity: number

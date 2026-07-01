@@ -192,7 +192,16 @@
     "notFound": "Champ non trouvé",
     "predictionFailed": "Échec de la prévision",
     "reportFailed": "Échec de la génération du rapport",
-    "satelliteStale": "Données satellitaires de plus de 7 jours"
+    "satelliteStale": "Données satellitaires de plus de 7 jours",
+    "fieldMapTitle": "Champ sur la carte",
+    "areaDistribution": "Répartition de la surface",
+    "classExcellent": "Excellent",
+    "classGood": "Bon",
+    "classModerate": "Modéré",
+    "classPoor": "Faible",
+    "loadingImagery": "Chargement de l'image…",
+    "noImagery": "Pas d'image sans nuages pour cette date",
+    "ndviHeatmap": "Carte thermique NDVI"
   },
   "crops": {
     "wheat": "Blé",

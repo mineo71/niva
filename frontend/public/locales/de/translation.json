@@ -192,7 +192,16 @@
     "notFound": "Feld nicht gefunden",
     "predictionFailed": "Vorhersage fehlgeschlagen",
     "reportFailed": "Berichterstellung fehlgeschlagen",
-    "satelliteStale": "Satellitendaten älter als 7 Tage"
+    "satelliteStale": "Satellitendaten älter als 7 Tage",
+    "fieldMapTitle": "Feld auf der Karte",
+    "areaDistribution": "Flächenverteilung",
+    "classExcellent": "Ausgezeichnet",
+    "classGood": "Gut",
+    "classModerate": "Mäßig",
+    "classPoor": "Schlecht",
+    "loadingImagery": "Bild wird geladen…",
+    "noImagery": "Kein wolkenfreies Bild für dieses Datum",
+    "ndviHeatmap": "NDVI-Heatmap"
   },
   "crops": {
     "wheat": "Weizen",
