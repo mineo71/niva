@@ -203,7 +203,7 @@ export function Fields() {
                       className="w-full h-full object-cover"
                     />
                     {hasNdvi && (
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-2 right-2 rounded-md bg-white shadow-sm">
                         <NDVIChip value={field.latest_ndvi!} />
                       </div>
                     )}
