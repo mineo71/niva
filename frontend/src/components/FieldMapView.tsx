@@ -35,6 +35,7 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
   const boundsRef = useRef<[[number, number], [number, number]] | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const reqId = useRef(0)
+  const animRef = useRef<number | null>(null)
 
   const [ready, setReady] = useState(false)
   const [mapError, setMapError] = useState(false)
@@ -96,10 +97,16 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
         map.resize()
         map.fitBounds(bounds, { padding: 60, duration: 0 })
         setTimeout(() => mounted && map.resize(), 250)
-        // field outline
+        // field outline + a fill used for the "loading" pulse
         map.addSource('field-poly', {
           type: 'geojson',
           data: { type: 'Feature', properties: {}, geometry: field.geometry },
+        })
+        map.addLayer({
+          id: 'field-pulse',
+          type: 'fill',
+          source: 'field-poly',
+          paint: { 'fill-color': '#4ade80', 'fill-opacity': 0 },
         })
         map.addLayer({
           id: 'field-outline',
@@ -215,6 +222,34 @@ export function FieldMapView({ field }: { field: FieldResponse }) {
     map.setPaintProperty('ndvi-layer', 'raster-opacity', opacity)
     map.setLayoutProperty('ndvi-layer', 'visibility', imgMissing ? 'none' : 'visible')
   }, [opacity, imgMissing])
+
+  // minimal "breathing" pulse across the field while the heatmap loads
+  useEffect(() => {
+    const map = mapInstance.current
+    if (!ready || !map?.getLayer?.('field-pulse')) return
+
+    const stop = () => {
+      if (animRef.current != null) cancelAnimationFrame(animRef.current)
+      animRef.current = null
+      if (map.getLayer('field-pulse')) map.setPaintProperty('field-pulse', 'fill-opacity', 0)
+      if (map.getLayer('field-outline')) map.setPaintProperty('field-outline', 'line-width', 2.5)
+    }
+
+    if (!imgLoading) {
+      stop()
+      return
+    }
+
+    const tick = (ts: number) => {
+      // sine wave → soft fade in/out (~1.4s period)
+      const s = (Math.sin(ts / 220) + 1) / 2
+      map.setPaintProperty('field-pulse', 'fill-opacity', 0.08 + s * 0.28)
+      map.setPaintProperty('field-outline', 'line-width', 2 + s * 2)
+      animRef.current = requestAnimationFrame(tick)
+    }
+    animRef.current = requestAnimationFrame(tick)
+    return stop
+  }, [imgLoading, ready])
 
   if (mapError) return null
 

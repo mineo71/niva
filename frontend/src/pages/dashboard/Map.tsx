@@ -5,22 +5,31 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { Ruler, Save, RotateCcw, AlertCircle, MapPin, Pencil, LocateFixed, MousePointerClick } from 'lucide-react'
+import { Ruler, Save, RotateCcw, AlertCircle, MapPin, Pencil, LocateFixed, MousePointerClick, List, X, Search } from 'lucide-react'
 import type { Feature, Polygon } from 'geojson'
 import { fieldsApi } from '@/api/fields'
-import type { CropType, SoilType } from '@/types'
+import type { CropType, SoilType, FieldResponse } from '@/types'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Card, CardBody } from '@/components/ui/Card'
+import { CropIcon } from '@/components/CropIcon'
+import { NDVIChip } from '@/components/NDVIColorScale'
 import { formatArea, ALL_CROPS, ALL_SOILS } from '@/lib/utils'
 import { ndviToHex } from '@/lib/ndvi'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
 
+function ringCentroid(ring: number[][]): [number, number] {
+  const pts = ring.slice(0, -1)
+  const n = pts.length || 1
+  const [sx, sy] = pts.reduce(([x, y], p) => [x + p[0], y + p[1]], [0, 0])
+  return [sx / n, sy / n]
+}
+
 export function MapPage() {
   const { id } = useParams<{ id?: string }>()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const isEdit = !!id
 
@@ -29,6 +38,13 @@ export function MapPage() {
   const mapInstanceRef = useRef<any>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const drawRef = useRef<any>(null)
+  // popup opener stored so the fields list can trigger it from outside the map closure
+  const popupFnRef = useRef<((lngLat: [number, number], p: Record<string, string>) => void) | null>(null)
+
+  const [allFields, setAllFields] = useState<FieldResponse[]>([])
+  const [showList, setShowList] = useState(false)
+  const [listSearch, setListSearch] = useState('')
+  const [listSort, setListSort] = useState<'name' | 'area' | 'ndvi'>('name')
 
   const [polygon, setPolygon] = useState<Feature<Polygon> | null>(null)
   const [areaHa, setAreaHa] = useState<number | null>(null)
@@ -44,6 +60,38 @@ export function MapPage() {
 
   const cropOptions = ALL_CROPS.map((c) => ({ value: c, label: t(`crops.${c}`) }))
   const soilOptions = ALL_SOILS.map((s) => ({ value: s, label: t(`soils.${s}`) }))
+
+  const buildProps = (f: FieldResponse): Record<string, string> => ({
+    id: String(f.id),
+    name: f.name,
+    crop: t(`crops.${f.crop_type}`, { defaultValue: f.crop_type }),
+    area: formatArea(f.area_ha, i18n.language),
+    ndvi: f.latest_ndvi != null ? f.latest_ndvi.toFixed(3) : '—',
+    ndviColor: f.latest_ndvi != null ? ndviToHex(f.latest_ndvi) : '#9ca3af',
+  })
+
+  const flyToField = (f: FieldResponse) => {
+    const map = mapInstanceRef.current
+    if (!map) return
+    const c = ringCentroid(f.geometry.coordinates[0])
+    map.flyTo({ center: c, zoom: 14, duration: 800 })
+    setTimeout(() => popupFnRef.current?.(c, buildProps(f)), 850)
+    setShowList(false)
+  }
+
+  const listSortOptions = [
+    { value: 'name', label: t('fields.sortName') },
+    { value: 'area', label: t('fields.sortAreaDesc') },
+    { value: 'ndvi', label: t('fields.sortNdviDesc') },
+  ]
+
+  const listFields = allFields
+    .filter((f) => f.name.toLowerCase().includes(listSearch.toLowerCase()))
+    .sort((a, b) => {
+      if (listSort === 'area') return b.area_ha - a.area_ha
+      if (listSort === 'ndvi') return (b.latest_ndvi ?? -1) - (a.latest_ndvi ?? -1)
+      return a.name.localeCompare(b.name)
+    })
 
   const computeArea = useCallback(async (feature: Feature<Polygon>) => {
     try {
@@ -135,67 +183,115 @@ export function MapPage() {
         })
         map.addControl(geocoder as never, 'top-left')
 
-        // Read-only overlay: user's existing fields, polygons colored by latest NDVI
+        // Read-only overlay: NDVI polygons + clustered centroid pins + click popup
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const loadExistingFields = async () => {
           try {
             const fields = await fieldsApi.list()
+            if (!mounted) return
+            setAllFields(fields)
             const others = fields.filter((f) => String(f.id) !== String(id))
-            if (!others.length || !mounted) return
+            if (!others.length) return
 
+            // shared popup opener — used by polygons, pins and the fields list
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let fieldPopup: any = null
+            const showFieldPopup = (lngLat: [number, number], p: Record<string, string>) => {
+              if (fieldPopup) fieldPopup.remove()
+              const el = document.createElement('div')
+              el.innerHTML =
+                `<div style="font-weight:600;color:#111827;font-size:14px">${p.name}</div>` +
+                `<div style="color:#6b7280;font-size:12px;margin-top:2px">${p.crop} · ${p.area}</div>` +
+                (p.ndvi !== '—'
+                  ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;color:#111827">` +
+                    `<span style="width:9px;height:9px;border-radius:9999px;background:${p.ndviColor}"></span>NDVI ${p.ndvi}</div>`
+                  : '')
+              const btn = document.createElement('button')
+              btn.textContent = t('fields.details')
+              btn.setAttribute(
+                'style',
+                'margin-top:10px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;' +
+                  'padding:6px 10px;border-radius:8px;font-size:13px;font-weight:600;color:#16a34a;' +
+                  'background:#f0fdf4;border:1px solid #bbf7d0;cursor:pointer'
+              )
+              btn.onclick = () => { fieldPopup?.remove(); navigate(`/dashboard/fields/${p.id}`) }
+              el.appendChild(btn)
+              fieldPopup = new mapboxgl.Popup({ closeButton: true, className: 'niva-field-popup', offset: 12, maxWidth: '220px' })
+                .setLngLat(lngLat).setDOMContent(el).addTo(map)
+            }
+            popupFnRef.current = showFieldPopup
+
+            // ── NDVI polygons ──
             const fc = {
               type: 'FeatureCollection' as const,
               features: others.map((f) => ({
                 type: 'Feature' as const,
                 geometry: f.geometry,
-                properties: {
-                  id: String(f.id),
-                  name: f.name,
-                  color: f.latest_ndvi != null ? ndviToHex(f.latest_ndvi) : '#9ca3af',
-                  ndvi: f.latest_ndvi != null ? f.latest_ndvi.toFixed(2) : '—',
-                },
+                properties: buildProps(f),
               })),
             }
-
             if (map.getSource('existing-fields')) {
               ;(map.getSource('existing-fields') as { setData: (d: unknown) => void }).setData(fc)
             } else {
               map.addSource('existing-fields', { type: 'geojson', data: fc })
-              map.addLayer({
-                id: 'existing-fill',
-                type: 'fill',
-                source: 'existing-fields',
-                paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.45 },
-              })
-              map.addLayer({
-                id: 'existing-line',
-                type: 'line',
-                source: 'existing-fields',
-                paint: { 'line-color': ['get', 'color'], 'line-width': 2 },
-              })
-              map.addLayer({
-                id: 'existing-label',
-                type: 'symbol',
-                source: 'existing-fields',
-                layout: {
-                  'text-field': ['get', 'name'],
-                  'text-size': 12,
-                  'text-offset': [0, 0],
-                  'text-anchor': 'center',
-                },
-                paint: {
-                  'text-color': '#ffffff',
-                  'text-halo-color': 'rgba(0,0,0,0.6)',
-                  'text-halo-width': 1.2,
-                },
-              })
-
-              // click a field → open its detail
-              map.on('click', 'existing-fill', (e: { features?: Array<{ properties: Record<string, unknown> | null }> }) => {
-                const fid = e.features?.[0]?.properties?.id as string | undefined
-                if (fid) navigate(`/dashboard/fields/${fid}`)
+              map.addLayer({ id: 'existing-fill', type: 'fill', source: 'existing-fields', paint: { 'fill-color': ['get', 'ndviColor'], 'fill-opacity': 0.45 } })
+              map.addLayer({ id: 'existing-line', type: 'line', source: 'existing-fields', paint: { 'line-color': ['get', 'ndviColor'], 'line-width': 2 } })
+              map.on('click', 'existing-fill', (e: { lngLat: { lng: number; lat: number }; features?: Array<{ properties: Record<string, string> | null }> }) => {
+                const p = e.features?.[0]?.properties
+                if (p) showFieldPopup([e.lngLat.lng, e.lngLat.lat], p)
               })
               map.on('mouseenter', 'existing-fill', () => { map.getCanvas().style.cursor = 'pointer' })
               map.on('mouseleave', 'existing-fill', () => { map.getCanvas().style.cursor = '' })
+            }
+
+            // ── clustered centroid pins (stay visible when zoomed out) ──
+            const pts = {
+              type: 'FeatureCollection' as const,
+              features: others.map((f) => ({
+                type: 'Feature' as const,
+                geometry: { type: 'Point' as const, coordinates: ringCentroid(f.geometry.coordinates[0]) },
+                properties: buildProps(f),
+              })),
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (map.getSource('field-points')) {
+              ;(map.getSource('field-points') as { setData: (d: unknown) => void }).setData(pts)
+            } else {
+              map.addSource('field-points', { type: 'geojson', data: pts, cluster: true, clusterRadius: 48, clusterMaxZoom: 13 })
+              map.addLayer({
+                id: 'clusters', type: 'circle', source: 'field-points', filter: ['has', 'point_count'],
+                paint: { 'circle-color': '#16a34a', 'circle-opacity': 0.92, 'circle-stroke-width': 2, 'circle-stroke-color': '#ffffff', 'circle-radius': ['step', ['get', 'point_count'], 15, 5, 20, 10, 26] },
+              })
+              map.addLayer({
+                id: 'cluster-count', type: 'symbol', source: 'field-points', filter: ['has', 'point_count'],
+                layout: { 'text-field': ['get', 'point_count_abbreviated'], 'text-size': 13, 'text-allow-overlap': true },
+                paint: { 'text-color': '#ffffff' },
+              })
+              map.addLayer({
+                id: 'unclustered', type: 'circle', source: 'field-points', filter: ['!', ['has', 'point_count']],
+                paint: { 'circle-color': ['get', 'ndviColor'], 'circle-radius': 7, 'circle-stroke-width': 2.5, 'circle-stroke-color': '#ffffff' },
+              })
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              map.on('click', 'clusters', (e: any) => {
+                const feat = map.queryRenderedFeatures(e.point, { layers: ['clusters'] })[0]
+                const cid = feat.properties?.cluster_id
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const center = (feat.geometry as any).coordinates as [number, number]
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ;(map.getSource('field-points') as any).getClusterExpansionZoom(cid, (err: unknown, z: number) => {
+                  if (err) return
+                  map.easeTo({ center, zoom: z })
+                })
+              })
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              map.on('click', 'unclustered', (e: any) => {
+                const p = e.features?.[0]?.properties
+                if (p) showFieldPopup(e.features[0].geometry.coordinates as [number, number], p)
+              })
+              for (const layer of ['clusters', 'unclustered']) {
+                map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer' })
+                map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = '' })
+              }
             }
 
             setExistingCount(others.length)
@@ -518,6 +614,68 @@ export function MapPage() {
               <span className="text-[9px] text-[#9ca3af]">{t('map.ndviHigh')}</span>
             </div>
           </div>
+        )}
+
+        {/* Fields list toggle + slide-in panel */}
+        {mapReady && existingCount > 0 && (
+          <>
+            {!showList && (
+              <button
+                onClick={() => setShowList(true)}
+                className="absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-[#e5e7eb] rounded-lg shadow-sm px-3 py-2 text-xs font-medium text-[#374151] hover:bg-white transition-colors"
+              >
+                <List size={15} className="text-[#16a34a]" />
+                {t('map.yourFields')}
+              </button>
+            )}
+            {showList && (
+              <div className="absolute top-3 right-3 bottom-3 z-20 w-72 max-w-[85%] bg-white rounded-xl border border-[#e5e7eb] shadow-xl flex flex-col overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#f3f4f6]">
+                  <h3 className="font-semibold text-sm text-[#111827]">
+                    {t('map.yourFields')} <span className="text-[#9ca3af] font-normal">({allFields.length})</span>
+                  </h3>
+                  <button
+                    onClick={() => setShowList(false)}
+                    aria-label={t('common.cancel')}
+                    className="p-1 rounded-md text-[#9ca3af] hover:text-[#374151] hover:bg-[#f3f4f6]"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+                <div className="px-3 py-2.5 space-y-2 border-b border-[#f3f4f6]">
+                  <Input
+                    placeholder={t('fields.searchPlaceholder')}
+                    leftIcon={<Search size={14} />}
+                    value={listSearch}
+                    onChange={(e) => setListSearch(e.target.value)}
+                  />
+                  <Select
+                    value={listSort}
+                    onValueChange={(v) => setListSort(v as 'name' | 'area' | 'ndvi')}
+                    options={listSortOptions}
+                  />
+                </div>
+                <div className="flex-1 overflow-y-auto p-1.5">
+                  {listFields.map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => flyToField(f)}
+                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-[#f9fafb] transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] flex items-center justify-center shrink-0">
+                        <CropIcon crop={f.crop_type} size={15} className="text-[#16a34a]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-[#111827] truncate">{f.name}</p>
+                        <p className="text-xs text-[#9ca3af]">{formatArea(f.area_ha, i18n.language)}</p>
+                      </div>
+                      {f.latest_ndvi != null && <NDVIChip value={f.latest_ndvi} className="shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
